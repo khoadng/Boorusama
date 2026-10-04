@@ -1,3 +1,6 @@
+// Package imports:
+import 'package:coreutils/coreutils.dart';
+
 // Project imports:
 import 'protection_event.dart';
 
@@ -61,6 +64,26 @@ class ProtectionAttempt extends ProtectionTrace {
   final ProtectionSource source;
   ProtectionSession? session;
   var retries = 0;
+  Cookie? _clearanceCookie;
+  final _triedClearanceValues = <String>{};
+
+  Cookie? get clearanceCookie =>
+      _clearanceCookie ?? session?._clearanceCookies.lastOrNull;
+
+  /// Each joined request selects independently from the browser's cookies.
+  bool selectNextClearanceCookie() {
+    final current = clearanceCookie;
+    if (current == null) return false;
+    _triedClearanceValues.add(current.value);
+    for (final cookie in session?._clearanceCookies ?? const <Cookie>[]) {
+      if (_triedClearanceValues.contains(cookie.value)) continue;
+      _clearanceCookie = cookie;
+      record(const AlternativeClearanceSelected());
+      return true;
+    }
+    return false;
+  }
+
   @override
   ProtectionScope get scope => ProtectionScope(
     host: host,
@@ -73,20 +96,30 @@ class ProtectionAttempt extends ProtectionTrace {
     final normalized = {
       for (final entry in headers.entries) entry.key.toLowerCase(): entry.value,
     };
-    final cookies = <String, String>{};
+    final cookies = <String, Set<String>>{};
     for (final part in (normalized['cookie'] ?? '').split(';')) {
       final separator = part.indexOf('=');
       if (separator > 0) {
-        cookies[part.substring(0, separator).trim()] = part
-            .substring(separator + 1)
-            .trim();
+        final name = part.substring(0, separator).trim();
+        (cookies[name] ??= {}).add(part.substring(separator + 1).trim());
       }
     }
-    final expected = session?._cookies;
+    final completionCookies = session?._cookies;
+    final clearance = clearanceCookie;
+    final expected = completionCookies == null
+        ? null
+        : {
+            ...completionCookies,
+            if (clearance != null) clearance.name: clearance.value,
+          };
     final expectedUa = session?._userAgent;
     final cookieMatch = expected == null || expected.isEmpty
         ? CredentialMatch.unknown
-        : expected.entries.every((entry) => cookies[entry.key] == entry.value)
+        : expected.entries.every(
+            (entry) =>
+                cookies[entry.key]?.length == 1 &&
+                cookies[entry.key]!.contains(entry.value),
+          )
         ? CredentialMatch.match
         : CredentialMatch.mismatch;
     final uaMatch = expectedUa == null
@@ -111,6 +144,7 @@ class ProtectionSession extends ProtectionTrace {
   final String type;
   var _activeChecks = 0;
   Map<String, String>? _cookies;
+  List<Cookie> _clearanceCookies = const [];
   String? _userAgent;
   @override
   ProtectionScope get scope =>
@@ -125,9 +159,14 @@ class ProtectionSession extends ProtectionTrace {
     return check;
   }
 
-  /// Values exist only for equality checks, never as fields of safe events.
-  void observeCompletion(Map<String, String> cookies, String? userAgent) {
+  /// Credential values remain private and never become fields of safe events.
+  void observeCompletion(
+    Map<String, String> cookies,
+    String? userAgent, {
+    List<Cookie> clearanceCookies = const [],
+  }) {
     _cookies = Map.of(cookies);
+    _clearanceCookies = List.unmodifiable(clearanceCookies);
     _userAgent = userAgent;
     record(CredentialsObserved(cookies.length, userAgent != null));
   }

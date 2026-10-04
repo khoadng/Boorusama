@@ -182,7 +182,8 @@ class _ParsedSetCookie {
 
 /// Extensions for cookie_jar Cookie objects
 extension CookieJarExtensions on List<Cookie> {
-  String get cookieString => map((cookie) => cookie.toString()).join('; ');
+  String get cookieString =>
+      map((cookie) => '${cookie.name}=${cookie.value}').join('; ');
 
   Map<String, String> get cookieMap {
     final map = <String, String>{};

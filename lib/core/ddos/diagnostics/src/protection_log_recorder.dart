@@ -130,5 +130,6 @@ String _formatEvent(ProtectionEvent event) => switch (event) {
   RetryPreparationStarted() => 'retry preparation started',
   RetryDispatched(:final number) => 'retry dispatched number=$number',
   RetryStillBlocked() => 'retry still blocked after solve',
+  AlternativeClearanceSelected() => 'alternative clearance cookie selected',
   RetryEnqueued(:final accepted) => 'retry enqueue accepted=$accepted',
 };

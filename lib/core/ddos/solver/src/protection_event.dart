@@ -282,6 +282,10 @@ final class RetryStillBlocked extends ProtectionEvent {
   const RetryStillBlocked();
 }
 
+final class AlternativeClearanceSelected extends ProtectionEvent {
+  const AlternativeClearanceSelected();
+}
+
 final class RetryDispatched extends ProtectionEvent {
   const RetryDispatched(this.number);
   final int number;

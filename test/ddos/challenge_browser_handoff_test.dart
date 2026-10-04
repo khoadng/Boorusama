@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'dart:typed_data';
 
 // Package imports:
+import 'package:clock/clock.dart';
 import 'package:coreutils/coreutils.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -130,6 +131,135 @@ void main() {
     },
   );
 
+  for (final freshFirst in [true, false]) {
+    testWidgets(
+      'new clearance replaces stale cookies across scopes (freshFirst=$freshFirst)',
+      (tester) async {
+        const stale = BrowserCookie(
+          name: 'cf_clearance',
+          value: 'stale',
+          domain: '.example.com',
+          path: '/',
+        );
+        const fresh = BrowserCookie(
+          name: 'cf_clearance',
+          value: 'valid',
+          domain: 'example.com',
+          path: '/',
+        );
+        final site = _Site(
+          blockedBody: _turnstileCaptchaPage,
+          unblockedBy: 'cf_clearance=valid',
+        );
+        final harness = await _Harness.pump(
+          tester,
+          site: site,
+          initialBrowserCookies: const [stale],
+          browserCookies: freshFirst ? [fresh, stale] : [stale, fresh],
+          requestCookies: [
+            Cookie('cf_clearance', 'stale')
+              ..domain = '.example.com'
+              ..path = '/',
+            Cookie('session', 'signed-in')..path = '/',
+          ],
+        );
+
+        final sent = await harness.send(tester, '/post.json');
+
+        expect(sent.result, 'HTTP 200 "done"');
+        expect(site.cookieHeaders.last, contains('cf_clearance=valid'));
+        expect(site.cookieHeaders.last, isNot(contains('cf_clearance=stale')));
+        expect(site.cookieHeaders.last, contains('session=signed-in'));
+        expect(site.cookieHeaders.last, isNot(contains('path=')));
+        expect(site.cookieHeaders.last, isNot(contains('domain=')));
+        expect(site.appRequests, 2);
+        expect(find.byType(ProtectionOverlay), findsNothing);
+      },
+    );
+  }
+
+  for (final validFirst in [true, false]) {
+    testWidgets(
+      'reused same-scope clearance cookies select the token accepted by HTTP (validFirst=$validFirst)',
+      (tester) async {
+        const valid = BrowserCookie(
+          name: 'cf_clearance',
+          value: 'valid',
+          domain: '.example.com',
+          path: '/',
+        );
+        const stale = BrowserCookie(
+          name: 'cf_clearance',
+          value: 'stale',
+          domain: '.example.com',
+          path: '/',
+        );
+        final cookies = validFirst ? [valid, stale] : [stale, valid];
+        final site = _Site(
+          blockedBody: _turnstileCaptchaPage,
+          unblockedBy: 'cf_clearance=valid',
+        );
+        final harness = await _Harness.pump(
+          tester,
+          site: site,
+          initialBrowserCookies: cookies,
+          browserCookies: cookies,
+          requestCookies: [
+            Cookie('cf_clearance', 'stale')
+              ..domain = '.example.com'
+              ..path = '/',
+            Cookie('session', 'signed-in')..path = '/',
+          ],
+        );
+
+        final sent = await harness.send(tester, '/post.json');
+
+        expect(sent.result, 'HTTP 200 "done"');
+        expect(site.cookieHeaders.last, contains('cf_clearance=valid'));
+        expect(site.cookieHeaders.last, isNot(contains('cf_clearance=stale')));
+        expect(site.cookieHeaders.last, contains('session=signed-in'));
+        expect(site.appRequests, validFirst ? 3 : 2);
+        expect(site.browserPaths, hasLength(1));
+
+        // The accepted token must survive outside the solving attempt.
+        final subsequent = await harness.send(tester, '/post.json');
+        expect(subsequent.result, 'HTTP 200 "done"');
+        expect(subsequent.challengeShown, isFalse);
+        expect(site.browserPaths, hasLength(1));
+      },
+    );
+  }
+
+  testWidgets(
+    'rejected clearance candidates stop at the retry budget without another dialog',
+    (tester) async {
+      final cookies = [
+        for (var i = 0; i < 5; i++)
+          BrowserCookie(
+            name: 'cf_clearance',
+            value: 'rejected-$i',
+            domain: '.example.com',
+            path: '/',
+          ),
+      ];
+      final site = _Site(blockedBody: _turnstileCaptchaPage);
+      final harness = await _Harness.pump(
+        tester,
+        site: site,
+        initialBrowserCookies: cookies,
+        browserCookies: cookies,
+      );
+
+      final sent = await harness.send(tester, '/post.json');
+
+      expect(sent.result, 'HTTP 403');
+      expect(site.appRequests, 4);
+      expect(site.cookieHeaders.skip(1).toSet(), hasLength(3));
+      expect(site.browserPaths, hasLength(1));
+      expect(find.byType(ProtectionOverlay), findsNothing);
+    },
+  );
+
   testWidgets(
     'after a solve that leaves the app blocked, later requests fail without reopening the challenge',
     (tester) async {
@@ -162,6 +292,31 @@ void main() {
       expect(site.browserPaths, hasLength(2));
     },
   );
+
+  testWidgets(
+    'a failed handoff permits recovery again after the cooldown',
+    (tester) async {
+      var now = DateTime.utc(2026, 10, 4);
+      final site = _Site(blockedBody: _turnstileCaptchaPage);
+      final harness = await _Harness.pump(
+        tester,
+        site: site,
+        clock: Clock(() => now),
+      );
+
+      final first = await harness.sendAction(tester);
+      now = now.add(const Duration(seconds: 29));
+      final immediate = await harness.sendAction(tester);
+      now = now.add(const Duration(seconds: 1));
+      final later = await harness.sendAction(tester);
+
+      expect(first.challengeShown, isTrue);
+      expect(immediate.challengeShown, isFalse);
+      expect(later.challengeShown, isTrue);
+      expect(site.browserPaths, hasLength(2));
+      expect(site.appRequests, 5);
+    },
+  );
 }
 
 List<ProtectionDetector> _detectors() => [
@@ -179,6 +334,9 @@ class _Harness {
     WidgetTester tester, {
     required _Site site,
     List<BrowserCookie> browserCookies = const [],
+    List<BrowserCookie>? initialBrowserCookies,
+    List<Cookie> requestCookies = const [],
+    Clock clock = const Clock(),
   }) async {
     late BuildContext pageContext;
     await tester.pumpWidget(
@@ -199,10 +357,19 @@ class _Harness {
     );
 
     final jar = CookieJar();
+    await jar.saveFromResponse(
+      Uri.parse('https://example.com/'),
+      requestCookies,
+    );
     final cookieJar = LazyAsync<CookieJar>(() async => jar);
-    final browsers = _BrowserFactory(site, browserCookies);
+    final browsers = _BrowserFactory(
+      site,
+      browserCookies,
+      initialBrowserCookies,
+    );
     BuildContext? contextProvider() => pageContext;
     final handler = HttpProtectionHandler(
+      clock: clock,
       orchestrator: ProtectionOrchestrator(
         detectors: _detectors(),
         solvers: [
@@ -296,6 +463,7 @@ class _Site implements HttpClientAdapter {
   var appRequests = 0;
   var actionsPerformedByBrowser = 0;
   final browserPaths = <String>[];
+  final cookieHeaders = <String>[];
 
   String browserPage(Uri uri) => switch ((browserPaths..add(uri.path)).last) {
     _actionPath => () {
@@ -316,6 +484,7 @@ class _Site implements HttpClientAdapter {
         .where((e) => e.key.toLowerCase() == 'cookie')
         .map((e) => '${e.value}')
         .firstOrNull;
+    cookieHeaders.add(cookie ?? '');
     final unblocked =
         options.uri.path == _openPath ||
         switch ((unblockedBy, cookie)) {
@@ -339,10 +508,11 @@ class _Site implements HttpClientAdapter {
 }
 
 class _BrowserFactory implements EmbeddedBrowserFactory {
-  _BrowserFactory(this.site, this.cookies);
+  _BrowserFactory(this.site, this.cookies, this.initialCookies);
 
   final _Site site;
   final List<BrowserCookie> cookies;
+  final List<BrowserCookie>? initialCookies;
 
   @override
   Future<BrowserAvailability> checkAvailability({
@@ -354,17 +524,18 @@ class _BrowserFactory implements EmbeddedBrowserFactory {
 
   @override
   Future<EmbeddedBrowserSession> createSession() async =>
-      _Browser(site, cookies);
+      _Browser(site, cookies, initialCookies);
 
   @override
   Future<String?> getDefaultUserAgent() async => 'FakeBrowser/1.0';
 }
 
 class _Browser implements EmbeddedBrowserSession {
-  _Browser(this.site, this.cookies);
+  _Browser(this.site, this.cookies, this.initialCookies);
 
   final _Site site;
   final List<BrowserCookie> cookies;
+  final List<BrowserCookie>? initialCookies;
   final _events = StreamController<BrowserEvent>.broadcast();
   Uri? _current;
   var _page = '';
@@ -402,7 +573,8 @@ class _Browser implements EmbeddedBrowserSession {
   Future<Object?> evaluateJavaScript(String source) async => jsonEncode(_page);
 
   @override
-  Future<List<BrowserCookie>> getCookies(Uri uri) async => cookies;
+  Future<List<BrowserCookie>> getCookies(Uri uri) async =>
+      _current == null ? initialCookies ?? cookies : cookies;
 
   @override
   Widget buildView({Key? key}) => SizedBox(key: key);

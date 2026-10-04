@@ -1,4 +1,5 @@
 // Package imports:
+import 'package:clock/clock.dart';
 import 'package:coreutils/coreutils.dart';
 
 // Project imports:
@@ -11,23 +12,27 @@ class HttpProtectionHandler {
     required LazyAsync<CookieJar> cookieJar,
     this.maxRetries = 3,
     this.onEvent,
+    Clock clock = const Clock(),
     void Function()? onSolved,
   }) : _orchestrator = orchestrator,
        _cookieJar = cookieJar,
+       _clock = clock,
        _contextProvider = contextProvider,
        _onSolved = onSolved;
 
   final ProtectionOrchestrator _orchestrator;
   final LazyAsync<CookieJar> _cookieJar;
   final ContextProvider _contextProvider;
+  final Clock _clock;
   final void Function()? _onSolved;
 
   // Track retry attempts
   final Map<String, int> _retryAttempts = {};
 
-  // Origins where a reported solve did not unblock this client. Reopening the
-  // solver there only repeats the same failed handoff.
-  final Set<String> _blockedAfterSolve = {};
+  // Avoid immediate challenge loops after a failed handoff, while allowing a
+  // later request to recover without requiring a successful request first.
+  final Map<String, DateTime> _blockedAfterSolve = {};
+  static const _blockedAfterSolveCooldown = Duration(seconds: 30);
   final int maxRetries;
   final ProtectionEventSink? onEvent;
 
@@ -86,6 +91,18 @@ class HttpProtectionHandler {
         );
         _setHeader(headers, 'cookie', mergedCookie);
         _setHeader(headers, 'user-agent', userAgent);
+      }
+
+      final clearance = attempt?.clearanceCookie;
+      if (clearance != null) {
+        _setHeader(
+          headers,
+          'cookie',
+          CookieUtils.mergeCookieHeaders(
+            _headerValue(headers, 'cookie') ?? '',
+            '${clearance.name}=${clearance.value}',
+          ),
+        );
       }
 
       attempt?.observeHeaders(headers);
@@ -159,12 +176,14 @@ class HttpProtectionHandler {
       return false;
     }
 
-    if (_blockedAfterSolve.contains(error.requestUri.origin)) {
+    final blockedUntil = _blockedAfterSolve[error.requestUri.origin];
+    if (blockedUntil != null && _clock.now().isBefore(blockedUntil)) {
       attempt?.record(
         const RecoveryStopped(RecoveryStopReason.blockedAfterSolve),
       );
       return false;
     }
+    _blockedAfterSolve.remove(error.requestUri.origin);
 
     final uriString = error.requestUri.toString();
     final retryCount = _retryAttempts[uriString] ?? 0;
@@ -210,15 +229,54 @@ class HttpProtectionHandler {
   }
 
   /// Records the outcome of the retry sent after a reported solve. A retry
-  /// that is still blocked stops further solving for its origin until a
-  /// request there succeeds.
+  /// that is still blocked briefly stops further solving for its origin.
   void observeRetryError(HttpError error, {ProtectionAttempt? attempt}) {
     if (!_orchestrator.detectsErrorProtection(error)) return;
     attempt?.record(const RetryStillBlocked());
-    _blockedAfterSolve.add(error.requestUri.origin);
+    _blockedAfterSolve[error.requestUri.origin] = _clock.now().add(
+      _blockedAfterSolveCooldown,
+    );
+    resetRetryAttempts(error.requestUri);
   }
 
   void observeSuccess(Uri uri) => _blockedAfterSolve.remove(uri.origin);
+
+  bool selectAlternativeClearance(
+    HttpError error,
+    ProtectionAttempt attempt,
+  ) =>
+      !_disabled &&
+      _orchestrator.detectsErrorProtection(error) &&
+      attempt.selectNextClearanceCookie();
+
+  /// Persist the browser cookie that the real HTTP transport accepted. WebKit
+  /// may return multiple partitioned cookies with the same name/domain/path,
+  /// so a successful browser page alone cannot select one for the request jar.
+  Future<void> confirmRetry(Uri uri, ProtectionAttempt attempt) async {
+    final clearance = attempt.clearanceCookie;
+    if (clearance == null) return;
+    try {
+      final jar = await _cookieJar();
+      final stored = await jar.loadForRequest(uri);
+      await jar.saveFromResponse(uri, [
+        for (final cookie in stored)
+          if (cookie.name == clearance.name && cookie.value != clearance.value)
+            Cookie(cookie.name, '')
+              ..domain = cookie.domain
+              ..path = cookie.path
+              ..maxAge = 0,
+        clearance,
+      ]);
+      _onSolved?.call();
+    } catch (error) {
+      attempt.record(
+        ProtectionOperationFailed(
+          ProtectionOperation.handler,
+          error.runtimeType.toString(),
+        ),
+      );
+    }
+  }
 
   /// Resets retry attempts for a specific URI
   void resetRetryAttempts(Uri uri) {

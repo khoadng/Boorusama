@@ -56,7 +56,7 @@ final class _RawSolverRun {
 
   final ProtectionSession session;
   EmbeddedBrowserSession? browser;
-  Map<String, String> initialCookies = const {};
+  Map<String, Set<String>> initialCookies = const {};
   Timer? pollTimer;
   Future<bool>? inFlightCheck;
   DialogRoute<bool>? route;
@@ -78,6 +78,7 @@ class RawSolver implements ProtectionSolver {
     required this.contextProvider,
     required this.cookieJar,
     this.pageEvaluator,
+    this.clearanceCookieName,
     this.cookieRetriever,
     EmbeddedBrowserFactory? browserFactory,
   }) : browserFactory = browserFactory ?? FlutterEmbeddedBrowserFactory();
@@ -89,6 +90,10 @@ class RawSolver implements ProtectionSolver {
   final ContextProvider contextProvider;
   final LazyAsync<CookieJar> cookieJar;
   final PageEvaluator? pageEvaluator;
+
+  /// The single cookie that carries the clearance. When the browser holds
+  /// several values for it, the HTTP retry can try each one.
+  final String? clearanceCookieName;
   final CookieRetriever? cookieRetriever;
   final EmbeddedBrowserFactory browserFactory;
   _RawSolverRun? _run;
@@ -275,15 +280,11 @@ class RawSolver implements ProtectionSolver {
                     final cookies = await effectiveRetriever.getCookies(
                       uri.toString(),
                     );
-                    run.initialCookies = {
-                      for (final cookie in cookies)
-                        if (autoCookieValidator(cookie))
-                          cookie.name: cookie.value,
-                    };
+                    run.initialCookies = _matchingCookieValues(cookies);
                     session.record(
                       CookieLookupCompleted(
                         CookieStore.webView,
-                        run.initialCookies.length,
+                        cookies.where(autoCookieValidator).length,
                         matchingOnly: true,
                       ),
                     );
@@ -436,9 +437,9 @@ class RawSolver implements ProtectionSolver {
           outcome = CheckOutcome.cookieOnly;
           return false;
         }
-        await jar.saveFromResponse(uri, cookies);
+        final exported = await _exportCookies(run, uri, jar, cookies);
         if (!_active(run) || run.generation != generation) return false;
-        _recordCredentials(run, cookies);
+        _recordCredentials(run, exported);
         outcome = CheckOutcome.changedCookie;
         await finish(check);
         return true;
@@ -468,9 +469,9 @@ class RawSolver implements ProtectionSolver {
         outcome = CheckOutcome.pageRejected;
         return false;
       }
-      if (cookies.isNotEmpty) await jar.saveFromResponse(uri, cookies);
+      final exported = await _exportCookies(run, uri, jar, cookies);
       if (!_active(run) || run.generation != generation) return false;
-      _recordCredentials(run, cookies);
+      _recordCredentials(run, exported);
       outcome = CheckOutcome.pageAccepted;
       await finish(check);
       return true;
@@ -491,20 +492,74 @@ class RawSolver implements ProtectionSolver {
       identical(_run, run) && !run.terminal && _solving;
 
   void _recordCredentials(_RawSolverRun run, List<Cookie> cookies) {
-    run.session.observeCompletion({
-      for (final cookie in cookies)
-        if (autoCookieValidator(cookie)) cookie.name: cookie.value,
-    }, run.effectiveUserAgent);
+    run.session.observeCompletion(
+      {
+        for (final cookie in cookies)
+          if (autoCookieValidator(cookie)) cookie.name: cookie.value,
+      },
+      run.effectiveUserAgent,
+      clearanceCookies: [
+        for (final cookie in cookies)
+          if (cookie.name == clearanceCookieName) cookie,
+      ],
+    );
   }
 
   bool _hasNewMatchingCookie(
     List<Cookie> cookies,
-    Map<String, String> initialCookies,
+    Map<String, Set<String>> initialCookies,
   ) => cookies.any(
     (cookie) =>
         autoCookieValidator(cookie) &&
-        initialCookies[cookie.name] != cookie.value,
+        !(initialCookies[cookie.name]?.contains(cookie.value) ?? false),
   );
+
+  Map<String, Set<String>> _matchingCookieValues(List<Cookie> cookies) {
+    final values = <String, Set<String>>{};
+    for (final cookie in cookies.where(autoCookieValidator)) {
+      (values[cookie.name] ??= {}).add(cookie.value);
+    }
+    return values;
+  }
+
+  Future<List<Cookie>> _exportCookies(
+    _RawSolverRun run,
+    Uri uri,
+    CookieJar jar,
+    List<Cookie> cookies,
+  ) async {
+    final generation = run.generation;
+    // WebKit can retain an old domain cookie beside a new host-only cookie.
+    // Exporting both lets the jar's ordering and header merge select the old
+    // clearance even though verification succeeded in the browser.
+    final refreshedNames = {
+      for (final cookie in cookies)
+        if (autoCookieValidator(cookie) &&
+            !(run.initialCookies[cookie.name]?.contains(cookie.value) ?? false))
+          cookie.name,
+    };
+    final exported = cookies.where((cookie) {
+      return !autoCookieValidator(cookie) ||
+          !refreshedNames.contains(cookie.name) ||
+          !(run.initialCookies[cookie.name]?.contains(cookie.value) ?? false);
+    }).toList();
+    final selected = _matchingCookieValues(exported);
+    final stored = await jar.loadForRequest(uri);
+    if (!_active(run) || run.generation != generation) return const [];
+    await jar.saveFromResponse(uri, [
+      // Remove superseded clearance from each stored scope without deleting
+      // the site's authentication cookies or cookies belonging to other sites.
+      for (final cookie in stored)
+        if (selected.containsKey(cookie.name) &&
+            !selected[cookie.name]!.contains(cookie.value))
+          Cookie(cookie.name, '')
+            ..domain = cookie.domain
+            ..path = cookie.path
+            ..maxAge = 0,
+      ...exported,
+    ]);
+    return exported;
+  }
 
   void _finishSolver(_RawSolverRun run) {
     run.terminal = true;
@@ -564,6 +619,7 @@ class CloudflareSolver implements ProtectionSolver {
     autoCookieValidator: (cookie) =>
         cookie.name.toLowerCase() == 'cf_clearance',
     pageEvaluator: evaluateCloudflarePage,
+    clearanceCookieName: 'cf_clearance',
   );
 
   @override

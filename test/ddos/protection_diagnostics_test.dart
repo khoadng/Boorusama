@@ -48,6 +48,16 @@ void main() {
         (records.last.event as HeadersPrepared).userAgent,
         CredentialMatch.match,
       );
+      for (final header in [
+        'cf_clearance=STALE_SECRET; cf_clearance=COOKIE_SECRET==',
+        'cf_clearance=COOKIE_SECRET==; cf_clearance=STALE_SECRET',
+      ]) {
+        attempt.observeHeaders({'cookie': header, 'user-agent': 'UA_SECRET'});
+        expect(
+          (records.last.event as HeadersPrepared).cookies,
+          CredentialMatch.mismatch,
+        );
+      }
       attempt.observeHeaders({
         'cookie': 'cf_clearance=STALE_SECRET',
         'user-agent': 'OTHER_SECRET',

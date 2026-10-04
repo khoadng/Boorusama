@@ -166,23 +166,37 @@ class DioProtectionInterceptor extends Interceptor {
     RequestOptions options,
   ) async {
     final attempt = _attempt(options);
-    attempt.retries++;
-    attempt.record(RetryDispatched(attempt.retries));
     final previous = options.extra[_protectionRetryKey];
     options.extra[_protectionRetryKey] = true;
 
     try {
-      final headers = await _protectionHandler.prepareRequestHeaders(
-        options.uri,
-        options.headers.map((k, v) => MapEntry(k, v.toString())),
-        attempt: _attempt(options),
-      );
+      while (true) {
+        attempt.retries++;
+        attempt.record(RetryDispatched(attempt.retries));
+        final headers = await _protectionHandler.prepareRequestHeaders(
+          options.uri,
+          options.headers.map((k, v) => MapEntry(k, v.toString())),
+          attempt: attempt,
+        );
 
-      options.headers
-        ..clear()
-        ..addAll(headers);
+        options.headers
+          ..clear()
+          ..addAll(headers);
 
-      return await _dio.fetch(options);
+        try {
+          final response = await _dio.fetch(options);
+          await _protectionHandler.confirmRetry(options.uri, attempt);
+          return response;
+        } on DioException catch (error) {
+          if (attempt.retries >= _protectionHandler.maxRetries ||
+              !_protectionHandler.selectAlternativeClearance(
+                DioErrorAdapter(error),
+                attempt,
+              )) {
+            rethrow;
+          }
+        }
+      }
     } finally {
       if (previous == null) {
         options.extra.remove(_protectionRetryKey);

@@ -2,9 +2,23 @@
 import 'package:test/test.dart';
 
 // Project imports:
-import 'package:coreutils/src/cookie.dart';
+import 'package:coreutils/coreutils.dart';
 
 void main() {
+  test('request cookies contain values without Set-Cookie attributes', () {
+    final cookies = [
+      Cookie('cf_clearance', 'token==')
+        ..domain = '.example.com'
+        ..path = '/'
+        ..expires = DateTime.utc(2030)
+        ..secure = true
+        ..httpOnly = true,
+      Cookie('session', 'signed-in')..path = '/',
+    ];
+
+    expect(cookies.cookieString, 'cf_clearance=token==; session=signed-in');
+  });
+
   group('CookieUtils', () {
     group('parseCookieHeader', () {
       test('should handle real-world base64 encoded values', () {
