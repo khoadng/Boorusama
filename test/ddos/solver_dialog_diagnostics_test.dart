@@ -1,4 +1,5 @@
 // Dart imports:
+import 'dart:async';
 import 'dart:convert';
 
 // Package imports:
@@ -196,6 +197,69 @@ void main() {
       expect(tester.takeException(), isNull);
     },
   );
+  final redirects = [
+    (url: 'https://api.example.com/index.php', solved: true),
+    (url: 'https://example.net/index.php', solved: false),
+  ];
+  for (final c in redirects) {
+    testWidgets(
+      'cleared challenge redirected to ${c.url} ${c.solved ? 'completes' : 'stays open'}',
+      (tester) async {
+        final platform = _WebViewPlatform();
+        WebViewPlatform.instance = platform;
+        late BuildContext pageContext;
+        await tester.pumpWidget(
+          BooruLocalization(
+            child: MaterialApp(
+              builder: (context, child) => KurumiTheme(
+                data: KurumiThemeData.fromMaterial(Theme.of(context)),
+                child: child!,
+              ),
+              home: Builder(
+                builder: (context) {
+                  pageContext = context;
+                  return const Scaffold(body: Text('Home'));
+                },
+              ),
+            ),
+          ),
+        );
+        final solver = RawSolver(
+          protectionType: 'cloudflare',
+          protectionTitle: 'Challenge',
+          autoCookieValidator: (cookie) => cookie.name == 'cf_clearance',
+          contextProvider: () => pageContext,
+          cookieJar: LazyAsync(() async => FakeCookieJar()),
+          cookieRetriever: FakeCookieRetriever(),
+          pageEvaluator: evaluateCloudflarePage,
+        );
+
+        var completed = false;
+        unawaited(
+          solver
+              .solve(uri: Uri.parse('https://example.com/index.php'))
+              .then((_) => completed = true),
+        );
+        await tester.pumpAndSettle();
+
+        platform.controller
+          ..source = '<html>{"posts":[]}</html>'
+          ..loadedUri = Uri.parse(c.url);
+        platform.delegate.finished!(c.url);
+        await tester.pumpAndSettle();
+
+        expect(completed, c.solved);
+        expect(
+          find.byType(ProtectionOverlay),
+          c.solved ? findsNothing : findsOneWidget,
+        );
+        if (!c.solved) await solver.cancel();
+        await tester.pumpAndSettle();
+        await tester.pump(const Duration(seconds: 1));
+        expect(tester.takeException(), isNull);
+      },
+    );
+  }
 }
 
 class _WebViewPlatform extends WebViewPlatform {

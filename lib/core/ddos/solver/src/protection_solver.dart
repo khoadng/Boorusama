@@ -455,7 +455,7 @@ class RawSolver implements ProtectionSolver {
         return false;
       }
       final current = Uri.tryParse(currentUrl ?? '');
-      if (current == null || !_sameOrigin(current, uri)) {
+      if (current == null || !_sameSite(current, uri)) {
         outcome = CheckOutcome.pageRejected;
         return false;
       }
@@ -727,8 +727,12 @@ Future<String?> _safeCurrentUrl(
   }
 }
 
-bool _sameOrigin(Uri a, Uri b) =>
-    a.scheme == b.scheme && a.host == b.host && a.port == b.port;
+// Sites can redirect the cleared request to a subdomain, such as an API host.
+bool _sameSite(Uri a, Uri b) =>
+    a.scheme == b.scheme &&
+    (a.host == b.host ||
+        a.host.endsWith('.${b.host}') ||
+        b.host.endsWith('.${a.host}'));
 
 class CaptchaAccessDeniedSolver implements ProtectionSolver {
   CaptchaAccessDeniedSolver({
