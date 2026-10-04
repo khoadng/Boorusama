@@ -177,10 +177,10 @@ class _BooruScopeState extends ConsumerState<BooruScope> {
                       // no need to set state here, just a quick hack to get the current width of the menu
                       menuWidth.value = c.maxWidth;
 
-                      return widget.menu;
+                      return KurumiFocusPane(child: widget.menu);
                     },
                   ),
-                  'content' => widget.content,
+                  'content' => KurumiFocusPane(child: widget.content),
                   _ => const SizedBox.shrink(),
                 }
               : switch (area.data) {

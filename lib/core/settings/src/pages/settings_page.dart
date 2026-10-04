@@ -307,12 +307,14 @@ class _SettingsAdaptiveShellState
                     child: MediaQuery.removePadding(
                       context: context,
                       removeRight: true,
-                      child: _SettingsSidebar(
-                        entries: entries,
-                        selectedId: visiblePath.firstOrNull,
-                        scrollController: _sidebarScrollController,
-                        onSelected: _selectCategory,
-                        onClose: _closeHost,
+                      child: KurumiFocusPane(
+                        child: _SettingsSidebar(
+                          entries: entries,
+                          selectedId: visiblePath.firstOrNull,
+                          scrollController: _sidebarScrollController,
+                          onSelected: _selectCategory,
+                          onClose: _closeHost,
+                        ),
                       ),
                     ),
                   ),
@@ -326,20 +328,22 @@ class _SettingsAdaptiveShellState
                     // boundary keeps the sidebar reachable by screen readers.
                     child: Semantics(
                       container: true,
-                      child: Navigator(
-                        key: _contentNavigatorKey,
-                        pages: _destinationPages(
-                          presentation: presentation,
-                          visiblePath: visiblePath,
+                      child: KurumiFocusPane(
+                        child: Navigator(
+                          key: _contentNavigatorKey,
+                          pages: _destinationPages(
+                            presentation: presentation,
+                            visiblePath: visiblePath,
+                          ),
+                          onDidRemovePage: (page) {
+                            final currentId = ref
+                                .read(settingsNavigationProvider(_seed))
+                                .currentDestinationId;
+                            if (page.key == ValueKey('settings-$currentId')) {
+                              _notifier.back();
+                            }
+                          },
                         ),
-                        onDidRemovePage: (page) {
-                          final currentId = ref
-                              .read(settingsNavigationProvider(_seed))
-                              .currentDestinationId;
-                          if (page.key == ValueKey('settings-$currentId')) {
-                            _notifier.back();
-                          }
-                        },
                       ),
                     ),
                   ),
@@ -503,27 +507,36 @@ class _SettingsNavigationList extends StatelessWidget {
   final ValueChanged<SettingEntry> onSelected;
   final PageStorageKey<String> storageKey;
 
+  // Built all at once, so Tab can reach every tile of this short list, and
+  // in list order, since tiles tall enough to overlap their neighbours throw
+  // off reading order.
   @override
-  Widget build(BuildContext context) => ListView(
-    key: storageKey,
-    controller: scrollController,
-    padding: EdgeInsets.only(
-      left: MediaQuery.paddingOf(context).left,
-      right: MediaQuery.paddingOf(context).right,
+  Widget build(BuildContext context) => FocusTraversalGroup(
+    policy: WidgetOrderTraversalPolicy(),
+    child: SingleChildScrollView(
+      key: storageKey,
+      controller: scrollController,
+      padding: EdgeInsets.only(
+        left: MediaQuery.paddingOf(context).left,
+        right: MediaQuery.paddingOf(context).right,
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          _SettingsSection(label: context.t.settings.app_settings),
+          for (final entry in entries)
+            SettingTile(
+              title: entry.title,
+              leading: SettingEntryIcon(icon: entry.icon),
+              selected: selectedId == entry.id,
+              onTap: () => onSelected(entry),
+            ),
+          const SettingsPageOtherSection(),
+          const _Divider(),
+          const _Footer(),
+        ],
+      ),
     ),
-    children: [
-      _SettingsSection(label: context.t.settings.app_settings),
-      for (final entry in entries)
-        SettingTile(
-          title: entry.title,
-          leading: SettingEntryIcon(icon: entry.icon),
-          selected: selectedId == entry.id,
-          onTap: () => onSelected(entry),
-        ),
-      const SettingsPageOtherSection(),
-      const _Divider(),
-      const _Footer(),
-    ],
   );
 }
 

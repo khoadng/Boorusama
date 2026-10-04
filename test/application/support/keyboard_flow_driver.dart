@@ -12,7 +12,11 @@ import 'headless_app_harness.dart';
 /// Logical size of a 1080p TV at 2x density, which renders the wide layout.
 const kTvViewport = Size(960, 540);
 
-/// Drives the app the way a D-pad remote does: arrows, select and back only.
+/// Logical size of a common laptop window.
+const kDesktopViewport = Size(1280, 800);
+
+/// Drives the app the way a D-pad remote does, with arrows, select and back,
+/// or the way a hardware keyboard does with Tab.
 final class KeyboardFlowDriver {
   const KeyboardFlowDriver({
     required this.tester,
@@ -40,6 +44,44 @@ final class KeyboardFlowDriver {
       press(_arrowFor(direction));
 
   Future<void> select() => press(LogicalKeyboardKey.select);
+
+  Future<void> tab({bool backward = false}) async {
+    if (backward) await tester.sendKeyDownEvent(LogicalKeyboardKey.shiftLeft);
+    await tester.sendKeyEvent(LogicalKeyboardKey.tab);
+    if (backward) await tester.sendKeyUpEvent(LogicalKeyboardKey.shiftLeft);
+    await harness.settle(tester);
+  }
+
+  /// Presses Tab until focus comes back around to a control it already
+  /// visited, returning the controls in the order Tab visited them. Each
+  /// stop is described as it lands, since lazy lists dispose controls once
+  /// they scroll away.
+  Future<List<TabStop>> tabCycle({
+    bool backward = false,
+    int maxPresses = 200,
+  }) async {
+    final screen = _topRouteScope();
+    final stops = <TabStop>[];
+    for (var i = 0; i < maxPresses; i++) {
+      await tab(backward: backward);
+      final node = focusedNode;
+      if (node == null || stops.any((stop) => stop.node == node)) return stops;
+      stops.add(
+        TabStop(
+          node: node,
+          name: describeNode(node),
+          place: _placeInList(node),
+          onScreen: node.ancestors.contains(screen),
+          inView: _isVisible(node),
+          radioGroup: _radioGroupOf(node),
+        ),
+      );
+    }
+    throw TestFailure(
+      'Tab never came back around after $maxPresses presses.\nVisited:\n  '
+      '${stops.map((stop) => stop.name).join('\n  ')}',
+    );
+  }
 
   /// The remote's back button reaches Flutter as a system pop.
   Future<void> back() async {
@@ -83,7 +125,7 @@ final class KeyboardFlowDriver {
     final start = focusedNode;
     final map = await _explore();
     final destination = map.paths.keys
-        .where((node) => _isWithin(node, target))
+        .where((node) => isNodeWithin(node, target))
         .firstOrNull;
     if (start != null) await _jumpTo(start);
 
@@ -112,7 +154,7 @@ final class KeyboardFlowDriver {
   /// walks once [navigateTo] has proven the target reachable.
   Future<void> focusOn(Finder target) async {
     final node = _topRouteScope().traversalDescendants
-        .where((node) => _isWithin(node, target))
+        .where((node) => isNodeWithin(node, target))
         .firstOrNull;
     if (node == null) {
       throw TestFailure('Nothing focusable in ${_describeFinder(target)}');
@@ -141,6 +183,46 @@ final class KeyboardFlowDriver {
         if (!map.paths.containsKey(node) && (node.context?.mounted ?? false))
           'no arrow path reaches ${describeNode(node)}',
     ];
+  }
+
+  /// Ways Tab misbehaves on the top screen, both ways around from the
+  /// current focus: controls Tab never reaches, and Tab landing on a control
+  /// out of view or off the top screen. Controls are told apart by their
+  /// position in scrolled content, since lazy lists rebuild them.
+  Future<List<String>> tabProblems() async {
+    final start = focusedNode;
+    final targets = {
+      for (final node in focusTargets())
+        if (node is! FocusScopeNode)
+          _placeInList(node): (
+            name: describeNode(node),
+            radioGroup: _radioGroupOf(node),
+          ),
+    };
+
+    final problems = <String>[];
+    for (final backward in [false, true]) {
+      if (start != null) await _jumpTo(start);
+      final key = backward ? 'Shift+Tab' : 'Tab';
+      final stops = await tabCycle(backward: backward);
+      final reached = {for (final stop in stops) stop.place};
+      // A radio group takes a single Tab stop, on its selected option.
+      final reachedGroups = {for (final stop in stops) ?stop.radioGroup};
+      problems.addAll([
+        for (final stop in stops)
+          if (!stop.onScreen)
+            '$key leaves the screen for ${stop.name}'
+          else if (!stop.inView)
+            '$key lands out of view on ${stop.name}',
+        for (final MapEntry(key: rect, value: (:name, :radioGroup))
+            in targets.entries)
+          if (!reached.contains(rect) && !reachedGroups.contains(radioGroup))
+            'no $key reaches $name',
+      ]);
+    }
+
+    if (start != null) await _jumpTo(start);
+    return problems;
   }
 
   /// Controls on the top screen, or in the focus scope around [within],
@@ -302,6 +384,33 @@ final class KeyboardFlowDriver {
           )
           .toList(growable: false);
 
+  /// Where [node] sits in the content of its nearest scroll view, which stays
+  /// the same however far that is scrolled, and wherever the scroll view
+  /// itself moves on screen.
+  static ListPlace _placeInList(FocusNode node) {
+    final context = node.context;
+    final list = switch (context) {
+      final context? => Scrollable.maybeOf(context),
+      null => null,
+    };
+    final box = list?.context.findRenderObject();
+    if (list == null || box is! RenderBox || !box.hasSize) {
+      return (list: null, rect: node.rect);
+    }
+
+    final pixels = list.position.pixels;
+    final local = node.rect.shift(-box.localToGlobal(Offset.zero));
+    return (
+      list: list.context as Element,
+      rect: local.shift(switch (list.axisDirection) {
+        AxisDirection.down => Offset(0, pixels),
+        AxisDirection.up => Offset(0, -pixels),
+        AxisDirection.right => Offset(pixels, 0),
+        AxisDirection.left => Offset(-pixels, 0),
+      }),
+    );
+  }
+
   /// [node]'s rect with every scroll view around it scrolled back to the
   /// start, so it stays the same however far the content is scrolled.
   static Rect _contentRect(FocusNode node) {
@@ -399,6 +508,15 @@ final class KeyboardFlowDriver {
     }
   }
 
+  static Element? _radioGroupOf(FocusNode node) {
+    Element? group;
+    node.context?.visitAncestorElements((element) {
+      if (element.widget is RadioGroup) group = element;
+      return group == null;
+    });
+    return group;
+  }
+
   bool _isVisible(FocusNode node) {
     if (!node.canRequestFocus || node.context == null) return false;
     final screen =
@@ -407,7 +525,7 @@ final class KeyboardFlowDriver {
     return !rect.isEmpty && screen.overlaps(rect);
   }
 
-  bool _isWithin(FocusNode node, Finder finder) => switch (node.context) {
+  bool isNodeWithin(FocusNode node, Finder finder) => switch (node.context) {
     final Element element => finder.evaluate().any(
       (target) => target == element || _isAncestor(target, element),
     ),
@@ -514,6 +632,31 @@ final class KeyboardFlowDriver {
     'Slider',
     'Tab',
   ];
+}
+
+/// A control's scroll view and its rect in that scroll view's content.
+typedef ListPlace = ({Element? list, Rect rect});
+
+/// A control Tab landed on, described when it did.
+final class TabStop {
+  const TabStop({
+    required this.node,
+    required this.name,
+    required this.place,
+    required this.onScreen,
+    required this.inView,
+    required this.radioGroup,
+  });
+
+  final FocusNode node;
+  final String name;
+
+  final ListPlace place;
+
+  /// Whether the control belongs to the top screen.
+  final bool onScreen;
+  final bool inView;
+  final Element? radioGroup;
 }
 
 final class _FocusMap {

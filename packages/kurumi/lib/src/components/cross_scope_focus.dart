@@ -123,9 +123,12 @@ class KurumiDirectionalFocusAction extends DirectionalFocusAction {
 /// [node]'s rect clipped to every scroll view around it: what of the control
 /// is actually on screen.
 Rect visibleFocusRect(FocusNode node) {
-  var rect = node.rect;
   final context = node.context;
   if (context == null) return Rect.zero;
+  // A control a lazy list keeps alive past its cache extent, such as one
+  // still showing its focus highlight, can be left without a usable position.
+  var rect = node.rect;
+  if (!rect.isFinite) return Rect.zero;
 
   for (
     var scrollable = Scrollable.maybeOf(context);

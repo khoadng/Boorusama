@@ -494,6 +494,45 @@ void main() {
     });
   }
 
+  final viewports = [
+    (name: 'TV', size: kTvViewport),
+    (name: 'desktop', size: kDesktopViewport),
+  ];
+  for (final viewport in viewports) {
+    for (final c in screens) {
+      testWidgets(
+        'Tab reaches every control on the ${c.name} ${viewport.name} screen '
+        'in view',
+        (tester) async {
+          final keys = await _mountOnTv(tester, viewport: viewport.size);
+          await c.open(keys);
+
+          expect(await keys.tabProblems(), isEmpty);
+        },
+      );
+    }
+  }
+
+  testWidgets('Tab goes through the whole home sidebar before the posts', (
+    tester,
+  ) async {
+    final keys = await _mountOnTv(tester);
+    final sidebar = find.byType(KurumiNavigationTile);
+
+    final cycle = await keys.tabCycle();
+    final inSidebar = [
+      for (final (index, stop) in cycle.indexed)
+        if (keys.isNodeWithin(stop.node, sidebar)) index,
+    ];
+    final post = cycle.indexWhere(
+      (stop) => keys.isNodeWithin(stop.node, postTile(101)),
+    );
+
+    expect(inSidebar, hasLength(sidebar.evaluate().length));
+    expect(inSidebar.last - inSidebar.first, inSidebar.length - 1);
+    expect(post, greaterThan(inSidebar.last));
+  });
+
   final phoneScreens = [
     (name: 'home', open: (KeyboardFlowDriver _) => Future<void>.value()),
     (name: 'post details', open: _openPostWithRemote),
