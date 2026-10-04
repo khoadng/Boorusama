@@ -41,6 +41,38 @@ void main() {
     },
   );
 
+  final cloudflarePages = [
+    (
+      page: '<div class="captcha-box"><script>_cf_chl_opt</script></div>',
+      accepted: false,
+    ),
+    (
+      page: '<script src="/cdn-cgi/challenge-platform/h/b/orchestrate/chl_page/v1"></script>',
+      accepted: false,
+    ),
+    (
+      page: '<script>window.captchaCSSClass = "h-captcha";</script>',
+      accepted: true,
+    ),
+    (page: '<form><div class="g-recaptcha"></div></form>', accepted: true),
+    (
+      page: '<div class="cf-turnstile"></div><script src="https://challenges.cloudflare.com/turnstile/v0/api.js"></script>',
+      accepted: true,
+    ),
+    (
+      page: "<script>a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';</script>",
+      accepted: true,
+    ),
+  ];
+  for (final c in cloudflarePages) {
+    test(
+      'cloudflare page ${c.page} is ${c.accepted ? 'accepted' : 'rejected'}',
+      () {
+        expect(evaluateCloudflarePage(c.page).accepted, c.accepted);
+      },
+    );
+  }
+
   test(
     'event and decision use one page snapshot, including sensitive content',
     () async {

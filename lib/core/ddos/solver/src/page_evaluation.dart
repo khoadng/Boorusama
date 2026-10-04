@@ -75,21 +75,18 @@ PageEvaluation evaluateCloudflarePage(String value) {
     if (lower.contains(marker)) return PageEvaluation.failure(marker);
   }
 
+  // Only the challenge page itself. Cleared pages can still embed Turnstile,
+  // hCaptcha or Cloudflare's /cdn-cgi/challenge-platform/scripts/ detection.
   const challengeMarkers = [
     'cf_chl',
     'cf-ray',
-    'cf-turnstile',
     'cf-mitigated',
-    'challenges.cloudflare.com',
-    '/cdn-cgi/challenge-platform',
-    'challenge-platform',
+    '/cdn-cgi/challenge-platform/h/',
     'challenge-error-text',
     'enable javascript and cookies',
     'just a moment',
     'checking if the site connection is secure',
     'captcha-box',
-    'h-captcha',
-    'g-recaptcha',
   ];
   for (final marker in challengeMarkers) {
     if (lower.contains(marker)) return PageEvaluation.challenge(marker);
