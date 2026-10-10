@@ -276,8 +276,8 @@ class VideoTimeText extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      width: 40,
+    return ConstrainedBox(
+      constraints: const BoxConstraints(minWidth: 40),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         mainAxisAlignment: MainAxisAlignment.center,
