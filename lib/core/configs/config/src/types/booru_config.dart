@@ -609,14 +609,10 @@ class NetworkSettings extends Equatable {
       final Map<String, dynamic> map => NetworkSettings(
         httpSettings: HttpSettings.tryParse(map['http']),
         mediaHostOverrides: switch (map['mediaHostOverrides']) {
-          null => const [],
           final List values => List.unmodifiable(
-            values.map(
-              (value) =>
-                  MediaHostOverride.fromJson(value as Map<String, dynamic>),
-            ),
+            values.map(MediaHostOverride.tryParse).nonNulls,
           ),
-          _ => throw const FormatException('Invalid media host overrides'),
+          _ => const [],
         },
         mediaHostOverridesEnabled:
             map['mediaHostOverridesEnabled'] as bool? ?? true,

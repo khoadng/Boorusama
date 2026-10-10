@@ -34,24 +34,29 @@ final class ThumbnailActions extends Equatable {
         },
       );
     }
-    final values = json['thumbnailActions'];
-    if (values is! List || values.length > 2) {
-      throw const FormatException('Expected at most two thumbnail actions.');
-    }
-    ThumbnailAction parse(dynamic value) => switch (value) {
-      'default' => ThumbnailAction.defaultAction,
-      'bookmark' => ThumbnailAction.bookmark,
-      'download' => ThumbnailAction.download,
-      'artist' => ThumbnailAction.artist,
-      _ => throw FormatException('Unknown thumbnail action: $value'),
+    // Profiles can come from newer versions or backups, so anything unknown
+    // is skipped instead of failing the whole profile.
+    return switch (json['thumbnailActions']) {
+      final List values when values.isEmpty => const ThumbnailActions.none(),
+      final List values => switch (values.map(_parse).nonNulls.toSet()) {
+        final actions when actions.isEmpty =>
+          const ThumbnailActions.defaultActions(),
+        final actions => ThumbnailActions(
+          primary: actions.first,
+          secondary: actions.skip(1).firstOrNull,
+        ),
+      },
+      _ => const ThumbnailActions.defaultActions(),
     };
-    final primary = values.isEmpty ? null : parse(values[0]);
-    final secondary = values.length < 2 ? null : parse(values[1]);
-    return ThumbnailActions(
-      primary: primary,
-      secondary: secondary == primary ? null : secondary,
-    );
   }
+
+  static ThumbnailAction? _parse(dynamic value) => switch (value) {
+    'default' => ThumbnailAction.defaultAction,
+    'bookmark' => ThumbnailAction.bookmark,
+    'download' => ThumbnailAction.download,
+    'artist' => ThumbnailAction.artist,
+    _ => null,
+  };
 
   final ThumbnailAction? primary;
   final ThumbnailAction? secondary;

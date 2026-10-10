@@ -10,8 +10,16 @@ class MediaHostOverride extends Equatable {
     }
   }
 
-  factory MediaHostOverride.fromJson(Map<String, dynamic> json) =>
-      MediaHostOverride(from: json['from'] as String, to: json['to'] as String);
+  static MediaHostOverride? tryParse(dynamic json) {
+    if (json case {'from': final String from, 'to': final String to}) {
+      try {
+        return MediaHostOverride(from: from, to: to);
+      } on FormatException {
+        return null;
+      }
+    }
+    return null;
+  }
 
   final String from;
   final String to;
