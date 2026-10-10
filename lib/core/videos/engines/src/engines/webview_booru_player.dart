@@ -166,13 +166,9 @@ class WebViewBooruPlayer implements BooruPlayer {
 
     final pageDir = p.dirname(pagePath);
 
-    // Pages from a previous run are left behind when the app is killed
-    if (!_stalePagesPruned) {
-      _stalePagesPruned = true;
-      if (await fileSystem.directoryExists(pageDir)) {
-        await fileSystem.deleteDirectory(pageDir, recursive: true);
-      }
-    }
+    // Pages from a previous run are left behind when the app is killed.
+    // Every player waits for the same cleanup so it can't delete a new page.
+    await (_stalePagesPruning ??= _pruneStalePages(fileSystem, pageDir));
 
     await fileSystem.createDirectory(pageDir, recursive: true);
     await fileSystem.writeString(pagePath, html);
@@ -553,4 +549,14 @@ class WebViewBooruPlayer implements BooruPlayer {
 
 const _kPageDirName = 'webview';
 
-var _stalePagesPruned = false;
+Future<void>? _stalePagesPruning;
+
+Future<void> _pruneStalePages(AppFileSystem fileSystem, String pageDir) async {
+  try {
+    if (await fileSystem.directoryExists(pageDir)) {
+      await fileSystem.deleteDirectory(pageDir, recursive: true);
+    }
+  } catch (_) {
+    // Leftover pages only waste space; they must not block playback.
+  }
+}

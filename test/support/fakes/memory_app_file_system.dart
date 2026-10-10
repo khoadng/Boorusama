@@ -14,6 +14,9 @@ final class MemoryAppFileSystem implements AppFileSystem {
   final _modified = <String, DateTime>{};
   var _temporaryDirectoryIndex = 0;
 
+  /// Lets a test hold a directory delete open, like a slow disk would.
+  Future<void> Function(String path)? beforeDirectoryDelete;
+
   @override
   Future<String> getAppStoragePath() async => '/memory/app';
 
@@ -155,6 +158,7 @@ final class MemoryAppFileSystem implements AppFileSystem {
 
   @override
   Future<void> deleteDirectory(String path, {bool recursive = false}) async {
+    await beforeDirectoryDelete?.call(path);
     deleteDirectorySync(path, recursive: recursive);
   }
 
