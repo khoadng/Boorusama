@@ -158,10 +158,8 @@ class _KurumiContextMenuState extends State<KurumiContextMenu> {
         _handleShow();
       },
       onDismiss: _handleDismiss,
-      menuBuilder: (context) => CallbackShortcuts(
-        bindings: {
-          const SingleActivator(LogicalKeyboardKey.escape): _controller.hide,
-        },
+      menuBuilder: (context) => KurumiDismissible(
+        onDismiss: _controller.hide,
         child: FocusScope(
           node: _menuScope,
           child: Container(

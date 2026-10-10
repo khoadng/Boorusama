@@ -1,7 +1,8 @@
 import 'dart:math';
 
 import 'package:material_ui/material_ui.dart';
-import 'package:flutter/services.dart';
+
+import 'back_handler.dart';
 
 class KurumiDialog extends StatelessWidget {
   const KurumiDialog({
@@ -36,11 +37,8 @@ class KurumiDialog extends StatelessWidget {
       namesRoute: semanticLabel != null,
       explicitChildNodes: true,
       label: semanticLabel,
-      child: CallbackShortcuts(
-        bindings: {
-          const SingleActivator(LogicalKeyboardKey.escape): () =>
-              Navigator.pop(context),
-        },
+      child: KurumiDismissible.route(
+        enabled: dismissible,
         child: Stack(
           alignment: Alignment.center,
           children: [
