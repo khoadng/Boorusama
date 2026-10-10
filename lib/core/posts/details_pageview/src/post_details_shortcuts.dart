@@ -2,6 +2,7 @@
 import 'package:flutter/services.dart';
 
 // Package imports:
+import 'package:kurumi/kurumi.dart';
 import 'package:kurumi/material.dart';
 
 // Project imports:
@@ -78,11 +79,12 @@ class _PostDetailsShortcutsState extends State<PostDetailsShortcuts> {
   }
 
   // The page covers the whole screen, so regular directional traversal finds
-  // nothing beyond its edges. Jump to the outermost control instead.
+  // nothing beyond its edges. Jump to the outermost control in view instead,
+  // rather than one scrolled far down a side panel.
   KeyEventResult _enterControls(TraversalDirection direction) {
     final target = outermostFocusTowards(
       _pageNode.traversalDescendants.where(
-        (node) => node.canRequestFocus && !node.rect.isEmpty,
+        (node) => node.canRequestFocus && !visibleFocusRect(node).isEmpty,
       ),
       direction,
     );
@@ -139,8 +141,8 @@ class _ReturnToPageAction extends DirectionalFocusAction {
   }
 }
 
-/// The node sitting furthest towards [direction], with ties broken by
-/// reading order, so pressing up lands on the top-left control.
+/// The node whose visible part sits furthest towards [direction], with ties
+/// broken by reading order, so pressing up lands on the top-left control.
 FocusNode? outermostFocusTowards(
   Iterable<FocusNode> nodes,
   TraversalDirection direction,
@@ -156,12 +158,13 @@ FocusNode? outermostFocusTowards(
     TraversalDirection.left || TraversalDirection.right => (Rect r) => r.top,
   };
 
-  int compare(FocusNode a, FocusNode b) => switch (edge(a.rect).compareTo(
-    edge(b.rect),
-  )) {
-    0 => crossAxis(a.rect).compareTo(crossAxis(b.rect)),
-    final order => order,
-  };
+  int compare(FocusNode a, FocusNode b) {
+    final (rectA, rectB) = (visibleFocusRect(a), visibleFocusRect(b));
+    return switch (edge(rectA).compareTo(edge(rectB))) {
+      0 => crossAxis(rectA).compareTo(crossAxis(rectB)),
+      final order => order,
+    };
+  }
 
   return nodes.fold<FocusNode?>(
     null,
