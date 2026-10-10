@@ -13,6 +13,33 @@ import '../../../../search/selected_tags/types.dart';
 import '../../../../search/syntax/providers.dart';
 import '../types/favorite_tag.dart';
 
+/// A bottom sheet on phones, a dialog elsewhere: a sheet pinned to the bottom
+/// of a wide screen sits under the on-screen keyboard.
+Future<void> showEditFavoriteTagSheet(
+  BuildContext context, {
+  required String routeName,
+  required WidgetBuilder builder,
+}) => switch (KurumiScreen.of(context).size) {
+  KurumiScreenSize.small => Kurumi.showAppModalBottomSheet(
+    context: context,
+    routeSettings: RouteSettings(name: routeName),
+    resizeToAvoidBottomInset: true,
+    showDragHandle: false,
+    builder: builder,
+  ),
+  _ => showDialog(
+    context: context,
+    routeSettings: RouteSettings(name: routeName),
+    builder: (context) => Dialog(
+      clipBehavior: Clip.antiAlias,
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(maxWidth: 520),
+        child: builder(context),
+      ),
+    ),
+  ),
+};
+
 enum _FavoriteEntryType {
   tag,
   rawQuery,
@@ -137,129 +164,146 @@ class _EditFavoriteTagSheetState extends ConsumerState<EditFavoriteTagSheet> {
               : _submit,
           isConfirming: isSubmitting,
         ),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16),
-          child: QuickSearchTextField(
-            controller: valueController,
-            autofocus: true,
-            maxLength: 255,
-            textInputAction: TextInputAction.done,
-            showInputSelector: false,
-            layout: QuickSearchTextFieldLayout.composer,
-            quickSearchInsertMode: entryType == _FavoriteEntryType.tag
-                ? QuickSearchInsertMode.replace
-                : QuickSearchInsertMode.insertAtCursor,
-            composerTrailing: KurumiOptionDropDownButton<_FavoriteEntryType>(
-              backgroundColor: Colors.transparent,
-              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-              value: entryType,
-              items: [
-                DropdownMenuItem(
-                  value: _FavoriteEntryType.tag,
-                  child: Text(context.t.favorite_tags.editor.tag),
-                ),
-                DropdownMenuItem(
-                  value: _FavoriteEntryType.rawQuery,
-                  child: Text(context.t.search.raw_query),
-                ),
-              ],
-              onChanged: (value) {
-                if (value == null) return;
-                setState(() {
-                  entryType = value;
-                  errorText = null;
-                });
-              },
-            ),
-            onChanged: (_) => setState(() => errorText = null),
-            decoration: InputDecoration(
-              hintText: entryType == _FavoriteEntryType.tag
-                  ? context.t.favorite_tags.editor.tag
-                  : context.t.search.raw_query,
-              errorText: errorText,
-              counterText: '',
-            ),
-          ),
-        ),
-        KurumiSwitchListTile(
-          title: Text(context.t.favorite_tags.editor.advanced_options),
-          value: showAdvancedOptions,
-          onChanged: (value) => setState(() => showAdvancedOptions = value),
-        ),
-        if (showAdvancedOptions) ...[
-          const Divider(),
-          Padding(
-            padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
+        Flexible(
+          child: SingleChildScrollView(
             child: Column(
+              mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                KurumiSettingsCardTitle(
-                  title: context.t.favorite_tags.labels.title,
-                ),
-                if (selectedLabels.isNotEmpty) ...[
-                  Wrap(
-                    spacing: 5,
-                    runSpacing: 5,
-                    children: [
-                      for (final label in selectedLabels)
-                        KurumiMaterialChip(
-                          backgroundColor: colorScheme.surfaceContainerHighest,
-                          label: Text(label),
-                          deleteIcon: Icon(
-                            Symbols.close,
-                            size: 16,
-                            color: colorScheme.error,
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  child: QuickSearchTextField(
+                    controller: valueController,
+                    autofocus: true,
+                    maxLength: 255,
+                    textInputAction: TextInputAction.done,
+                    showInputSelector: false,
+                    layout: QuickSearchTextFieldLayout.composer,
+                    quickSearchInsertMode: entryType == _FavoriteEntryType.tag
+                        ? QuickSearchInsertMode.replace
+                        : QuickSearchInsertMode.insertAtCursor,
+                    composerTrailing:
+                        KurumiOptionDropDownButton<_FavoriteEntryType>(
+                          backgroundColor: Colors.transparent,
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 8,
+                            vertical: 8,
                           ),
-                          onDeleted: () => setState(
-                            () => selectedLabels.remove(label),
-                          ),
+                          value: entryType,
+                          items: [
+                            DropdownMenuItem(
+                              value: _FavoriteEntryType.tag,
+                              child: Text(context.t.favorite_tags.editor.tag),
+                            ),
+                            DropdownMenuItem(
+                              value: _FavoriteEntryType.rawQuery,
+                              child: Text(context.t.search.raw_query),
+                            ),
+                          ],
+                          onChanged: (value) {
+                            if (value == null) return;
+                            setState(() {
+                              entryType = value;
+                              errorText = null;
+                            });
+                          },
                         ),
-                    ],
-                  ),
-                  const SizedBox(height: 8),
-                ],
-                KurumiTextField(
-                  controller: labelController,
-                  textInputAction: TextInputAction.done,
-                  onSubmitted: _addLabel,
-                  decoration: InputDecoration(
-                    hintText: context.t.favorite_tags.editor.add_label,
-                    suffixIcon: IconButton(
-                      tooltip: context.t.favorite_tags.editor.add_label,
-                      onPressed: _addLabel,
-                      icon: const Icon(Symbols.add),
+                    onChanged: (_) => setState(() => errorText = null),
+                    decoration: InputDecoration(
+                      hintText: entryType == _FavoriteEntryType.tag
+                          ? context.t.favorite_tags.editor.tag
+                          : context.t.search.raw_query,
+                      errorText: errorText,
+                      counterText: '',
                     ),
                   ),
                 ),
-                if (suggestions.isNotEmpty) ...[
-                  const SizedBox(height: 12),
-                  Text(
-                    context.t.favorite_tags.editor.suggestions,
-                    style: Kurumi.themeOf(context).textTheme.titleSmall
-                        ?.copyWith(
-                          color: colorScheme.onSurfaceVariant,
-                          fontSize: 13,
+                KurumiSwitchListTile(
+                  title: Text(context.t.favorite_tags.editor.advanced_options),
+                  value: showAdvancedOptions,
+                  onChanged: (value) =>
+                      setState(() => showAdvancedOptions = value),
+                ),
+                if (showAdvancedOptions) ...[
+                  const Divider(),
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        KurumiSettingsCardTitle(
+                          title: context.t.favorite_tags.labels.title,
                         ),
-                  ),
-                  const SizedBox(height: 6),
-                  Wrap(
-                    spacing: 5,
-                    runSpacing: 5,
-                    children: [
-                      for (final label in suggestions.take(6))
-                        KurumiMaterialActionChip(
-                          label: Text(label),
-                          backgroundColor: colorScheme.surfaceContainerHighest,
-                          onPressed: () => _addLabel(label),
+                        if (selectedLabels.isNotEmpty) ...[
+                          Wrap(
+                            spacing: 5,
+                            runSpacing: 5,
+                            children: [
+                              for (final label in selectedLabels)
+                                KurumiMaterialChip(
+                                  backgroundColor:
+                                      colorScheme.surfaceContainerHighest,
+                                  label: Text(label),
+                                  deleteIcon: Icon(
+                                    Symbols.close,
+                                    size: 16,
+                                    color: colorScheme.error,
+                                  ),
+                                  onDeleted: () => setState(
+                                    () => selectedLabels.remove(label),
+                                  ),
+                                ),
+                            ],
+                          ),
+                          const SizedBox(height: 8),
+                        ],
+                        KurumiTextField(
+                          controller: labelController,
+                          textInputAction: TextInputAction.done,
+                          onSubmitted: _addLabel,
+                          decoration: InputDecoration(
+                            hintText: context.t.favorite_tags.editor.add_label,
+                            suffixIcon: IconButton(
+                              tooltip: context.t.favorite_tags.editor.add_label,
+                              onPressed: _addLabel,
+                              icon: const Icon(Symbols.add),
+                            ),
+                          ),
                         ),
-                    ],
+                        if (suggestions.isNotEmpty) ...[
+                          const SizedBox(height: 12),
+                          Text(
+                            context.t.favorite_tags.editor.suggestions,
+                            style: Kurumi.themeOf(context).textTheme.titleSmall
+                                ?.copyWith(
+                                  color: colorScheme.onSurfaceVariant,
+                                  fontSize: 13,
+                                ),
+                          ),
+                          const SizedBox(height: 6),
+                          Wrap(
+                            spacing: 5,
+                            runSpacing: 5,
+                            children: [
+                              for (final label in suggestions.take(6))
+                                KurumiMaterialActionChip(
+                                  label: Text(label),
+                                  backgroundColor:
+                                      colorScheme.surfaceContainerHighest,
+                                  onPressed: () => _addLabel(label),
+                                ),
+                            ],
+                          ),
+                        ],
+                      ],
+                    ),
                   ),
+                  const SizedBox(height: 8),
                 ],
               ],
             ),
           ),
-          const SizedBox(height: 8),
-        ],
+        ),
       ],
     );
   }

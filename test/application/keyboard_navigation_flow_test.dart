@@ -20,6 +20,7 @@ import 'package:boorusama/core/posts/explores/widgets.dart';
 import 'package:boorusama/core/posts/post/widgets.dart';
 import 'package:boorusama/core/posts/post/src/pages/original_image_page.dart';
 import 'package:boorusama/core/premiums/providers.dart';
+import 'package:boorusama/core/tags/favorites/src/pages/edit_favorite_tag_sheet.dart';
 import 'package:boorusama/core/tags/favorites/src/widgets/favorite_tag_label_selector_field.dart';
 import 'package:boorusama/core/search/search/src/views/search_landing_view.dart';
 import 'package:boorusama/core/search/search/src/widgets/desktop_search_bar.dart';
@@ -437,6 +438,66 @@ void main() {
     });
   }
 
+  final favoriteFormCases = [
+    (device: 'a desktop', viewport: kDesktopViewport, centered: true),
+    (device: 'a phone', viewport: kMobileViewport, centered: false),
+  ];
+  for (final c in favoriteFormCases) {
+    testWidgets(
+      'on ${c.device} the add favorite tag form opens '
+      '${c.centered ? 'centered' : 'at the bottom'} with its field focused',
+      (tester) async {
+        final keys = await _mountOnTv(tester, viewport: c.viewport);
+        await _openAddFavoriteTagForm(keys);
+        final form = find.byType(EditFavoriteTagSheet);
+        final field = find.descendant(
+          of: form,
+          matching: find.byType(EditableText),
+        );
+
+        final rect = tester.getRect(form);
+        expect(
+          rect.center.dy,
+          c.centered
+              ? closeTo(c.viewport.height / 2, 24)
+              : greaterThan(c.viewport.height / 2),
+        );
+        expect(keys.isFocusWithin(field), isTrue);
+      },
+    );
+  }
+
+  testWidgets(
+    'in a short window, Tab reaches the label field of the add favorite tag '
+    'form after showing advanced options, and keeps it in view',
+    (tester) async {
+      const viewport = Size(1280, 400);
+      final keys = await _mountOnTv(tester, viewport: viewport);
+      await _openAddFavoriteTagForm(keys);
+      await keys.focusOn(find.byType(KurumiSwitchListTile));
+      await keys.select();
+      await keys.harness.settle(tester);
+
+      final labelField = find
+          .descendant(
+            of: find.byType(EditFavoriteTagSheet),
+            matching: find.byType(EditableText),
+          )
+          .last;
+      for (var i = 0; i < 10 && !keys.isFocusWithin(labelField); i++) {
+        await keys.tab();
+      }
+
+      expect(keys.isFocusWithin(labelField), isTrue);
+      expect(
+        (Offset.zero & viewport).contains(
+          tester.getRect(labelField).bottomCenter - const Offset(0, 1),
+        ),
+        isTrue,
+      );
+    },
+  );
+
   testWidgets('the remote play/pause key pauses and resumes a video post', (
     tester,
   ) async {
@@ -787,6 +848,19 @@ Future<void> _openPostInfoWithRemote(KeyboardFlowDriver keys) async {
   );
   await keys.select();
   await keys.harness.settle(keys.tester);
+}
+
+Future<void> _openAddFavoriteTagForm(KeyboardFlowDriver keys) async {
+  await _openRoute(keys, '/favorite_tags');
+  await keys.navigateTo(find.byType(km.FloatingActionButton));
+  await keys.select();
+  await keys.harness.pumpUntilFound(
+    keys.tester,
+    find.byType(EditFavoriteTagSheet),
+  );
+  await keys.harness.settle(keys.tester);
+  // Lets an autofocused field finish opening the keyboard.
+  await keys.tester.pump(const Duration(seconds: 1));
 }
 
 final _explorePosts = testPostRange(101, 106);

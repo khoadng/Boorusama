@@ -159,11 +159,9 @@ class FavoriteTagsPage extends ConsumerWidget {
 
   void _showAddSheet(BuildContext context, WidgetRef ref) {
     final duplicateError = context.t.favorite_tags.duplicate_error;
-    Kurumi.showAppModalBottomSheet(
-      context: context,
-      routeSettings: const RouteSettings(name: 'add_favorite_tag'),
-      resizeToAvoidBottomInset: true,
-      showDragHandle: false,
+    showEditFavoriteTagSheet(
+      context,
+      routeName: 'add_favorite_tag',
       builder: (context) => EditFavoriteTagSheet(
         initialValue: FavoriteTag.empty(),
         availableLabels: ref.read(favoriteTagLabelsProvider),
@@ -637,11 +635,9 @@ class _FavoriteTagTile extends ConsumerWidget {
 
   void _edit(BuildContext context, WidgetRef ref) {
     final duplicateError = context.t.favorite_tags.duplicate_error;
-    Kurumi.showAppModalBottomSheet(
-      context: context,
-      routeSettings: const RouteSettings(name: 'edit_favorite_tag'),
-      resizeToAvoidBottomInset: true,
-      showDragHandle: false,
+    showEditFavoriteTagSheet(
+      context,
+      routeName: 'edit_favorite_tag',
       builder: (context) => EditFavoriteTagSheet(
         initialValue: tag,
         availableLabels: ref.read(favoriteTagLabelsProvider),
