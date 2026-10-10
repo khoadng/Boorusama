@@ -50,13 +50,16 @@ final shimmie2PostRepoProvider =
                 )
                 .toList();
 
-            if (await ref.read(
-              shimmie2CanFavoriteProvider(config.auth).future,
-            )) {
-              await ref
-                  .read(favoritesProvider(config.auth).notifier)
-                  .checkFavorites(result.map((post) => post.id).toList());
-            }
+            // Favorite status is extra; failing to load it must not fail the page.
+            try {
+              if (await ref.read(
+                shimmie2CanFavoriteProvider(config.auth).future,
+              )) {
+                await ref
+                    .read(favoritesProvider(config.auth).notifier)
+                    .checkFavorites(result.map((post) => post.id).toList());
+              }
+            } catch (_) {}
             return result.toResult();
           },
           getSettings: () async => ref.read(imageListingSettingsProvider),
