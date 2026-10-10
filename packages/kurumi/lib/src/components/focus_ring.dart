@@ -10,7 +10,9 @@ import 'cross_scope_focus.dart';
 ///
 /// Controls that arrows skip, such as a page-wide key handler, get no ring.
 /// Desktop starts in keyboard highlight mode and a mouse click keeps it there,
-/// so the ring waits for a key press and hides again on any pointer press.
+/// so the ring waits for a key press and hides again on any pointer press. A
+/// mouse press also focuses the control under it, so the next key press
+/// continues from there.
 class KurumiFocusRing extends StatefulWidget {
   const KurumiFocusRing({
     required this.child,
@@ -49,9 +51,42 @@ class _KurumiFocusRingState extends State<KurumiFocusRing> {
   }
 
   void _onPointer(PointerEvent event) {
-    if (event is! PointerDownEvent || !_keyboardActive) return;
+    if (event is! PointerDownEvent) return;
+    if (event.kind == PointerDeviceKind.mouse) _focusControlAt(event);
+    if (!_keyboardActive) return;
     _keyboardActive = false;
     _scheduleSync();
+  }
+
+  // Flutter buttons don't take focus when clicked, which would leave the
+  // next key press continuing from wherever focus was before. Like a
+  // browser, a mouse press focuses the innermost control under it. Touch is
+  // left alone so tapping a button doesn't close the soft keyboard.
+  void _focusControlAt(PointerDownEvent event) {
+    final hit = HitTestResult();
+    WidgetsBinding.instance.hitTestInView(hit, event.position, event.viewId);
+    final controls = <RenderObject, FocusNode>{};
+    for (final node in FocusManager.instance.rootScope.descendants) {
+      if (node is FocusScopeNode || !node.canRequestFocus) continue;
+      final box = switch (node.context) {
+        final context? when context.mounted => context.findRenderObject(),
+        _ => null,
+      };
+      // Nested nodes can share a render object. Descendants list inner nodes
+      // before their parents, so the inner one wins.
+      if (box != null) controls.putIfAbsent(box, () => node);
+    }
+
+    final control = hit.path
+        .map((entry) => controls[entry.target])
+        .nonNulls
+        .firstOrNull;
+    // A control arrows pass over, such as a text field behind a bar, manages
+    // its own focus.
+    if (control case final control?
+        when !control.skipTraversal && !control.hasFocus) {
+      control.requestFocus();
+    }
   }
 
   bool _onKey(KeyEvent event) {

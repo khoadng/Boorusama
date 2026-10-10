@@ -119,4 +119,48 @@ void main() {
       expect(find.byType(KurumiFocusRing), ring);
     },
   );
+
+  final presses = [
+    (kind: PointerDeviceKind.mouse, focusesButton: true),
+    // Moving focus off the field would close the soft keyboard.
+    (kind: PointerDeviceKind.touch, focusesButton: false),
+  ];
+  for (final c in presses) {
+    testWidgets(
+      'pressing a button with ${c.kind.name} '
+      '${c.focusesButton ? 'moves focus to it' : 'keeps focus in the field'}',
+      (tester) async {
+        final field = FocusNode();
+        final button = FocusNode();
+        addTearDown(field.dispose);
+        addTearDown(button.dispose);
+        await tester.pumpWidget(
+          MaterialApp(
+            home: KurumiFocusRing(
+              child: Material(
+                child: Column(
+                  children: [
+                    TextField(focusNode: field),
+                    TextButton(
+                      focusNode: button,
+                      onPressed: () {},
+                      child: const Text('Send'),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        );
+        field.requestFocus();
+        await tester.pump();
+
+        await tester.tap(find.text('Send'), kind: c.kind);
+        await tester.pump();
+
+        expect(button.hasPrimaryFocus, c.focusesButton);
+        expect(field.hasPrimaryFocus, !c.focusesButton);
+      },
+    );
+  }
 }
