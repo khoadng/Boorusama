@@ -58,6 +58,7 @@ class RawSearchRegion extends StatelessWidget {
                   DefaultTrailingSearchButton(controller: controller),
               innerSearchButton: innerSearchButton,
               focusNode: controller.focus,
+              listbox: controller.suggestionsListbox,
               autofocus: initialQuery == null ? autoFocusSearchBar : false,
               controller: controller.textController,
               leading: (parentRoute?.impliesAppBarDismissal ?? false)

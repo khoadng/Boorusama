@@ -15,6 +15,7 @@ import '../../../../../foundation/app_update/widgets.dart';
 import '../../../../../foundation/utils/flutter_utils.dart';
 import '../../../../boorus/booru/types.dart';
 import '../../../../configs/config/providers.dart';
+import '../../../../tags/autocompletes/types.dart';
 import '../../../../tags/metatag/providers.dart';
 import '../../../queries/types.dart';
 import '../../../selected_tags/providers.dart';
@@ -51,12 +52,14 @@ class _DesktopSearchbarState extends ConsumerState<DesktopSearchbar> {
   final suggestionsFocus = FocusScopeNode(
     debugLabel: 'DesktopSearchSuggestions',
   );
+  final suggestionsListbox = KurumiListboxController();
 
   @override
   void dispose() {
     textEditingController.dispose();
     focus.dispose();
     suggestionsFocus.dispose();
+    suggestionsListbox.dispose();
     super.dispose();
   }
 
@@ -84,6 +87,7 @@ class _DesktopSearchbarState extends ConsumerState<DesktopSearchbar> {
       autofocus: false,
       focusNode: focus,
       suggestionsFocus: suggestionsFocus,
+      listbox: suggestionsListbox,
       height: kToolbarHeight * 0.9,
       controller: textEditingController,
       searchBarBuilder: (context, child) => AnchorPopover(
@@ -133,6 +137,17 @@ class _DesktopSearchbarState extends ConsumerState<DesktopSearchbar> {
     );
   }
 
+  void _addSuggestion(AutocompleteData tag) {
+    final operator = getFilterOperator(textEditingController.text);
+    selectedTagController.addTag(
+      TagSearchItem.fromString(
+        '$operator${tag.value}',
+        extractor: ref.read(metatagExtractorProvider(ref.readConfigAuth)),
+      ),
+    );
+    textEditingController.clear();
+  }
+
   Widget _buildOverlay(FocusNode focusNode) => Actions(
     actions: {
       DirectionalFocusIntent: _ReturnToFieldAction(focusNode),
@@ -173,20 +188,10 @@ class _DesktopSearchbarState extends ConsumerState<DesktopSearchbar> {
                   padding: const EdgeInsets.symmetric(
                     horizontal: 4,
                   ).copyWith(bottom: 4, top: 4),
+                  listbox: suggestionsListbox,
+                  onItemPick: _addSuggestion,
                   onItemTap: (tag) {
-                    final operator = getFilterOperator(
-                      textEditingController.text,
-                    );
-                    final operatorPrefix = operator.toString();
-                    selectedTagController.addTag(
-                      TagSearchItem.fromString(
-                        '$operatorPrefix${tag.value}',
-                        extractor: ref.watch(
-                          metatagExtractorProvider(auth),
-                        ),
-                      ),
-                    );
-                    textEditingController.clear();
+                    _addSuggestion(tag);
                     focusNode.unfocus();
                   },
                 )

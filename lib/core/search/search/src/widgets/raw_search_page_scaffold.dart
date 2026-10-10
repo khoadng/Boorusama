@@ -258,16 +258,25 @@ class _SearchPageScaffoldState<T extends Post>
           bottom: false,
           child: Stack(
             children: [
+              // Options and suggestions are drawn over what's below, which
+              // keys must not reach while it's covered.
               ValueListenableBuilder(
-                valueListenable: _controller.didSearchOnce,
-                builder: (context, searchOnce, child) {
-                  return searchOnce
-                      ? _buildResult()
-                      : _Landing(
-                          landingView: widget.landingView,
-                          selectionModeController: _selectionModeController,
-                        );
-                },
+                valueListenable: _controller.state,
+                builder: (context, state, child) => ExcludeFocus(
+                  excluding: state != SearchState.initial,
+                  child: child!,
+                ),
+                child: ValueListenableBuilder(
+                  valueListenable: _controller.didSearchOnce,
+                  builder: (context, searchOnce, child) {
+                    return searchOnce
+                        ? _buildResult()
+                        : _Landing(
+                            landingView: widget.landingView,
+                            selectionModeController: _selectionModeController,
+                          );
+                  },
+                ),
               ),
               _SearchOptionsView(
                 landingView: widget.landingView,

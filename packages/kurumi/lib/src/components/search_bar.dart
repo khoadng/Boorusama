@@ -2,6 +2,7 @@ import 'package:flutter/services.dart';
 import 'package:material_ui/material_ui.dart';
 
 import 'back_handler.dart';
+import 'listbox.dart';
 import 'text_field.dart';
 
 class KurumiSearchBar extends StatefulWidget {
@@ -24,6 +25,7 @@ class KurumiSearchBar extends StatefulWidget {
     this.contentPadding,
     this.cursorHeight,
     this.suggestionsFocus,
+    this.listbox,
   });
 
   final VoidCallback? onTap;
@@ -48,6 +50,10 @@ class KurumiSearchBar extends StatefulWidget {
   /// and back returns to the bar instead of leaving the page while the field
   /// or a suggestion has focus.
   final FocusScopeNode? suggestionsFocus;
+
+  /// Rows suggested for what is typed, highlighted by arrows while typing
+  /// goes on in the field. Takes the arrows before [suggestionsFocus] does.
+  final KurumiListboxController? listbox;
 
   @override
   State<KurumiSearchBar> createState() => _KurumiSearchBarState();
@@ -150,7 +156,10 @@ class _KurumiSearchBarState extends State<KurumiSearchBar> {
       },
       onSubmitted: (value) =>
           value.isNotEmpty ? widget.onSubmitted?.call(value) : null,
-      onChanged: (value) => widget.onChanged?.call(value),
+      onChanged: (value) {
+        widget.listbox?.clear();
+        widget.onChanged?.call(value);
+      },
       enabled: widget.enabled,
       decoration: InputDecoration(
         isDense: widget.dense,
@@ -174,13 +183,21 @@ class _KurumiSearchBarState extends State<KurumiSearchBar> {
     );
 
     final actsAsButton = !widget.enabled && widget.onTap != null;
+    final field = switch (widget.listbox) {
+      final listbox? => KurumiListboxKeys(
+        controller: listbox,
+        child: textField,
+      ),
+      null => textField,
+    };
+
     final searchField = Semantics(
       button: actsAsButton ? true : null,
       enabled: actsAsButton ? true : null,
       label: actsAsButton ? widget.hintText : null,
       onTap: actsAsButton ? widget.onTap : null,
       excludeSemantics: actsAsButton,
-      child: textField,
+      child: field,
     );
 
     // The bar is one control: the focus ring outlines all of it, leading and

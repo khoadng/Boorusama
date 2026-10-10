@@ -29,6 +29,9 @@ import 'package:boorusama/core/tags/favorites/src/widgets/favorite_tag_label_sel
 import 'package:boorusama/core/search/search/src/views/search_landing_view.dart';
 import 'package:boorusama/core/search/search/src/widgets/desktop_search_bar.dart';
 import 'package:boorusama/core/search/suggestions/tag_suggestion_items.dart';
+import 'package:boorusama/core/search/suggestions/tag_suggestion_item.dart';
+import 'package:boorusama/core/search/search/src/widgets/selected_tag_chip.dart';
+import 'package:boorusama/core/search/search/src/widgets/search_app_bar.dart';
 import 'package:boorusama/core/settings/src/pages/settings_page.dart';
 import 'package:boorusama/core/videos/player/widgets.dart';
 
@@ -203,36 +206,51 @@ void main() {
     },
   );
 
-  testWidgets('remote moves from a typed query into its tag suggestions', (
-    tester,
-  ) async {
-    final keys = await _mountOnTv(tester);
-    await _typeSearch(keys, 'cat');
+  testWidgets(
+    'down from a typed query highlights its tag suggestions while typing '
+    'goes on, and Enter adds the highlighted one',
+    (tester) async {
+      final keys = await _mountOnTv(tester, viewport: kDesktopViewport);
+      await _typeSearch(keys, 'cat');
 
-    await keys.arrow(TraversalDirection.down);
-    expect(keys.isFocusWithin(_tagSuggestions), isTrue);
+      await keys.arrow(TraversalDirection.down);
+      await keys.arrow(TraversalDirection.down);
+      expect(_highlightedSuggestion(tester), 'cat_ears');
+      expect(keys.isFocusWithin(_searchField), isTrue);
 
-    expect(
-      await keys.unreachableIn(
-        _tagSuggestions,
-        reopen: () async {
-          await _typeSearch(keys, 'cat');
-          await keys.arrow(TraversalDirection.down);
-        },
-      ),
-      isEmpty,
-    );
-  });
+      await keys.press(LogicalKeyboardKey.enter);
+      await keys.harness.settle(tester);
 
-  testWidgets('tag suggestions for a typed query show clearly where focus is', (
-    tester,
-  ) async {
-    final keys = await _mountOnTv(tester);
-    await _typeSearch(keys, 'cat');
-    await keys.arrow(TraversalDirection.down);
+      expect(_selectedTags(tester), ['cat_ears']);
+      expect(keys.isFocusWithin(_searchField), isTrue);
+    },
+  );
 
-    expect(await keys.faintFocus(within: _tagSuggestions), isEmpty);
-  });
+  testWidgets(
+    'on a small screen, down from a typed query highlights its tag '
+    'suggestions and Tab never reaches the page they cover',
+    (tester) async {
+      final keys = await _mountOnTv(tester, viewport: kMobileViewport);
+      await _openRoute(keys, '/search');
+      final field = find.descendant(
+        of: find.byType(SearchAppBar),
+        matching: find.byType(EditableText),
+      );
+      tester.state<EditableTextState>(field).widget.focusNode.requestFocus();
+      await tester.enterText(field, 'cat');
+      await keys.harness.pumpUntilFound(tester, find.byType(TagSuggestionItem));
+      await keys.harness.settle(tester);
+
+      await keys.arrow(TraversalDirection.down);
+      expect(_highlightedSuggestion(tester), 'cat');
+      expect(keys.isFocusWithin(field), isTrue);
+
+      for (var i = 0; i < 20; i++) {
+        await keys.tab();
+        expect(keys.isFocusWithin(find.byType(SearchLandingView)), isFalse);
+      }
+    },
+  );
 
   testWidgets('search suggestions show clearly where focus is', (
     tester,
@@ -769,6 +787,26 @@ final _searchField = find.descendant(
 );
 
 Finder get _tagSuggestions => find.byType(TagSuggestionItems);
+
+String? _highlightedSuggestion(WidgetTester tester) => tester
+    .widgetList<KurumiListboxItem>(find.byType(KurumiListboxItem))
+    .where((item) => item.active)
+    .map(
+      (item) => find
+          .descendant(
+            of: find.byWidget(item),
+            matching: find.byType(TagSuggestionItem),
+          )
+          .evaluate()
+          .map((e) => (e.widget as TagSuggestionItem).tag.value)
+          .firstOrNull,
+    )
+    .firstOrNull;
+
+List<String> _selectedTags(WidgetTester tester) => tester
+    .widgetList<SelectedTagChip>(find.byType(SelectedTagChip))
+    .map((chip) => chip.tagSearchItem.originalTag)
+    .toList();
 
 /// Types [query] into the search bar and waits for its tag suggestions.
 Future<void> _typeSearch(KeyboardFlowDriver keys, String query) async {

@@ -468,6 +468,7 @@ class DefaultSearchSuggestions extends ConsumerWidget {
                             config: config,
                             tags: suggestionTags,
                             currentQuery: query.text,
+                            listbox: controller.suggestionsListbox,
                             onItemTap: (tag) {
                               controller.tapTag(tag.value);
                             },

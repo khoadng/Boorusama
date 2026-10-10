@@ -32,6 +32,7 @@ class _SelectedTagEditDialogState extends ConsumerState<SelectedTagEditDialog> {
   late final RichTextController controller;
   final showSuggestions = ValueNotifier(false);
   final focusNode = FocusNode();
+  final suggestionsListbox = KurumiListboxController();
 
   @override
   void initState() {
@@ -49,6 +50,7 @@ class _SelectedTagEditDialogState extends ConsumerState<SelectedTagEditDialog> {
   void dispose() {
     controller.dispose();
     focusNode.dispose();
+    suggestionsListbox.dispose();
 
     super.dispose();
   }
@@ -68,29 +70,33 @@ class _SelectedTagEditDialogState extends ConsumerState<SelectedTagEditDialog> {
         Material(
           child: Padding(
             padding: const EdgeInsets.all(12),
-            child: KurumiTextField(
-              focusNode: focusNode,
-              autocorrect: false,
-              autofocus: true,
-              controller: controller,
-              onSubmitted: (_) => _submit(context),
-              onChanged: (value) {
-                final query = value.lastQuery;
+            child: KurumiListboxKeys(
+              controller: suggestionsListbox,
+              child: KurumiTextField(
+                focusNode: focusNode,
+                autocorrect: false,
+                autofocus: true,
+                controller: controller,
+                onSubmitted: (_) => _submit(context),
+                onChanged: (value) {
+                  suggestionsListbox.clear();
+                  final query = value.lastQuery;
 
-                if (query == null || query.isEmpty) return;
+                  if (query == null || query.isEmpty) return;
 
-                showSuggestions.value = true;
+                  showSuggestions.value = true;
 
-                ref
-                    .read(
-                      suggestionsNotifierProvider(config).notifier,
-                    )
-                    .getSuggestions(query);
-              },
-              decoration: InputDecoration(
-                suffixIcon: TextButton(
-                  child: Text(context.t.generic.action.ok),
-                  onPressed: () => _submit(context),
+                  ref
+                      .read(
+                        suggestionsNotifierProvider(config).notifier,
+                      )
+                      .getSuggestions(query);
+                },
+                decoration: InputDecoration(
+                  suffixIcon: TextButton(
+                    child: Text(context.t.generic.action.ok),
+                    onPressed: () => _submit(context),
+                  ),
                 ),
               ),
             ),
@@ -116,6 +122,7 @@ class _SelectedTagEditDialogState extends ConsumerState<SelectedTagEditDialog> {
                   child: TagSuggestionItems(
                     config: config,
                     tags: tags,
+                    listbox: suggestionsListbox,
                     onItemTap: (tag) {
                       // replace the last word with the selected tag
                       controller.text = query.text.replaceLastQuery(tag.value);

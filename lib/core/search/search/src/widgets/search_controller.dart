@@ -1,4 +1,5 @@
 // Package imports:
+import 'package:kurumi/kurumi.dart';
 import 'package:kurumi/material.dart';
 import 'package:rich_text_controller/rich_text_controller.dart';
 
@@ -22,6 +23,7 @@ class SearchPageController extends ChangeNotifier {
   final allowSearch = ValueNotifier(false);
   final tagString = ValueNotifier('');
   final focus = FocusNode();
+  final suggestionsListbox = KurumiListboxController();
   late final textController = RichTextController(
     matchers: textMatchers,
   );
@@ -149,6 +151,7 @@ class SearchPageController extends ChangeNotifier {
   void dispose() {
     textController.dispose();
     focus.dispose();
+    suggestionsListbox.dispose();
 
     tagString.dispose();
 
