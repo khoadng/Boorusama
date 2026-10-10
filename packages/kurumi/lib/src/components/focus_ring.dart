@@ -9,8 +9,8 @@ import 'cross_scope_focus.dart';
 /// the app root; touch and mouse users never see it.
 ///
 /// Controls that arrows skip, such as a page-wide key handler, get no ring.
-/// A mouse click keeps Flutter in keyboard highlight mode, so the ring also
-/// hides on any pointer press and returns with the next key press.
+/// Desktop starts in keyboard highlight mode and a mouse click keeps it there,
+/// so the ring waits for a key press and hides again on any pointer press.
 class KurumiFocusRing extends StatefulWidget {
   const KurumiFocusRing({
     required this.child,
@@ -25,7 +25,7 @@ class KurumiFocusRing extends StatefulWidget {
 
 class _KurumiFocusRingState extends State<KurumiFocusRing> {
   Rect? _ring;
-  var _pointerActive = false;
+  var _keyboardActive = false;
 
   @override
   void initState() {
@@ -49,14 +49,14 @@ class _KurumiFocusRingState extends State<KurumiFocusRing> {
   }
 
   void _onPointer(PointerEvent event) {
-    if (event is! PointerDownEvent || _pointerActive) return;
-    _pointerActive = true;
+    if (event is! PointerDownEvent || !_keyboardActive) return;
+    _keyboardActive = false;
     _scheduleSync();
   }
 
   bool _onKey(KeyEvent event) {
-    if (event is KeyDownEvent && _pointerActive) {
-      _pointerActive = false;
+    if (event is KeyDownEvent && !_keyboardActive) {
+      _keyboardActive = true;
       _scheduleSync();
     }
     return false;
@@ -86,7 +86,7 @@ class _KurumiFocusRingState extends State<KurumiFocusRing> {
     };
     return switch ((FocusManager.instance.highlightMode, node, origin)) {
       (FocusHighlightMode.traditional, final node?, final origin?)
-          when !_pointerActive &&
+          when _keyboardActive &&
               node is! FocusScopeNode &&
               !node.skipTraversal &&
               (node.context?.mounted ?? false) =>

@@ -234,6 +234,8 @@ final class KeyboardFlowDriver {
     final strategy = FocusManager.instance.highlightStrategy;
     FocusManager.instance.highlightStrategy =
         FocusHighlightStrategy.alwaysTraditional;
+    // The focus ring stays hidden until the user has touched the keyboard.
+    await tester.sendKeyEvent(LogicalKeyboardKey.shift);
 
     final problems = <String>[];
     try {

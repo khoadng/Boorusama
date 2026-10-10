@@ -13,18 +13,28 @@ void main() {
       name: 'outlines a control focused by keyboard',
       strategy: FocusHighlightStrategy.alwaysTraditional,
       skipTraversal: false,
+      pressesKey: true,
       drawsRing: true,
+    ),
+    (
+      name: 'waits for a key press before outlining an autofocused control',
+      strategy: FocusHighlightStrategy.alwaysTraditional,
+      skipTraversal: false,
+      pressesKey: false,
+      drawsRing: false,
     ),
     (
       name: 'stays hidden for touch users',
       strategy: FocusHighlightStrategy.alwaysTouch,
       skipTraversal: false,
+      pressesKey: true,
       drawsRing: false,
     ),
     (
       name: 'ignores focus that arrow keys cannot reach',
       strategy: FocusHighlightStrategy.alwaysTraditional,
       skipTraversal: true,
+      pressesKey: true,
       drawsRing: false,
     ),
   ];
@@ -51,6 +61,9 @@ void main() {
       );
 
       node.requestFocus();
+      if (c.pressesKey) {
+        await tester.sendKeyEvent(LogicalKeyboardKey.shift);
+      }
       await tester.pump();
       await tester.pump();
 
@@ -86,9 +99,11 @@ void main() {
         ),
       );
       node.requestFocus();
+      await tester.sendKeyEvent(LogicalKeyboardKey.shift);
       await tester.pump();
       await tester.pump();
       final ring = paints..drrect();
+      expect(find.byType(KurumiFocusRing), ring);
 
       final mouse = await tester.createGesture(kind: PointerDeviceKind.mouse);
       await mouse.down(const Offset(5, 5));
