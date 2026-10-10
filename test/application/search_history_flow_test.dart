@@ -1,4 +1,6 @@
 // Flutter imports:
+import 'package:flutter/gestures.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 
 // Package imports:
@@ -11,6 +13,7 @@ import 'package:sqlite3/sqlite3.dart';
 import 'package:boorusama/core/search/histories/src/data/repo_sqlite.dart';
 import 'package:boorusama/core/search/histories/src/widgets/full_history_view.dart';
 import 'package:boorusama/core/search/histories/src/widgets/search_history_section.dart';
+import 'package:boorusama/core/search/search/src/widgets/desktop_search_bar.dart';
 import 'package:boorusama/core/search/search/src/widgets/search_app_bar.dart';
 import 'package:boorusama/core/search/search/src/widgets/search_button.dart';
 import 'package:boorusama/core/search/search/src/widgets/selected_tag_chip.dart';
@@ -19,6 +22,7 @@ import 'support/app_flow_driver.dart';
 import 'support/app_flow_finders.dart';
 import 'support/fake_booru_backend.dart';
 import 'support/headless_app_harness.dart';
+import 'support/keyboard_flow_driver.dart' show kDesktopViewport;
 
 void main() {
   testWidgets(
@@ -79,6 +83,50 @@ void main() {
       );
     },
   );
+
+  final rawQueryConfirms = [
+    (
+      name: 'clicking OK',
+      confirm: (WidgetTester tester) => tester.tap(
+        find.text(appStrings(tester).generic.action.ok).last,
+        kind: PointerDeviceKind.mouse,
+      ),
+    ),
+    (
+      name: 'pressing Enter on OK',
+      confirm: (WidgetTester tester) async {
+        await tester.sendKeyEvent(LogicalKeyboardKey.tab);
+        await tester.pump();
+        await tester.sendKeyEvent(LogicalKeyboardKey.enter);
+      },
+    ),
+  ];
+  for (final c in rawQueryConfirms) {
+    testWidgets(
+      'on desktop, ${c.name} adds a raw query typed from the search bar',
+      (tester) async {
+        final app = await _SearchHistoryApp.mount(
+          tester,
+          viewport: kDesktopViewport,
+        );
+        await app.harness.pumpUntilFound(tester, find.byType(DesktopSearchbar));
+        await tester.tap(
+          find.descendant(
+            of: find.byType(DesktopSearchbar),
+            matching: find.byType(EditableText),
+          ),
+        );
+        await app.harness.settle(tester);
+
+        await app.tapText(appStrings(tester).search.raw_query);
+        await tester.enterText(find.byType(EditableText).last, 'cat -dog');
+        await c.confirm(tester);
+        await app.harness.settle(tester);
+
+        expect(app.selectedTags(), ['cat -dog']);
+      },
+    );
+  }
 
   testWidgets(
     'tapping history while tags are selected adds its tags to the selection',
@@ -226,6 +274,7 @@ final class _SearchHistoryApp {
   static Future<_SearchHistoryApp> mount(
     WidgetTester tester, {
     Database? db,
+    Size viewport = kMobileViewport,
   }) async {
     final backend = FakeBooruBackend();
     final harness = await HeadlessAppHarness.mount(
@@ -236,7 +285,7 @@ final class _SearchHistoryApp {
           db: db ?? _openHistoryDb(),
         )..initialize(),
       ),
-      viewportSize: kMobileViewport,
+      viewportSize: viewport,
     );
     await harness.pumpUntilFound(tester, postTile(101));
     await harness.settle(tester);
