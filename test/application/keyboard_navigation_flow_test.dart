@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:kurumi/kurumi.dart';
@@ -24,6 +25,7 @@ import 'package:boorusama/core/search/search/src/views/search_landing_view.dart'
 import 'package:boorusama/core/search/search/src/widgets/desktop_search_bar.dart';
 import 'package:boorusama/core/search/suggestions/tag_suggestion_items.dart';
 import 'package:boorusama/core/settings/src/pages/settings_page.dart';
+import 'package:boorusama/core/videos/player/widgets.dart';
 
 import '../support/fakes/memory_repositories.dart';
 import 'support/app_flow_finders.dart';
@@ -435,6 +437,24 @@ void main() {
     });
   }
 
+  testWidgets('the remote play/pause key pauses and resumes a video post', (
+    tester,
+  ) async {
+    final keys = await _mountOnTv(tester, posts: [_videoPost]);
+    await _openPostWithRemote(keys);
+    bool playing() => tester
+        .widget<PlayPauseButton>(find.byType(PlayPauseButton))
+        .isPlaying
+        .value;
+    final before = playing();
+
+    await keys.press(LogicalKeyboardKey.mediaPlayPause);
+    expect(playing(), !before);
+
+    await keys.press(LogicalKeyboardKey.mediaPlayPause);
+    expect(playing(), before);
+  });
+
   testWidgets('Tab on the explore screen skips its hidden page', (
     tester,
   ) async {
@@ -770,6 +790,8 @@ Future<void> _openPostInfoWithRemote(KeyboardFlowDriver keys) async {
 }
 
 final _explorePosts = testPostRange(101, 106);
+
+final _videoPost = TestPost(id: 101, format: '.mp4');
 
 /// The wide explore layout, whose "see more" page waits hidden behind the
 /// overview.

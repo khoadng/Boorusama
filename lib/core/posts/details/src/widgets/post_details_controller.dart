@@ -137,6 +137,25 @@ class PostDetailsController<T extends Post> extends ChangeNotifier {
     );
   }
 
+  Future<void> toggleCurrentVideo({
+    bool showAnimation = false,
+  }) async {
+    if (!currentPost.value.isVideo) return;
+
+    return isVideoPlaying.value
+        ? pauseCurrentVideo(showAnimation: showAnimation)
+        : playCurrentVideo(showAnimation: showAnimation);
+  }
+
+  Future<void> setCurrentVideoPlaying(
+    bool playing, {
+    bool showAnimation = false,
+  }) async {
+    if (isVideoPlaying.value == playing) return;
+
+    return toggleCurrentVideo(showAnimation: showAnimation);
+  }
+
   Future<void> pauseVideo(
     int id, {
     bool showAnimation = false,

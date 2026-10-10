@@ -231,6 +231,13 @@ class _PostDetailPageScaffoldState<T extends Post>
           ref,
           widget.posts[_controller.page],
         ),
+        const SingleActivator(LogicalKeyboardKey.mediaPlayPause): () =>
+            widget.controller.toggleCurrentVideo(showAnimation: true),
+        const SingleActivator(LogicalKeyboardKey.mediaPlay): () =>
+            widget.controller.setCurrentVideoPlaying(true, showAnimation: true),
+        const SingleActivator(LogicalKeyboardKey.mediaPause): () => widget
+            .controller
+            .setCurrentVideoPlaying(false, showAnimation: true),
       },
       child: VisibilityDetector(
         key: const Key('post_details_page_scaffold'),
