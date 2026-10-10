@@ -176,44 +176,37 @@ class _KurumiSearchBarState extends State<KurumiSearchBar> {
       child: textField,
     );
 
-    final searchBar = ListenableBuilder(
-      listenable: _barNode,
-      builder: (context, child) => DecoratedBox(
-        decoration: BoxDecoration(
-          color: colorScheme.brightness == Brightness.dark
-              ? colorScheme.surfaceContainerHigh
-              : colorScheme.surfaceContainerHighest,
-          borderRadius: BorderRadius.circular(8),
-          border: _barNode.hasPrimaryFocus
-              ? Border.all(color: colorScheme.primary, width: 2)
-              : null,
+    // The bar is one control: the focus ring outlines all of it, leading and
+    // trailing included.
+    final searchBar = Actions(
+      actions: {
+        ActivateIntent: CallbackAction<ActivateIntent>(
+          onInvoke: (_) => _activate(),
         ),
-        child: child,
-      ),
-      child: GestureDetector(
-        onTap: () => widget.onTap?.call(),
-        child: Row(
-          children: [
-            const SizedBox(width: 4),
-            widget.leading ?? const SizedBox(width: 8),
-            const SizedBox(width: 4),
-            Expanded(
-              child: Actions(
-                actions: {
-                  ActivateIntent: CallbackAction<ActivateIntent>(
-                    onInvoke: (_) => _activate(),
-                  ),
-                },
-                child: Focus(
-                  focusNode: _barNode,
-                  canRequestFocus: widget.enabled || widget.onTap != null,
-                  onKeyEvent: _handleKey,
-                  child: searchField,
-                ),
-              ),
+      },
+      child: Focus(
+        focusNode: _barNode,
+        canRequestFocus: widget.enabled || widget.onTap != null,
+        onKeyEvent: _handleKey,
+        child: DecoratedBox(
+          decoration: BoxDecoration(
+            color: colorScheme.brightness == Brightness.dark
+                ? colorScheme.surfaceContainerHigh
+                : colorScheme.surfaceContainerHighest,
+            borderRadius: BorderRadius.circular(8),
+          ),
+          child: GestureDetector(
+            onTap: () => widget.onTap?.call(),
+            child: Row(
+              children: [
+                const SizedBox(width: 4),
+                widget.leading ?? const SizedBox(width: 8),
+                const SizedBox(width: 4),
+                Expanded(child: searchField),
+                widget.trailing ?? const SizedBox.shrink(),
+              ],
             ),
-            widget.trailing ?? const SizedBox.shrink(),
-          ],
+          ),
         ),
       ),
     );
