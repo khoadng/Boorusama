@@ -15,6 +15,8 @@ import 'package:boorusama/core/configs/create/src/widgets/create_config_button.d
 import 'package:boorusama/core/home/src/pages/entry_page.dart';
 import 'package:boorusama/core/posts/details_manager/widgets.dart';
 import 'package:boorusama/core/posts/details_parts/widgets.dart';
+import 'package:boorusama/core/posts/explores/widgets.dart';
+import 'package:boorusama/core/posts/post/widgets.dart';
 import 'package:boorusama/core/posts/post/src/pages/original_image_page.dart';
 import 'package:boorusama/core/premiums/providers.dart';
 import 'package:boorusama/core/tags/favorites/src/widgets/favorite_tag_label_selector_field.dart';
@@ -425,6 +427,54 @@ void main() {
   });
 
   for (final c in screenChecks) {
+    testWidgets('the explore screen ${c.name}', (tester) async {
+      final keys = await _mountOnTv(tester);
+      await _openExplore(keys);
+
+      expect(await c.check(keys), isEmpty);
+    });
+  }
+
+  testWidgets('Tab on the explore screen skips its hidden page', (
+    tester,
+  ) async {
+    final keys = await _mountOnTv(tester, viewport: kDesktopViewport);
+    await _openExplore(keys);
+
+    expect(await keys.tabProblems(), isEmpty);
+  });
+
+  testWidgets(
+    'right along an explore row reaches each post in turn and keeps it in '
+    'view',
+    (tester) async {
+      final keys = await _mountOnTv(tester);
+      await _openExplore(keys);
+      Finder card(int number) => find.ancestor(
+        of: find.descendant(
+          of: find.byType(ExploreList).first,
+          matching: find.text('$number'),
+        ),
+        matching: find.byType(ExplicitContentBlockOverlay),
+      );
+      await keys.focusOn(card(1));
+
+      for (var number = 2; number <= _explorePosts.length; number++) {
+        await keys.arrow(TraversalDirection.right);
+
+        expect(keys.isFocusWithin(card(number)), isTrue);
+        expect(
+          (Offset.zero & kTvViewport).contains(
+            keys.focusedNode!.rect.bottomRight - const Offset(1, 1),
+          ),
+          isTrue,
+          reason: 'post $number is out of view',
+        );
+      }
+    },
+  );
+
+  for (final c in screenChecks) {
     testWidgets('the details layout manager screen ${c.name}', (tester) async {
       final keys = await _mountOnTv(tester, showPremiumFeatures: true);
       await _openDetailsLayoutManager(keys);
@@ -717,6 +767,41 @@ Future<void> _openPostInfoWithRemote(KeyboardFlowDriver keys) async {
   );
   await keys.select();
   await keys.harness.settle(keys.tester);
+}
+
+final _explorePosts = testPostRange(101, 106);
+
+/// The wide explore layout, whose "see more" page waits hidden behind the
+/// overview.
+Future<void> _openExplore(KeyboardFlowDriver keys) async {
+  final tester = keys.tester;
+  Navigator.of(tester.element(find.byType(EntryPage))).push(
+    km.MaterialPageRoute<void>(
+      builder: (context) => km.Scaffold(
+        body: ExplorePageDesktop(
+          sliverOverviews: [
+            for (final title in ['Popular', 'Hot'])
+              SliverToBoxAdapter(
+                child: ExploreSection(
+                  title: title,
+                  onPressed: () {},
+                  builder: (_) => ExploreList(posts: _explorePosts),
+                ),
+              ),
+          ],
+          details: Column(
+            children: [
+              for (final label in ['Hidden 1', 'Hidden 2'])
+                km.TextButton(onPressed: () {}, child: Text(label)),
+            ],
+          ),
+        ),
+      ),
+    ),
+  );
+  await keys.harness.settle(tester);
+  await tester.pump(const Duration(milliseconds: 500));
+  await keys.harness.settle(tester);
 }
 
 Future<KeyboardFlowDriver> _mountOnTv(

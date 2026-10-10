@@ -109,21 +109,27 @@ class _ExplorePageDesktopState extends ConsumerState<ExplorePageDesktop> {
       children: [
         Offstage(
           offstage: selectedCategory != null,
-          child: Padding(
-            padding: EdgeInsets.only(
-              top: MediaQuery.viewPaddingOf(context).top,
-            ),
-            child: CustomScrollView(
-              primary: false,
-              slivers: [
-                ...widget.sliverOverviews,
-              ],
+          child: ExcludeFocus(
+            excluding: selectedCategory != null,
+            child: Padding(
+              padding: EdgeInsets.only(
+                top: MediaQuery.viewPaddingOf(context).top,
+              ),
+              child: CustomScrollView(
+                primary: false,
+                slivers: [
+                  ...widget.sliverOverviews,
+                ],
+              ),
             ),
           ),
         ),
         Offstage(
           offstage: selectedCategory == null,
-          child: widget.details,
+          child: ExcludeFocus(
+            excluding: selectedCategory == null,
+            child: widget.details,
+          ),
         ),
       ],
     );
@@ -187,7 +193,7 @@ class ExploreList extends ConsumerWidget {
             rating: post.rating,
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 2),
-              child: GestureDetector(
+              child: InkWell(
                 onTap: () => goToPostDetailsPageFromPosts(
                   ref: ref,
                   posts: filteredPosts,
