@@ -1,6 +1,3 @@
-// Flutter imports:
-import 'package:flutter/services.dart';
-
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -290,10 +287,8 @@ class _SettingsAdaptiveShellState
       applicationNavigator: Navigator.of(context),
       child: SettingsPageScope(
         options: SettingsPageOptions(showIcon: true, dense: wide),
-        child: CallbackShortcuts(
-          bindings: {
-            const SingleActivator(LogicalKeyboardKey.escape): _back,
-          },
+        child: KurumiDismissible(
+          onDismiss: _back,
           child: PopScope<void>(
             canPop: _closing || !navigation.canGoBack(presentation),
             onPopInvokedWithResult: (didPop, result) {

@@ -148,13 +148,18 @@ class _DesktopSearchbarState extends ConsumerState<DesktopSearchbar> {
     textEditingController.clear();
   }
 
-  Widget _buildOverlay(FocusNode focusNode) => Actions(
-    actions: {
-      DirectionalFocusIntent: _ReturnToFieldAction(focusNode),
-    },
-    child: FocusScope(
-      node: suggestionsFocus,
-      child: _buildSuggestions(focusNode),
+  // The popover sits outside the search bar, which decides where Escape
+  // leaves focus, so it hands Escape over.
+  Widget _buildOverlay(FocusNode focusNode) => KurumiDismissible(
+    onDismiss: () => KurumiDismissible.dismissFrom(focusNode),
+    child: Actions(
+      actions: {
+        DirectionalFocusIntent: _ReturnToFieldAction(focusNode),
+      },
+      child: FocusScope(
+        node: suggestionsFocus,
+        child: _buildSuggestions(focusNode),
+      ),
     ),
   );
 

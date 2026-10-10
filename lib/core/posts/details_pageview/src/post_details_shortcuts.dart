@@ -103,20 +103,21 @@ class _PostDetailsShortcutsState extends State<PostDetailsShortcuts> {
             ? {
                 const SingleActivator(LogicalKeyboardKey.keyO): () =>
                     widget.controller.toggleOverlay(),
-                const SingleActivator(LogicalKeyboardKey.escape): () =>
-                    Navigator.of(context).maybePop(),
               }
             : {},
-        child: Actions(
-          actions: {
-            DirectionalFocusIntent: _ReturnToPageAction(_pageNode),
-          },
-          child: Focus(
-            focusNode: _pageNode,
-            autofocus: true,
-            skipTraversal: true,
-            onKeyEvent: _handleKey,
-            child: widget.child,
+        child: KurumiDismissible.route(
+          enabled: shortcutsEnabled,
+          child: Actions(
+            actions: {
+              DirectionalFocusIntent: _ReturnToPageAction(_pageNode),
+            },
+            child: Focus(
+              focusNode: _pageNode,
+              autofocus: true,
+              skipTraversal: true,
+              onKeyEvent: _handleKey,
+              child: widget.child,
+            ),
           ),
         ),
       ),

@@ -99,11 +99,7 @@ class _OriginalImagePageState extends ConsumerState<OriginalImagePage> {
 
   @override
   Widget build(BuildContext context) {
-    return CallbackShortcuts(
-      bindings: {
-        const SingleActivator(LogicalKeyboardKey.escape): () =>
-            Navigator.of(context).pop(),
-      },
+    return KurumiDismissible.route(
       child: PopScope(
         canPop: false,
         onPopInvokedWithResult: (didPop, _) => _pop(didPop),

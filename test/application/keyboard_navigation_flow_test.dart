@@ -53,6 +53,14 @@ void main() {
       check: (KeyboardFlowDriver keys) => keys.faintFocus(),
     ),
   ];
+  // Escape closes whatever the remote's back button closes.
+  final closeKeys = [
+    (name: 'remote back', close: (KeyboardFlowDriver keys) => keys.back()),
+    (
+      name: 'Escape',
+      close: (KeyboardFlowDriver keys) => keys.press(LogicalKeyboardKey.escape),
+    ),
+  ];
 
   testWidgets('remote can open a post and return home without touching', (
     tester,
@@ -70,19 +78,19 @@ void main() {
     expect(find.byType(EntryPage), findsOneWidget);
   });
 
-  testWidgets('remote back button closes the post details page', (
-    tester,
-  ) async {
-    final keys = await _mountOnTv(tester);
-    await _openPostWithRemote(keys);
+  for (final k in closeKeys) {
+    testWidgets('${k.name} closes the post details page', (tester) async {
+      final keys = await _mountOnTv(tester);
+      await _openPostWithRemote(keys);
 
-    await keys.back();
-    await keys.harness.pumpUntil(
-      tester,
-      () => postDetailsScaffold().evaluate().isEmpty,
-      description: 'details page to close',
-    );
-  });
+      await k.close(keys);
+      await keys.harness.pumpUntil(
+        tester,
+        () => postDetailsScaffold().evaluate().isEmpty,
+        description: 'details page to close',
+      );
+    });
+  }
 
   testWidgets('arrows change posts only while no control is focused', (
     tester,
@@ -106,11 +114,14 @@ void main() {
   });
 
   final dismissals = [
-    (name: 'select', dismiss: (KeyboardFlowDriver keys) => keys.select()),
-    (name: 'back', dismiss: (KeyboardFlowDriver keys) => keys.back()),
+    (
+      name: 'remote select',
+      dismiss: (KeyboardFlowDriver keys) => keys.select(),
+    ),
+    for (final k in closeKeys) (name: k.name, dismiss: k.close),
   ];
   for (final c in dismissals) {
-    testWidgets('remote ${c.name} button closes the changelog dialog', (
+    testWidgets('${c.name} closes the changelog dialog', (
       tester,
     ) async {
       final keys = await _mountOnTv(tester, showChangelog: true);
@@ -153,18 +164,20 @@ void main() {
     expect(tester.testTextInput.isVisible, isTrue);
   });
 
-  testWidgets('remote back closes search suggestions and stays home', (
-    tester,
-  ) async {
-    final keys = await _mountOnTv(tester);
-    await _openSearchSuggestions(keys);
+  for (final k in closeKeys) {
+    testWidgets('${k.name} closes search suggestions and stays home', (
+      tester,
+    ) async {
+      final keys = await _mountOnTv(tester);
+      await _openSearchSuggestions(keys);
 
-    await keys.back();
+      await k.close(keys);
 
-    expect(_searchSuggestions.evaluate(), isEmpty);
-    expect(keys.isFocusWithin(find.byType(DesktopSearchbar)), isTrue);
-    expect(find.byType(EntryPage), findsOneWidget);
-  });
+      expect(_searchSuggestions.evaluate(), isEmpty);
+      expect(keys.isFocusWithin(find.byType(DesktopSearchbar)), isTrue);
+      expect(find.byType(EntryPage), findsOneWidget);
+    });
+  }
 
   testWidgets('remote can reach every search suggestion', (tester) async {
     final keys = await _mountOnTv(tester);
@@ -281,22 +294,26 @@ void main() {
     expect(keys.isFocusWithin(find.byTooltip('Back')), isTrue);
   });
 
-  testWidgets('remote can open settings from the sidebar and close it', (
-    tester,
-  ) async {
-    final keys = await _mountOnTv(tester);
+  for (final k in closeKeys) {
+    testWidgets(
+      'remote can open settings from the sidebar and close it with '
+      '${k.name}',
+      (tester) async {
+        final keys = await _mountOnTv(tester);
 
-    await keys.navigateTo(_sidebarTile(Symbols.settings));
-    await keys.select();
-    await keys.harness.pumpUntilFound(tester, find.byType(SettingsPage));
+        await keys.navigateTo(_sidebarTile(Symbols.settings));
+        await keys.select();
+        await keys.harness.pumpUntilFound(tester, find.byType(SettingsPage));
 
-    await keys.back();
-    await keys.harness.pumpUntil(
-      tester,
-      () => find.byType(SettingsPage).evaluate().isEmpty,
-      description: 'settings to close',
+        await k.close(keys);
+        await keys.harness.pumpUntil(
+          tester,
+          () => find.byType(SettingsPage).evaluate().isEmpty,
+          description: 'settings to close',
+        );
+      },
     );
-  });
+  }
 
   final menus = [
     (
@@ -324,18 +341,20 @@ void main() {
       return keys;
     }
 
-    testWidgets('remote back closes the ${c.name} and returns to its button', (
-      tester,
-    ) async {
-      final keys = await openMenu(tester);
-      final route = ModalRoute.of(tester.element(c.button));
+    for (final k in closeKeys) {
+      testWidgets('${k.name} closes the ${c.name} and returns to its button', (
+        tester,
+      ) async {
+        final keys = await openMenu(tester);
+        final route = ModalRoute.of(tester.element(c.button));
 
-      await keys.back();
+        await k.close(keys);
 
-      expect(_openMenu.evaluate(), isEmpty);
-      expect(route?.isCurrent, isTrue);
-      expect(keys.isFocusWithin(c.button), isTrue);
-    });
+        expect(_openMenu.evaluate(), isEmpty);
+        expect(route?.isCurrent, isTrue);
+        expect(keys.isFocusWithin(c.button), isTrue);
+      });
+    }
 
     testWidgets('remote can reach every ${c.name} item', (tester) async {
       final keys = await openMenu(tester);
@@ -410,16 +429,18 @@ void main() {
       return keys;
     }
 
-    testWidgets('remote back closes the ${c.name} and returns to its button', (
-      tester,
-    ) async {
-      final keys = await openPopup(tester);
+    for (final k in closeKeys) {
+      testWidgets('${k.name} closes the ${c.name} and returns to its button', (
+        tester,
+      ) async {
+        final keys = await openPopup(tester);
 
-      await keys.back();
-      await keys.harness.settle(tester);
+        await k.close(keys);
+        await keys.harness.settle(tester);
 
-      expect(keys.isFocusWithin(c.returnsTo), isTrue);
-    });
+        expect(keys.isFocusWithin(c.returnsTo), isTrue);
+      });
+    }
 
     for (final check in screenChecks) {
       testWidgets('the ${c.name} ${check.name}', (tester) async {
