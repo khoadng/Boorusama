@@ -113,6 +113,8 @@
           required: true
           instructions-key: "booru.api_key_instructions.variants_1"
         overrides:
+          posts:
+            endpoint: "https://api.rule34.xxx/index.php?page=dapi&s=post&q=index&json=1"
           autocomplete:
             endpoint: "https://api.rule34.xxx/autocomplete.php"
           favorites:
