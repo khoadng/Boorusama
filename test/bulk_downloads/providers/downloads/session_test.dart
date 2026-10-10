@@ -487,8 +487,11 @@ void main() {
         ),
       );
 
-      // Wait for dry run to start
-      await Future.delayed(const Duration(milliseconds: 50));
+      await _eventually(
+        () async => (await repository.getSessionsByTaskId(task.id)).any(
+          (s) => s.status == DownloadSessionStatus.dryRun,
+        ),
+      );
 
       // Get session ID from the first session
       final sessions = await repository.getSessionsByTaskId(task.id);
@@ -506,8 +509,15 @@ void main() {
       );
       notifier = myContainer.read(bulkDownloadProvider.notifier);
 
-      // Wait for notifier to load
-      await Future.delayed(const Duration(milliseconds: 50));
+      await _eventually(
+        () async =>
+            myContainer
+                .read(bulkDownloadProvider)
+                .sessions
+                .any((s) => s.session.id == sessionId) &&
+            (await repository.getSession(sessionId))?.status ==
+                DownloadSessionStatus.pending,
+      );
 
       // Verify session is reset to pending
       final resetSession = await repository.getSession(sessionId);
@@ -1372,4 +1382,17 @@ void main() {
       },
     );
   });
+}
+
+Future<void> _eventually(
+  Future<bool> Function() condition, {
+  Duration timeout = const Duration(seconds: 5),
+}) async {
+  final deadline = DateTime.now().add(timeout);
+  while (!await condition()) {
+    if (DateTime.now().isAfter(deadline)) {
+      fail('Condition not met within $timeout');
+    }
+    await Future<void>.delayed(const Duration(milliseconds: 10));
+  }
 }

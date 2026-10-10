@@ -549,7 +549,16 @@ void main() {
     addTearDown(mouse.removePointer);
     await mouse.addPointer(location: Offset.zero);
     await mouse.moveTo(tester.getCenter(postTile(101)));
-    await tester.pump(const Duration(seconds: 2));
+    await tester.pump(const Duration(milliseconds: 200));
+    final infoBadge = find.descendant(
+      of: find.ancestor(
+        of: postTile(101),
+        matching: find.byType(PostListPrevewTooltip),
+      ),
+      matching: find.byIcon(Symbols.info),
+    );
+    await mouse.moveTo(tester.getCenter(infoBadge));
+    await tester.pump(const Duration(seconds: 1));
     await keys.harness.settle(tester);
     expect(find.byType(PostTagPreviewContainer), findsOneWidget);
 
