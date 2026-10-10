@@ -1,4 +1,5 @@
 // Package imports:
+import 'package:coreutils/coreutils.dart';
 import 'package:dio/dio.dart';
 
 // Project imports:
@@ -383,9 +384,10 @@ class SankakuClient {
   );
 }
 
-class SankakuAuthenticationException implements Exception {
+class SankakuAuthenticationException implements AuthenticationFailure {
   const SankakuAuthenticationException(this.message);
 
+  @override
   final String message;
 
   @override

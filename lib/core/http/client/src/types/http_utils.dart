@@ -39,6 +39,10 @@ TaskEither<BooruError, T> tryFetchRemoteData<T>({
         final other => '$other',
       },
     ),
+    AuthenticationFailure(:final message) => ServerError(
+      httpStatusCode: 401,
+      message: message,
+    ),
     DioException(:final error?) when _isCertificateException(error) => AppError(
       type: AppErrorType.certificateError,
       message: error.toString(),
