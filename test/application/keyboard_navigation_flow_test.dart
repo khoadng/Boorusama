@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -19,6 +20,7 @@ import 'package:boorusama/core/configs/create/src/widgets/create_config_button.d
 import 'package:boorusama/core/home/src/pages/entry_page.dart';
 import 'package:boorusama/core/posts/details_manager/widgets.dart';
 import 'package:boorusama/core/posts/explores/widgets.dart';
+import 'package:boorusama/core/posts/listing/widgets.dart';
 import 'package:boorusama/core/posts/post/widgets.dart';
 import 'package:boorusama/core/posts/post/src/pages/original_image_page.dart';
 import 'package:boorusama/core/premiums/providers.dart';
@@ -499,6 +501,24 @@ void main() {
       );
     },
   );
+
+  testWidgets('a key press closes the hover preview of a post', (
+    tester,
+  ) async {
+    final keys = await _mountOnTv(tester, viewport: kDesktopViewport);
+    final mouse = await tester.createGesture(kind: PointerDeviceKind.mouse);
+    addTearDown(mouse.removePointer);
+    await mouse.addPointer(location: Offset.zero);
+    await mouse.moveTo(tester.getCenter(postTile(101)));
+    await tester.pump(const Duration(seconds: 2));
+    await keys.harness.settle(tester);
+    expect(find.byType(PostTagPreviewContainer), findsOneWidget);
+
+    await keys.arrow(TraversalDirection.right);
+    await keys.harness.settle(tester);
+
+    expect(find.byType(PostTagPreviewContainer), findsNothing);
+  });
 
   testWidgets('arrows move between the action buttons on a post', (
     tester,

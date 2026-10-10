@@ -1,6 +1,9 @@
 // Dart imports:
 import 'dart:math';
 
+// Flutter imports:
+import 'package:flutter/services.dart';
+
 // Package imports:
 import 'package:anchor_ui/anchor_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -190,7 +193,7 @@ class DefaultPostPreviewHeader extends ConsumerWidget {
   }
 }
 
-class PostListPrevewTooltip extends ConsumerWidget {
+class PostListPrevewTooltip extends ConsumerStatefulWidget {
   const PostListPrevewTooltip({
     super.key,
     required this.overlayChildBuilder,
@@ -206,7 +209,29 @@ class PostListPrevewTooltip extends ConsumerWidget {
   overlayChildBuilder;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<PostListPrevewTooltip> createState() =>
+      _PostListPrevewTooltipState();
+}
+
+class _PostListPrevewTooltipState extends ConsumerState<PostListPrevewTooltip> {
+  final _controller = AnchorController();
+
+  @override
+  void dispose() {
+    HardwareKeyboard.instance.removeHandler(_hideOnKey);
+    _controller.dispose();
+    super.dispose();
+  }
+
+  // A hover preview is for the mouse. Once keys take over it would only hide
+  // the control they move focus to.
+  bool _hideOnKey(KeyEvent event) {
+    if (event is KeyDownEvent) _controller.hide();
+    return false;
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final colorScheme = Kurumi.themeOf(context).colorScheme;
     final screenWidth = MediaQuery.widthOf(context);
     final adjustedMaxWidth = min(
@@ -221,6 +246,9 @@ class PostListPrevewTooltip extends ConsumerWidget {
     );
 
     return AnchorPopover(
+      controller: _controller,
+      onShow: () => HardwareKeyboard.instance.addHandler(_hideOnKey),
+      onHide: () => HardwareKeyboard.instance.removeHandler(_hideOnKey),
       enabled: enableTooltip,
       overlayHeight: adjustedMaxHeight,
       overlayWidth: adjustedMaxWidth,
@@ -242,12 +270,12 @@ class PostListPrevewTooltip extends ConsumerWidget {
         color: colorScheme.outlineVariant,
         width: 1.5,
       ),
-      overlayBuilder: (context) => overlayChildBuilder(
+      overlayBuilder: (context) => widget.overlayChildBuilder(
         context,
         adjustedMaxWidth,
         adjustedMaxHeight,
       ),
-      child: child,
+      child: widget.child,
     );
   }
 }
