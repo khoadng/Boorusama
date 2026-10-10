@@ -124,10 +124,18 @@ class _KurumiLikeButtonState extends State<KurumiLikeButton>
     return Semantics(
       button: true,
       toggled: _isLiked,
-      child: GestureDetector(
-        behavior: HitTestBehavior.translucent,
-        onTap: _handleTap,
-        child: result,
+      child: FocusableActionDetector(
+        mouseCursor: SystemMouseCursors.click,
+        actions: {
+          ActivateIntent: CallbackAction<ActivateIntent>(
+            onInvoke: (_) => _handleTap(),
+          ),
+        },
+        child: GestureDetector(
+          behavior: HitTestBehavior.translucent,
+          onTap: _handleTap,
+          child: result,
+        ),
       ),
     );
   }

@@ -11,11 +11,13 @@ import 'package:material_symbols_icons/symbols.dart';
 import 'package:boorusama/core/changelogs/dialog.dart';
 import 'package:boorusama/core/changelogs/providers.dart';
 import 'package:boorusama/core/changelogs/types.dart';
+import 'package:boorusama/core/posts/details_parts/widgets.dart';
+import 'package:boorusama/core/configs/listing/providers.dart';
+import 'package:boorusama/core/configs/listing/types.dart';
 import 'package:boorusama/core/comments/types.dart';
 import 'package:boorusama/core/configs/create/src/widgets/create_config_button.dart';
 import 'package:boorusama/core/home/src/pages/entry_page.dart';
 import 'package:boorusama/core/posts/details_manager/widgets.dart';
-import 'package:boorusama/core/posts/details_parts/widgets.dart';
 import 'package:boorusama/core/posts/explores/widgets.dart';
 import 'package:boorusama/core/posts/post/widgets.dart';
 import 'package:boorusama/core/posts/post/src/pages/original_image_page.dart';
@@ -498,6 +500,34 @@ void main() {
     },
   );
 
+  testWidgets('arrows move between the action buttons on a post', (
+    tester,
+  ) async {
+    final keys = await _mountOnTv(
+      tester,
+      viewport: kDesktopViewport,
+      thumbnailActions: ThumbnailActions(
+        primary: ThumbnailAction.download,
+        secondary: ThumbnailAction.bookmark,
+      ),
+    );
+    final download = find.descendant(
+      of: postTile(101),
+      matching: _iconButton(Symbols.download),
+    );
+    final bookmark = find.descendant(
+      of: postTile(101),
+      matching: find.byType(BookmarkPostLikeButtonButton),
+    );
+
+    await keys.focusOn(download);
+    await keys.arrow(TraversalDirection.up);
+    expect(keys.isFocusWithin(bookmark), isTrue);
+
+    await keys.arrow(TraversalDirection.down);
+    expect(keys.isFocusWithin(download), isTrue);
+  });
+
   testWidgets('the remote play/pause key pauses and resumes a video post', (
     tester,
   ) async {
@@ -907,6 +937,7 @@ Future<KeyboardFlowDriver> _mountOnTv(
   List<TestPost>? posts,
   List<String> blacklistedTags = const [],
   Size viewport = kTvViewport,
+  ThumbnailActions? thumbnailActions,
 }) async {
   final backend = FakeBooruBackend()
     ..enqueuePosts(page: 1, posts: posts ?? testPostRange(101, 101))
@@ -937,6 +968,8 @@ Future<KeyboardFlowDriver> _mountOnTv(
       deterministicImageDioOverride(),
       if (showPremiumFeatures)
         showPremiumFeatsProvider.overrideWith((ref) => true),
+      if (thumbnailActions case final actions?)
+        thumbnailActionsProvider.overrideWithValue(actions),
     ],
   );
   // A blacklist makes the grid filter posts in a real isolate, which only
