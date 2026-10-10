@@ -62,9 +62,9 @@ dependency_overrides:
     git:
       url: https://github.com/khoadng/anchor.git
       path: packages/anchor_ui
-      ref: dfb2c3199681025e2f8615bbafbe490f576c342f
+      ref: c2f181c78391b49767c1a6d3f910f8a4fa198169
   flutter_anchor:
     git:
       url: https://github.com/khoadng/anchor.git
       path: packages/flutter_anchor
-      ref: dfb2c3199681025e2f8615bbafbe490f576c342f
+      ref: c2f181c78391b49767c1a6d3f910f8a4fa198169

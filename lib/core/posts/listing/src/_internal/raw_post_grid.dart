@@ -3,6 +3,7 @@ import 'package:flutter/rendering.dart' show ScrollCacheExtent;
 import 'package:flutter/services.dart';
 
 // Package imports:
+import 'package:anchor_ui/anchor_ui.dart';
 import 'package:auto_scrolling/auto_scrolling.dart';
 import 'package:equatable/equatable.dart';
 import 'package:foundation/widgets.dart';
@@ -631,16 +632,20 @@ class _CustomScrollViewState extends State<_CustomScrollView> {
             child: AutoScroll(
               controller: widget.controller,
               anchorBuilder: (context) => const SingleDirectionAnchor(),
-              child: CustomScrollView(
-                physics: const AlwaysScrollableScrollPhysics(
-                  parent: ClampingScrollPhysics(),
+              child: AnchorHoverGroup(
+                child: CustomScrollView(
+                  physics: const AlwaysScrollableScrollPhysics(
+                    parent: ClampingScrollPhysics(),
+                  ),
+                  controller: widget.controller,
+                  scrollCacheExtent: switch (options.cacheExtent) {
+                    final cacheExtent? => ScrollCacheExtent.pixels(
+                      cacheExtent,
+                    ),
+                    null => null,
+                  },
+                  slivers: widget.slivers,
                 ),
-                controller: widget.controller,
-                scrollCacheExtent: switch (options.cacheExtent) {
-                  final cacheExtent? => ScrollCacheExtent.pixels(cacheExtent),
-                  null => null,
-                },
-                slivers: widget.slivers,
               ),
             ),
           );
