@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:material_ui/material_ui.dart' as mui show InputDecorator;
 
 import 'headless_app_harness.dart';
 
@@ -249,7 +250,7 @@ final class KeyboardFlowDriver {
         }
         if (!_isVisible(node)) continue;
         await harness.settle(tester);
-        final rect = node.rect;
+        final rect = _highlightArea(node);
         final focused = await _capture();
 
         node.unfocus();
@@ -257,7 +258,10 @@ final class KeyboardFlowDriver {
         final unfocused = await _capture();
 
         final ratio = tester.view.devicePixelRatio;
-        final outline = 2 * 2 * (rect.width + rect.height) * ratio * ratio;
+        // Rounded corners blend some edge pixels below 3:1, so a full 2px
+        // outline can fall a little short of its rectangle's area.
+        final outline =
+            0.95 * 2 * 2 * (rect.width + rect.height) * ratio * ratio;
         // A highlight may sit just outside the control, like a focus ring.
         final changed = _contrastingPixels(
           focused,
@@ -525,6 +529,29 @@ final class KeyboardFlowDriver {
         Offset.zero & tester.view.physicalSize / tester.view.devicePixelRatio;
     final rect = node.rect;
     return !rect.isEmpty && screen.overlaps(rect);
+  }
+
+  // A text field shows focus on its decoration, which surrounds the editable
+  // text by its padding.
+  Rect _highlightArea(FocusNode node) {
+    final context = node.context;
+    if (context?.findAncestorWidgetOfExactType<EditableText>() == null) {
+      return node.rect;
+    }
+    return switch (_decoratorBox(context!)) {
+      final box? => box.localToGlobal(Offset.zero) & box.size,
+      null => node.rect,
+    };
+  }
+
+  RenderBox? _decoratorBox(BuildContext context) {
+    RenderBox? box;
+    context.visitAncestorElements((element) {
+      if (element.widget is! mui.InputDecorator) return true;
+      box = element.renderObject as RenderBox?;
+      return false;
+    });
+    return box;
   }
 
   bool isNodeWithin(FocusNode node, Finder finder) => switch (node.context) {

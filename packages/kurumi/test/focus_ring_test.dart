@@ -1,6 +1,6 @@
 // Flutter imports:
 import 'package:flutter/gestures.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -160,6 +160,56 @@ void main() {
 
         expect(button.hasPrimaryFocus, c.focusesButton);
         expect(field.hasPrimaryFocus, !c.focusesButton);
+      },
+    );
+  }
+
+  final fields = [
+    (
+      name: 'a text field with its own focused border',
+      decoration: const InputDecoration(
+        focusedBorder: OutlineInputBorder(borderSide: BorderSide(width: 2)),
+      ),
+      drawsRing: false,
+    ),
+    (
+      name: 'a borderless text field',
+      decoration: const InputDecoration(border: InputBorder.none),
+      drawsRing: true,
+    ),
+  ];
+  for (final c in fields) {
+    testWidgets(
+      'focus ring ${c.drawsRing ? 'outlines' : 'leaves alone'} ${c.name}',
+      (tester) async {
+        final previous = FocusManager.instance.highlightStrategy;
+        FocusManager.instance.highlightStrategy =
+            FocusHighlightStrategy.alwaysTraditional;
+        addTearDown(() => FocusManager.instance.highlightStrategy = previous);
+        final node = FocusNode();
+        addTearDown(node.dispose);
+
+        await tester.pumpWidget(
+          MaterialApp(
+            home: KurumiFocusRing(
+              child: Material(
+                child: Center(
+                  child: TextField(focusNode: node, decoration: c.decoration),
+                ),
+              ),
+            ),
+          ),
+        );
+        node.requestFocus();
+        await tester.sendKeyEvent(LogicalKeyboardKey.shift);
+        await tester.pump();
+        await tester.pump();
+
+        final ring = paints..drrect();
+        expect(
+          find.byType(KurumiFocusRing),
+          c.drawsRing ? ring : isNot(ring),
+        );
       },
     );
   }

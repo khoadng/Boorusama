@@ -8,7 +8,8 @@ import 'cross_scope_focus.dart';
 /// D-pad, so focus stays easy to spot from across a room. Installed once near
 /// the app root; touch and mouse users never see it.
 ///
-/// Controls that arrows skip, such as a page-wide key handler, get no ring.
+/// Controls that arrows skip, such as a page-wide key handler, get no ring,
+/// and neither do text fields that draw their own focused border.
 /// Desktop starts in keyboard highlight mode and a mouse click keeps it there,
 /// so the ring waits for a key press and hides again on any pointer press. A
 /// mouse press also focuses the control under it, so the next key press
@@ -124,12 +125,31 @@ class _KurumiFocusRingState extends State<KurumiFocusRing> {
           when _keyboardActive &&
               node is! FocusScopeNode &&
               !node.skipTraversal &&
+              !_drawsOwnFocusBorder(node) &&
               (node.context?.mounted ?? false) =>
         switch (visibleFocusRect(node)) {
           final rect when rect.isEmpty => null,
           final rect => rect.shift(-origin),
         },
       _ => null,
+    };
+  }
+
+  // Text fields get the theme's decoration merged in before it reaches
+  // their decorator, so what it holds is what gets drawn.
+  static bool _drawsOwnFocusBorder(FocusNode node) {
+    final context = node.context;
+    if (context?.findAncestorWidgetOfExactType<EditableText>() == null) {
+      return false;
+    }
+    final decoration = context
+        ?.findAncestorWidgetOfExactType<InputDecorator>()
+        ?.decoration;
+    return switch (decoration?.focusedBorder ?? decoration?.border) {
+      null => decoration != null && decoration.isCollapsed != true,
+      final border =>
+        border.borderSide.style != BorderStyle.none &&
+            border.borderSide.width > 0,
     };
   }
 
