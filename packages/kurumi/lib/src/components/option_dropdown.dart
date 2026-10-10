@@ -8,6 +8,7 @@ import 'package:material_symbols_icons/symbols.dart';
 import '../foundation/platform.dart';
 import '../theme/theme.dart';
 import 'anchor.dart';
+import 'focus_ring.dart';
 
 class KurumiOptionDropDownButton<T> extends StatefulWidget {
   const KurumiOptionDropDownButton({
@@ -274,45 +275,60 @@ class _OptionDropDownItem<T> extends StatelessWidget {
       button: true,
       selected: isSelected,
       onTap: onTap,
-      child: Material(
-        color: Colors.transparent,
-        child: InkWell(
-          onTap: onTap,
-          autofocus: isSelected,
-          borderRadius: BorderRadius.circular(8),
-          child: Container(
-            margin: const EdgeInsets.symmetric(
-              vertical: 2,
-            ),
-            padding: EdgeInsets.symmetric(
-              horizontal: 12,
-              vertical: isDesktop ? 4 : 12,
-            ),
-            decoration: isSelected && !showSelectedCheckmark
-                ? BoxDecoration(
-                    color: colorScheme.primaryContainer.withValues(alpha: 0.3),
-                    borderRadius: BorderRadius.circular(8),
-                  )
-                : null,
-            child: Row(
-              children: [
-                Expanded(
-                  child: child,
+      child: KurumiFocusHighlight(
+        builder: (context, highlighted) => Material(
+          color: Colors.transparent,
+          child: InkWell(
+            onTap: onTap,
+            autofocus: isSelected,
+            focusColor: Colors.transparent,
+            borderRadius: BorderRadius.circular(8),
+            child: Container(
+              margin: const EdgeInsets.symmetric(
+                vertical: 2,
+              ),
+              padding: EdgeInsets.symmetric(
+                horizontal: 12,
+                vertical: isDesktop ? 4 : 12,
+              ),
+              decoration: switch ((highlighted, isSelected)) {
+                (true, _) => BoxDecoration(
+                  color: colorScheme.primary,
+                  borderRadius: BorderRadius.circular(8),
                 ),
-                if (showSelectedCheckmark) ...[
-                  const SizedBox(width: 12),
-                  SizedBox.square(
-                    dimension: 20,
-                    child: isSelected
-                        ? Icon(
-                            Symbols.check,
-                            size: 20,
-                            color: colorScheme.primary,
-                          )
-                        : null,
-                  ),
-                ],
-              ],
+                (false, true) when !showSelectedCheckmark => BoxDecoration(
+                  color: colorScheme.primaryContainer.withValues(alpha: 0.3),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                _ => null,
+              },
+              child: DefaultTextStyle.merge(
+                style: highlighted
+                    ? TextStyle(color: colorScheme.onPrimary)
+                    : null,
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: child,
+                    ),
+                    if (showSelectedCheckmark) ...[
+                      const SizedBox(width: 12),
+                      SizedBox.square(
+                        dimension: 20,
+                        child: isSelected
+                            ? Icon(
+                                Symbols.check,
+                                size: 20,
+                                color: highlighted
+                                    ? colorScheme.onPrimary
+                                    : colorScheme.primary,
+                              )
+                            : null,
+                      ),
+                    ],
+                  ],
+                ),
+              ),
             ),
           ),
         ),

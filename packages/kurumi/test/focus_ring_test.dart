@@ -213,4 +213,44 @@ void main() {
       },
     );
   }
+
+  testWidgets(
+    'a control with its own focus highlight shows it only once keys are in '
+    'use, and never gets the ring',
+    (tester) async {
+      final previous = FocusManager.instance.highlightStrategy;
+      FocusManager.instance.highlightStrategy =
+          FocusHighlightStrategy.alwaysTraditional;
+      addTearDown(() => FocusManager.instance.highlightStrategy = previous);
+      final node = FocusNode();
+      addTearDown(node.dispose);
+
+      await tester.pumpWidget(
+        MaterialApp(
+          home: KurumiFocusRing(
+            child: Center(
+              child: KurumiFocusHighlight(
+                builder: (context, highlighted) => TextButton(
+                  focusNode: node,
+                  onPressed: () {},
+                  child: Text(highlighted ? 'highlighted' : 'plain'),
+                ),
+              ),
+            ),
+          ),
+        ),
+      );
+      node.requestFocus();
+      await tester.pump();
+      await tester.pump();
+      expect(find.text('plain'), findsOneWidget);
+
+      await tester.sendKeyEvent(LogicalKeyboardKey.shift);
+      await tester.pump();
+      await tester.pump();
+
+      expect(find.text('highlighted'), findsOneWidget);
+      expect(find.byType(KurumiFocusRing), isNot(paints..drrect()));
+    },
+  );
 }

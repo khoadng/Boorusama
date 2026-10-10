@@ -5,6 +5,7 @@ import 'package:material_ui/material_ui.dart';
 
 import '../theme/theme.dart';
 import 'anchor.dart';
+import 'focus_ring.dart';
 
 class KurumiPopupMenuButton extends StatefulWidget {
   const KurumiPopupMenuButton({
@@ -117,32 +118,41 @@ class KurumiPopupMenuItem extends StatelessWidget {
       button: true,
       enabled: true,
       onTap: handleTap,
-      child: Material(
-        color: Colors.transparent,
-        child: InkWell(
-          onTap: handleTap,
+      child: KurumiFocusHighlight(
+        builder: (context, highlighted) => Material(
+          color: highlighted ? colorScheme.primary : Colors.transparent,
           borderRadius: BorderRadius.circular(8),
-          child: Padding(
-            padding: const EdgeInsets.symmetric(
-              horizontal: 8,
-              vertical: 8,
-            ),
-            child: Row(
-              children: [
-                if (icon case final icon?)
-                  Theme(
-                    data: Theme.of(context).copyWith(
-                      iconTheme: IconThemeData(
-                        color: colorScheme.onSurfaceVariant,
-                      ),
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.only(right: 8),
-                      child: icon,
-                    ),
+          child: InkWell(
+            onTap: handleTap,
+            focusColor: Colors.transparent,
+            borderRadius: BorderRadius.circular(8),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(
+                horizontal: 8,
+                vertical: 8,
+              ),
+              child: IconTheme.merge(
+                data: IconThemeData(
+                  color: highlighted
+                      ? colorScheme.onPrimary
+                      : colorScheme.onSurfaceVariant,
+                ),
+                child: DefaultTextStyle.merge(
+                  style: highlighted
+                      ? TextStyle(color: colorScheme.onPrimary)
+                      : null,
+                  child: Row(
+                    children: [
+                      if (icon case final icon?)
+                        Padding(
+                          padding: const EdgeInsets.only(right: 8),
+                          child: icon,
+                        ),
+                      Flexible(child: title),
+                    ],
                   ),
-                Flexible(child: title),
-              ],
+                ),
+              ),
             ),
           ),
         ),

@@ -9,7 +9,8 @@ import 'cross_scope_focus.dart';
 /// the app root; touch and mouse users never see it.
 ///
 /// Controls that arrows skip, such as a page-wide key handler, get no ring,
-/// and neither do text fields that draw their own focused border.
+/// and neither do text fields that draw their own focused border or controls
+/// inside a [KurumiFocusHighlight], such as menu rows.
 /// Desktop starts in keyboard highlight mode and a mouse click keeps it there,
 /// so the ring waits for a key press and hides again on any pointer press. A
 /// mouse press also focuses the control under it, so the next key press
@@ -22,6 +23,16 @@ class KurumiFocusRing extends StatefulWidget {
 
   final Widget child;
 
+  /// Whether keyboard focus should show right now: keys are in use rather
+  /// than a mouse or touch. Controls that draw their own focus highlight
+  /// follow this, as the ring does.
+  static bool focusVisibleOf(BuildContext context) =>
+      context
+          .dependOnInheritedWidgetOfExactType<_FocusVisibleScope>()
+          ?.notifier
+          ?.value ??
+      FocusManager.instance.highlightMode == FocusHighlightMode.traditional;
+
   @override
   State<KurumiFocusRing> createState() => _KurumiFocusRingState();
 }
@@ -29,6 +40,7 @@ class KurumiFocusRing extends StatefulWidget {
 class _KurumiFocusRingState extends State<KurumiFocusRing> {
   Rect? _ring;
   var _keyboardActive = false;
+  final _focusVisible = ValueNotifier(false);
 
   @override
   void initState() {
@@ -48,6 +60,7 @@ class _KurumiFocusRingState extends State<KurumiFocusRing> {
       ..removeHighlightModeListener(_onHighlightModeChanged);
     GestureBinding.instance.pointerRouter.removeGlobalRoute(_onPointer);
     HardwareKeyboard.instance.removeHandler(_onKey);
+    _focusVisible.dispose();
     super.dispose();
   }
 
@@ -100,7 +113,12 @@ class _KurumiFocusRingState extends State<KurumiFocusRing> {
 
   void _onHighlightModeChanged(FocusHighlightMode _) => _scheduleSync();
 
-  void _scheduleSync() => WidgetsBinding.instance.ensureVisualUpdate();
+  void _scheduleSync() {
+    _focusVisible.value =
+        _keyboardActive &&
+        FocusManager.instance.highlightMode == FocusHighlightMode.traditional;
+    WidgetsBinding.instance.ensureVisualUpdate();
+  }
 
   // Layout is final once a frame ends, so the ring is measured then. Focused
   // controls move while scrolling, hence a check after every frame; it only
@@ -126,6 +144,9 @@ class _KurumiFocusRingState extends State<KurumiFocusRing> {
               node is! FocusScopeNode &&
               !node.skipTraversal &&
               !_drawsOwnFocusBorder(node) &&
+              node.context
+                      ?.findAncestorStateOfType<_KurumiFocusHighlightState>() ==
+                  null &&
               (node.context?.mounted ?? false) =>
         switch (visibleFocusRect(node)) {
           final rect when rect.isEmpty => null,
@@ -157,7 +178,7 @@ class _KurumiFocusRingState extends State<KurumiFocusRing> {
   Widget build(BuildContext context) => Stack(
     fit: StackFit.passthrough,
     children: [
-      widget.child,
+      _FocusVisibleScope(notifier: _focusVisible, child: widget.child),
       Positioned.fill(
         child: IgnorePointer(
           child: CustomPaint(
@@ -170,6 +191,41 @@ class _KurumiFocusRingState extends State<KurumiFocusRing> {
         ),
       ),
     ],
+  );
+}
+
+class _FocusVisibleScope extends InheritedNotifier<ValueNotifier<bool>> {
+  const _FocusVisibleScope({required super.notifier, required super.child});
+}
+
+/// A control that shows keyboard focus itself instead of with the ring, as
+/// menus do by filling the focused row. [builder] gets whether to draw that
+/// highlight: something inside has focus and keys are in use.
+class KurumiFocusHighlight extends StatefulWidget {
+  const KurumiFocusHighlight({
+    required this.builder,
+    super.key,
+  });
+
+  final Widget Function(BuildContext context, bool highlighted) builder;
+
+  @override
+  State<KurumiFocusHighlight> createState() => _KurumiFocusHighlightState();
+}
+
+class _KurumiFocusHighlightState extends State<KurumiFocusHighlight> {
+  var _hasFocus = false;
+
+  @override
+  Widget build(BuildContext context) => Focus(
+    canRequestFocus: false,
+    skipTraversal: true,
+    includeSemantics: false,
+    onFocusChange: (hasFocus) => setState(() => _hasFocus = hasFocus),
+    child: widget.builder(
+      context,
+      _hasFocus && KurumiFocusRing.focusVisibleOf(context),
+    ),
   );
 }
 

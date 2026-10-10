@@ -6,6 +6,7 @@ import 'package:material_ui/material_ui.dart';
 import '../accessibility/behavior.dart';
 import '../foundation/platform.dart';
 import '../theme/theme.dart';
+import 'focus_ring.dart';
 import 'back_handler.dart';
 
 /// Opens [menuItemsBuilder] on right-click or long-press anywhere in
@@ -287,28 +288,35 @@ class KurumiContextMenuTile extends StatelessWidget {
           label: title,
           onTap: enabled ? handleTap : null,
           excludeSemantics: true,
-          child: InkWell(
-            hoverColor: enabled ? colorScheme.primary : Colors.transparent,
-            customBorder: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(4),
-            ),
-            onTap: enabled ? handleTap : null,
-            child: Container(
-              padding: const EdgeInsets.symmetric(
-                vertical: 8,
-                horizontal: 8,
-              ),
-              decoration: BoxDecoration(
+          child: KurumiFocusHighlight(
+            builder: (context, highlighted) => InkWell(
+              hoverColor: enabled ? colorScheme.primary : Colors.transparent,
+              focusColor: Colors.transparent,
+              customBorder: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(4),
               ),
-              child: Text(
-                title,
-                style: TextStyle(
-                  color: switch ((enabled, destructive)) {
-                    (false, _) => colorScheme.onSurface.withValues(alpha: 0.38),
-                    (true, true) => colorScheme.error,
-                    (true, false) => colorScheme.onSurface,
-                  },
+              onTap: enabled ? handleTap : null,
+              child: Container(
+                padding: const EdgeInsets.symmetric(
+                  vertical: 8,
+                  horizontal: 8,
+                ),
+                decoration: BoxDecoration(
+                  color: highlighted ? colorScheme.primary : null,
+                  borderRadius: BorderRadius.circular(4),
+                ),
+                child: Text(
+                  title,
+                  style: TextStyle(
+                    color: switch ((enabled, destructive, highlighted)) {
+                      (false, _, _) => colorScheme.onSurface.withValues(
+                        alpha: 0.38,
+                      ),
+                      (true, _, true) => colorScheme.onPrimary,
+                      (true, true, false) => colorScheme.error,
+                      (true, false, false) => colorScheme.onSurface,
+                    },
+                  ),
                 ),
               ),
             ),
