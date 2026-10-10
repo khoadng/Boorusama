@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:anchor_ui/anchor_ui.dart';
+import 'package:flutter/services.dart';
 import 'package:material_ui/material_ui.dart';
 
 import '../foundation/platform.dart';
@@ -128,14 +129,20 @@ class _KurumiAnchorState extends State<KurumiAnchor>
         ),
         onShow: widget.onShow,
         onHide: widget.onHide,
-        overlayBuilder: (context) => FocusScope(
-          node: _overlayScope,
-          onFocusChange: (hasFocus) {
-            if (!hasFocus && widget.controller.isShowing) {
-              widget.controller.hide();
-            }
+        overlayBuilder: (context) => CallbackShortcuts(
+          bindings: {
+            const SingleActivator(LogicalKeyboardKey.escape):
+                widget.controller.hide,
           },
-          child: Builder(builder: _buildOverlay),
+          child: FocusScope(
+            node: _overlayScope,
+            onFocusChange: (hasFocus) {
+              if (!hasFocus && widget.controller.isShowing) {
+                widget.controller.hide();
+              }
+            },
+            child: Builder(builder: _buildOverlay),
+          ),
         ),
         child: widget.child,
       ),
