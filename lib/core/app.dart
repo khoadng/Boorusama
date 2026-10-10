@@ -47,6 +47,8 @@ class BoorusamaCoreApp extends ConsumerWidget {
             actions: {
               ...WidgetsApp.defaultActions,
               DirectionalFocusIntent: KurumiDirectionalFocusAction(),
+              NextFocusIntent: KurumiNextFocusAction(),
+              PreviousFocusIntent: KurumiPreviousFocusAction(),
               ExtendSelectionVerticallyToAdjacentLineIntent:
                   KurumiLeaveSingleLineFieldAction(),
               ExtendSelectionByCharacterIntent:

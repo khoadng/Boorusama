@@ -14,12 +14,19 @@ import 'package:material_ui/material_ui.dart';
 ///   direction;
 /// * scrolls the newly focused control into view when it ends up off-screen,
 ///   which the default skips when moving up onto a control below the
-///   viewport.
+///   viewport;
+/// * forgets the arrow history once focus moves another way, such as by a
+///   click or Tab, so reversing an arrow can't jump back to where the
+///   earlier arrows came from.
 class KurumiDirectionalFocusAction extends DirectionalFocusAction {
+  // Shared by every instance, since the app root may rebuild the action.
+  static WeakReference<FocusNode>? _lastLanding;
+
   @override
   void invoke(DirectionalFocusIntent intent) {
     final focused = primaryFocus;
     if (focused == null) return;
+    if (_lastLanding?.target != focused) _forgetHistory(focused);
 
     // The default traversal scrolls its pick into view right away, so what
     // was hidden has to be noted before moving.
@@ -64,9 +71,21 @@ class KurumiDirectionalFocusAction extends DirectionalFocusAction {
       _ => null,
     };
 
+    _lastLanding = switch (visible ?? landed) {
+      final node? => WeakReference(node),
+      null => null,
+    };
     if (visible == null) return _revealFocus();
     visible.requestFocus();
     scheduleMicrotask(_revealFocus);
+  }
+
+  // The default traversal reverses an arrow by returning to the control the
+  // previous arrow left, without checking focus is still where it went.
+  static void _forgetHistory(FocusNode node) {
+    if ((node.context, node.nearestScope) case (final context?, final scope?)) {
+      FocusTraversalGroup.maybeOf(context)?.invalidateScopeData(scope);
+    }
   }
 
   // Moving within a list onto a control scrolled out of view is expected, as
@@ -130,17 +149,27 @@ Rect visibleFocusRect(FocusNode node) {
   var rect = node.rect;
   if (!rect.isFinite) return Rect.zero;
 
+  final control = context.findRenderObject();
   for (
     var scrollable = Scrollable.maybeOf(context);
     scrollable != null;
     scrollable = Scrollable.maybeOf(scrollable.context)
   ) {
+    // A menu anchored inside a scroll view is built under it but painted in
+    // an overlay, out of its clip.
     if (scrollable.context.findRenderObject() case final RenderBox box
-        when box.hasSize) {
+        when box.hasSize && _paintsWithin(control, box)) {
       rect = rect.intersect(box.localToGlobal(Offset.zero) & box.size);
     }
   }
   return rect;
+}
+
+bool _paintsWithin(RenderObject? child, RenderObject ancestor) {
+  for (var node = child; node != null; node = node.parent) {
+    if (identical(node, ancestor)) return true;
+  }
+  return false;
 }
 
 /// The node closest to [from] among those past its edge in [direction] that
@@ -240,9 +269,13 @@ class KurumiLeaveSingleLineFieldAction
       _ => null,
     };
 
-    return switch ((direction, focusContext)) {
-      (final direction?, final focusContext?) => Actions.maybeInvoke(
-        focusContext,
+    final fieldContext = focusContext
+        ?.findAncestorStateOfType<EditableTextState>()
+        ?.context;
+    return switch ((direction, fieldContext)) {
+      // From above the field, whose own focus action would bypass the app's.
+      (final direction?, final fieldContext?) => Actions.maybeInvoke(
+        fieldContext,
         DirectionalFocusIntent(direction, ignoreTextFields: false),
       ),
       _ => callingAction?.invoke(intent),
@@ -253,3 +286,41 @@ class KurumiLeaveSingleLineFieldAction
       value.selection.isCollapsed &&
       value.selection.baseOffset == (forward ? value.text.length : 0);
 }
+
+/// Tab that keeps the control it lands on in view. Flutter's Tab only
+/// scrolls a control in when it lies past the end of its list, so after
+/// wrapping around the screen a long list scrolled to its end, such as a
+/// sidebar, stays there while focus walks down from its top.
+///
+/// Register under [NextFocusIntent], with [KurumiPreviousFocusAction] for
+/// Shift+Tab.
+class KurumiNextFocusAction extends NextFocusAction {
+  @override
+  bool invoke(NextFocusIntent intent) {
+    final result = super.invoke(intent);
+    _revealFocusSoon(ScrollPositionAlignmentPolicy.keepVisibleAtStart);
+    return result;
+  }
+}
+
+/// Shift+Tab counterpart of [KurumiNextFocusAction].
+class KurumiPreviousFocusAction extends PreviousFocusAction {
+  @override
+  bool invoke(PreviousFocusIntent intent) {
+    final result = super.invoke(intent);
+    _revealFocusSoon(ScrollPositionAlignmentPolicy.keepVisibleAtEnd);
+    return result;
+  }
+}
+
+// Focus changes apply in a microtask.
+void _revealFocusSoon(ScrollPositionAlignmentPolicy policy) =>
+    scheduleMicrotask(
+      () => switch (FocusManager.instance.primaryFocus?.context) {
+        final context? when context.mounted => Scrollable.ensureVisible(
+          context,
+          alignmentPolicy: policy,
+        ),
+        _ => null,
+      },
+    );

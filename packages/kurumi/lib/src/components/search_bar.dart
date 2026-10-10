@@ -120,7 +120,14 @@ class _KurumiSearchBarState extends State<KurumiSearchBar> {
 
   KeyEventResult _stopEditing({TraversalDirection? then}) {
     _barNode.requestFocus();
-    if (then != null) _barNode.focusInDirection(then);
+    if (then != null) {
+      // Arrow history from before the field took focus, by a click or
+      // otherwise, would send the arrow back to where that history started.
+      if (_barNode.nearestScope case final scope?) {
+        FocusTraversalGroup.maybeOf(context)?.invalidateScopeData(scope);
+      }
+      _barNode.focusInDirection(then);
+    }
     return KeyEventResult.handled;
   }
 
