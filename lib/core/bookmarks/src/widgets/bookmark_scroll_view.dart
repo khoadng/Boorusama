@@ -52,15 +52,29 @@ class BookmarkScrollView extends ConsumerStatefulWidget {
 class _BookmarkScrollViewState extends ConsumerState<BookmarkScrollView> {
   final _selectionModeController = SelectionModeController();
 
-  List<String> _parseTagsFromText(String text) {
-    return text.isEmpty
-        ? <String>[]
-        : text
-              .trim()
-              .replaceAll(RegExp(r'\s+'), ' ')
-              .split(' ')
-              .where((e) => e.isNotEmpty)
-              .toList();
+  ({
+    List<String> include,
+    List<String> exclude,
+  })
+  _parseTagsFromText(String text) {
+    if (text.isEmpty) {
+      return (include: <String>[], exclude: <String>[]);
+    }
+
+    final segments = text
+        .trim()
+        .replaceAll(RegExp(r'\s+'), ' ')
+        .split(' ')
+        .where((e) => e.isNotEmpty)
+        .toList();
+
+    return (
+      include: segments.where((e) => !e.startsWith('-')).toList(),
+      exclude: segments
+          .where((e) => e.startsWith('-'))
+          .map((e) => e.substring(1))
+          .toList(),
+    );
   }
 
   @override
@@ -78,12 +92,15 @@ class _BookmarkScrollViewState extends ConsumerState<BookmarkScrollView> {
       },
       fetcher: (page) => TaskEither.Do(
         ($) async {
-          final searchTags = _parseTagsFromText(widget.searchController.text);
+          final (:include, :exclude) = _parseTagsFromText(
+            widget.searchController.text,
+          );
           final sortType = ref.read(selectedBookmarkSortTypeProvider);
           final selectedBooruUrl = ref.read(selectedBooruUrlProvider);
           final shuffleState = ref.read(bookmarkShuffleProvider);
           final bookmarks = filterBookmarks(
-            selectedTags: searchTags,
+            selectedTags: include,
+            excludedTags: exclude,
             bookmarks: await (await ref.read(bookmarkRepoProvider.future))
                 .getAllBookmarksOrEmpty(
                   imageUrlResolver: (booruId) =>
