@@ -6,6 +6,8 @@ import 'package:material_symbols_icons/symbols.dart';
 import 'package:boorusama/core/posts/details_parts/widgets.dart';
 
 import '../support/boorusama_test_runtime.dart';
+import 'support/app_flow_driver.dart';
+import 'support/app_flow_finders.dart';
 import 'support/fake_booru_backend.dart';
 import 'support/headless_app_harness.dart';
 
@@ -43,4 +45,38 @@ void main() {
       }
     },
   );
+
+  for (final via in PostMenuOpener.values) {
+    testWidgets(
+      'bookmarks and unbookmarks a post from its grid menu by ${via.label}',
+      (tester) async {
+        final backend = FakeBooruBackend();
+        final repository = MemoryBookmarkRepository();
+        final harness = HeadlessAppHarness(
+          booruBackend: backend,
+          runtime: backend.createRuntime(bookmarkRepository: repository),
+        );
+        final driver = AppFlowDriver(tester: tester, harness: harness);
+
+        try {
+          await harness.pump(tester);
+          await harness.pumpUntilFound(tester, postTile(101));
+          await harness.settle(tester);
+          final strings = appStrings(tester).post.detail;
+
+          await driver.openPostMenu(101, via: via);
+          await driver.choosePostMenuAction(strings.add_to_bookmark);
+
+          expect(repository.bookmarks, hasLength(1));
+
+          await driver.openPostMenu(101, via: via);
+          await driver.choosePostMenuAction(strings.remove_from_bookmark);
+
+          expect(repository.bookmarks, isEmpty);
+        } finally {
+          await harness.teardown(tester);
+        }
+      },
+    );
+  }
 }

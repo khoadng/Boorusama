@@ -1,6 +1,7 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:kurumi/kurumi.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 import 'package:boorusama/core/bookmarks/src/data/bookmark_convert.dart';
@@ -19,6 +20,16 @@ import 'package:boorusama/core/search/search/widgets.dart';
 import 'app_flow_finders.dart';
 import 'fake_booru_backend.dart';
 import 'headless_app_harness.dart';
+
+/// Ways a user opens the context menu of a post in the grid.
+enum PostMenuOpener {
+  longPress('long press'),
+  rightClick('right click');
+
+  const PostMenuOpener(this.label);
+
+  final String label;
+}
 
 /// Common real-widget actions used by application-flow tests.
 final class AppFlowDriver {
@@ -55,14 +66,7 @@ final class AppFlowDriver {
   }
 
   Future<void> openPost(int id) async {
-    final tile = postTile(id);
-    await tester.scrollUntilVisible(
-      tile,
-      350,
-      scrollable: postGridScrollable(),
-    );
-    await tester.ensureVisible(tile);
-    await tester.pump();
+    final tile = await _revealPost(id);
     await tester.tap(tile);
     await tester.pump();
     await harness.pumpUntil(
@@ -72,6 +76,36 @@ final class AppFlowDriver {
           currentDetailPost(tester).id == id,
       description: 'details for post $id to become current',
     );
+  }
+
+  Future<void> openPostMenu(
+    int id, {
+    PostMenuOpener via = PostMenuOpener.longPress,
+  }) async {
+    final tile = await _revealPost(id);
+    switch (via) {
+      case PostMenuOpener.longPress:
+        await tester.longPress(tile);
+      case PostMenuOpener.rightClick:
+        await tester.tap(
+          tile,
+          buttons: kSecondaryMouseButton,
+          kind: PointerDeviceKind.mouse,
+        );
+    }
+    await tester.pump();
+    await harness.pumpUntilFound(tester, find.byType(KurumiContextMenuTile));
+  }
+
+  Future<void> choosePostMenuAction(String label) async {
+    await tester.tap(
+      find.descendant(
+        of: find.byType(KurumiContextMenuTile),
+        matching: find.text(label),
+      ),
+    );
+    await tester.pump();
+    await harness.settle(tester);
   }
 
   Future<void> openSearch() async {
@@ -212,6 +246,18 @@ final class AppFlowDriver {
     await tester.pump();
     await harness.pumpUntilFound(tester, find.byType(AddBooruPageInternal));
     await tester.pump(const Duration(milliseconds: 500));
+  }
+
+  Future<Finder> _revealPost(int id) async {
+    final tile = postTile(id);
+    await tester.scrollUntilVisible(
+      tile,
+      350,
+      scrollable: postGridScrollable(),
+    );
+    await tester.ensureVisible(tile);
+    await tester.pump();
+    return tile;
   }
 
   Future<void> _tapDrawerAction(String label) async {

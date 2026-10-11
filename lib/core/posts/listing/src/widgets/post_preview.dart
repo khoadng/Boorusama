@@ -286,8 +286,10 @@ class _PostListPrevewTooltipState extends ConsumerState<PostListPrevewTooltip> {
 
     // Tiles fill the grid, so hovering one says nothing about wanting its
     // preview. The badge gives that intent a target of its own.
+    // A non-opaque region reports no hit to its ancestors, which would hide
+    // long-press and right-click from the post's context menu.
     return MouseRegion(
-      opaque: false,
+      hitTestBehavior: HitTestBehavior.deferToChild,
       onEnter: _handleEnter,
       onExit: _handleExit,
       child: Stack(

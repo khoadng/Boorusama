@@ -13,6 +13,8 @@ import 'package:boorusama/core/posts/details_parts/widgets.dart';
 import 'package:boorusama/core/posts/post/types.dart';
 
 import '../support/boorusama_test_runtime.dart';
+import 'support/app_flow_driver.dart';
+import 'support/app_flow_finders.dart';
 import 'support/fake_booru_backend.dart';
 import 'support/headless_app_harness.dart';
 
@@ -141,6 +143,40 @@ void main() {
       }
     },
   );
+
+  for (final via in PostMenuOpener.values) {
+    testWidgets(
+      'downloads a post from its grid menu by ${via.label}',
+      (tester) async {
+        final backend = FakeBooruBackend();
+        final service = MemoryDownloadService();
+        final harness = HeadlessAppHarness(
+          booruBackend: backend,
+          runtime: backend.createRuntime(downloadService: service),
+        );
+        final driver = AppFlowDriver(tester: tester, harness: harness);
+
+        try {
+          await harness.pump(tester);
+          await harness.pumpUntilFound(tester, postTile(101));
+          await harness.settle(tester);
+
+          await driver.openPostMenu(101, via: via);
+          await driver.choosePostMenuAction(
+            appStrings(tester).download.download,
+          );
+          await harness.pumpUntil(tester, () => service.requests.isNotEmpty);
+
+          expect(
+            service.requests.single.url,
+            'https://headless.booru.test/posts/101.jpg',
+          );
+        } finally {
+          await harness.teardown(tester);
+        }
+      },
+    );
+  }
 }
 
 final class _TestDownloadSourceProvider implements DownloadSourceProvider {
