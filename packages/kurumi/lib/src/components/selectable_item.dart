@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:math' as math;
 
 import 'package:material_ui/material_ui.dart';
@@ -34,6 +35,7 @@ class _KurumiSelectableItemState extends State<KurumiSelectableItem>
   late Animation<double> _scaleAnimation;
   late Animation<double> _selectionAnimation;
   late Animation<double> _checkAnimation;
+  Timer? _checkDelay;
 
   @override
   void initState() {
@@ -91,6 +93,7 @@ class _KurumiSelectableItemState extends State<KurumiSelectableItem>
 
   @override
   void dispose() {
+    _checkDelay?.cancel();
     _scaleController.dispose();
     _selectionController.dispose();
     _checkController.dispose();
@@ -160,10 +163,13 @@ class _KurumiSelectableItemState extends State<KurumiSelectableItem>
         );
       }
       _selectionController.forward();
-      Future.delayed(const Duration(milliseconds: 100), () {
-        if (mounted) _checkController.forward();
-      });
+      _checkDelay?.cancel();
+      _checkDelay = Timer(
+        const Duration(milliseconds: 100),
+        _checkController.forward,
+      );
     } else {
+      _checkDelay?.cancel();
       _selectionController.reverse();
       _checkController.reset();
     }
