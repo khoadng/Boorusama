@@ -29,8 +29,8 @@ packages:
     dependency: "direct main"
     description:
       path: "packages/anchor_ui"
-      ref: c2f181c78391b49767c1a6d3f910f8a4fa198169
-      resolved-ref: c2f181c78391b49767c1a6d3f910f8a4fa198169
+      ref: b0aa8ab57094c1a1d8fa368b11da690b409b7824
+      resolved-ref: b0aa8ab57094c1a1d8fa368b11da690b409b7824
       url: "https://github.com/khoadng/anchor.git"
     source: git
     version: "0.0.9"
@@ -542,8 +542,8 @@ packages:
     dependency: "direct overridden"
     description:
       path: "packages/flutter_anchor"
-      ref: c2f181c78391b49767c1a6d3f910f8a4fa198169
-      resolved-ref: c2f181c78391b49767c1a6d3f910f8a4fa198169
+      ref: b0aa8ab57094c1a1d8fa368b11da690b409b7824
+      resolved-ref: b0aa8ab57094c1a1d8fa368b11da690b409b7824
       url: "https://github.com/khoadng/anchor.git"
     source: git
     version: "0.0.14"
