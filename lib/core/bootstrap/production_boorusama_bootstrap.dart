@@ -164,10 +164,9 @@ final class ProductionBoorusamaBootstrap implements BoorusamaBootstrap {
         'misc_data_v1',
         path: tempPath,
       );
-      final persistentCacheBox = await Hive.openBox<String>(
-        'app_cache',
-        path: tempPath,
-      );
+      // Kept out of the OS cache directory, which the system may clear, so
+      // dismissals such as What's New survive.
+      final persistentCacheBox = await Hive.openBox<String>('app_cache');
 
       logger.debugBoot('Initialize package info');
       final packageInfo = await PackageInfo.fromPlatform();
