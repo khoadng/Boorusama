@@ -92,7 +92,7 @@ class DioProtectionInterceptor extends Interceptor {
       );
 
       if (isProtection) {
-        final retryResponse = await _retryAfterProtection(
+        final retryResponse = await _recoverAfterProtection(
           response.requestOptions,
         );
         _protectionHandler.resetRetryAttempts(response.requestOptions.uri);
@@ -141,7 +141,7 @@ class DioProtectionInterceptor extends Interceptor {
       );
 
       if (solved) {
-        final response = await _retryAfterProtection(err.requestOptions);
+        final response = await _recoverAfterProtection(err.requestOptions);
         _protectionHandler.resetRetryAttempts(err.requestOptions.uri);
         handler.resolve(response);
         return;
@@ -161,6 +161,34 @@ class DioProtectionInterceptor extends Interceptor {
 
   bool _isProtectionRetry(RequestOptions options) =>
       options.extra[_protectionRetryKey] == true;
+
+  /// Retries with the solver's credentials. When the challenge browser loaded
+  /// the requested page itself, that page answers the request if there is
+  /// nothing to retry with or the retry is still blocked.
+  Future<Response<dynamic>> _recoverAfterProtection(
+    RequestOptions options,
+  ) async {
+    final attempt = _attempt(options);
+    final browserPage = switch (attempt.loadedPageFor(options.uri)) {
+      final html? when challengeUriFor(options) == options.uri =>
+        _browserPageResponse(options, html),
+      _ => null,
+    };
+    Response<dynamic> useBrowserPage(Response<dynamic> page) {
+      attempt.record(const LoadedPageUsed());
+      return page;
+    }
+
+    if (browserPage != null && !attempt.receivedCredentials) {
+      return useBrowserPage(browserPage);
+    }
+    try {
+      return await _retryAfterProtection(options);
+    } on DioException {
+      if (browserPage == null) rethrow;
+      return useBrowserPage(browserPage);
+    }
+  }
 
   Future<Response<dynamic>> _retryAfterProtection(
     RequestOptions options,
@@ -225,6 +253,23 @@ Uri challengeUriFor(RequestOptions options) {
       base,
     _ => Uri.parse('${uri.origin}/'),
   };
+}
+
+Response<dynamic>? _browserPageResponse(RequestOptions options, String html) {
+  final data = switch (options.responseType) {
+    ResponseType.bytes => utf8.encode(html),
+    ResponseType.stream => null,
+    ResponseType.json || ResponseType.plain => html,
+  };
+  if (data == null) return null;
+  return Response(
+    requestOptions: options,
+    data: data,
+    statusCode: 200,
+    headers: Headers.fromMap({
+      Headers.contentTypeHeader: ['text/html; charset=utf-8'],
+    }),
+  );
 }
 
 class DioResponseAdapter implements HttpResponse {

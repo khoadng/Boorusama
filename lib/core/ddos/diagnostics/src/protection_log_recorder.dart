@@ -114,6 +114,9 @@ String _formatEvent(ProtectionEvent event) => switch (event) {
     :final alreadyCompleted,
   ) =>
     'dialog close requested trigger=${trigger.name} route=$routeId navigator=$navigatorId current=$routeIsCurrent canPop=$canPop alreadyCompleted=$alreadyCompleted',
+  DialogRevealed(:final reason) => 'dialog revealed reason=${reason.name}',
+  LoadedPageKept(:final length) => 'browser page kept length=$length',
+  LoadedPageUsed() => 'request answered with browser page',
   DialogClosed(:final result) => 'dialog closed result=$result',
   RequestSent(:final method, :final backend, :final retry) =>
     'request method=$method backend=$backend retry=$retry',

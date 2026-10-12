@@ -58,6 +58,7 @@ final class _RawSolverRun {
   EmbeddedBrowserSession? browser;
   Map<String, Set<String>> initialCookies = const {};
   Timer? pollTimer;
+  Timer? revealTimer;
   Future<bool>? inFlightCheck;
   DialogRoute<bool>? route;
   NavigatorState? navigator;
@@ -69,6 +70,22 @@ final class _RawSolverRun {
   String? effectiveUserAgent;
   final browserReady = ValueNotifier<bool>(false);
   final blocked = ValueNotifier<bool>(false);
+  final revealed = ValueNotifier<bool>(false);
+
+  void reveal(DialogRevealReason reason) {
+    if (terminal || revealed.value) return;
+    revealTimer?.cancel();
+    revealed.value = true;
+    session.record(DialogRevealed(reason));
+  }
+
+  void dispose() {
+    pollTimer?.cancel();
+    revealTimer?.cancel();
+    browserReady.dispose();
+    blocked.dispose();
+    revealed.dispose();
+  }
 }
 
 class RawSolver implements ProtectionSolver {
@@ -81,6 +98,7 @@ class RawSolver implements ProtectionSolver {
     this.pageEvaluator,
     this.clearanceCookieName,
     this.cookieRetriever,
+    this.revealDelay = const Duration(seconds: 2),
     EmbeddedBrowserFactory? browserFactory,
   }) : browserFactory = browserFactory ?? FlutterEmbeddedBrowserFactory();
 
@@ -96,6 +114,11 @@ class RawSolver implements ProtectionSolver {
   /// several values for it, the HTTP retry can try each one.
   final String? clearanceCookieName;
   final CookieRetriever? cookieRetriever;
+
+  /// How long the browser works unseen before the dialog appears. Most
+  /// challenges either pass on their own or turn out not to be shown to the
+  /// browser at all, and a dialog that opens and closes reads as a glitch.
+  final Duration revealDelay;
   final EmbeddedBrowserFactory browserFactory;
   _RawSolverRun? _run;
   var _solving = false;
@@ -157,6 +180,7 @@ class RawSolver implements ProtectionSolver {
       run.generation++;
       run.pollTimer?.cancel();
       run.pollTimer = null;
+      run.revealTimer?.cancel();
       run.browserReady.value = false;
       final route = run.route;
       (trace ?? session).record(
@@ -182,9 +206,19 @@ class RawSolver implements ProtectionSolver {
 
     try {
       session.record(const DialogOpening());
+      // Without page heuristics only the user can tell when it is solved.
+      if (pageEvaluator == null) {
+        run.reveal(DialogRevealReason.manualOnly);
+      } else {
+        run.revealTimer = Timer(
+          revealDelay,
+          () => run.reveal(DialogRevealReason.delay),
+        );
+      }
       final result = await showDialog<bool>(
         context: navigator.context,
         barrierDismissible: false,
+        barrierColor: Colors.transparent,
         routeSettings: const RouteSettings(name: 'challenge_solver'),
         builder: (dialogContext) {
           final route = ModalRoute.of(dialogContext);
@@ -192,7 +226,9 @@ class RawSolver implements ProtectionSolver {
             run.route = route;
             session.record(DialogPresented(identityHashCode(route)));
           }
-          return Dialog.fullscreen(
+          // The browser keeps its size while hidden so the page loads and
+          // runs exactly as it would on screen.
+          final dialog = Dialog.fullscreen(
             child: ProtectionOverlay(
               url: uri.toString(),
               browserReady: run.browserReady,
@@ -210,12 +246,15 @@ class RawSolver implements ProtectionSolver {
                   run.mainFrameFailed = false;
                   run.browserReady.value = false;
                 },
-                onFailure: (error) => session.record(
-                  ProtectionOperationFailed(
-                    ProtectionOperation.webViewSetup,
-                    error.code ?? error.reason.name,
-                  ),
-                ),
+                onFailure: (error) {
+                  session.record(
+                    ProtectionOperationFailed(
+                      ProtectionOperation.webViewSetup,
+                      error.code ?? error.reason.name,
+                    ),
+                  );
+                  run.reveal(DialogRevealReason.browserFailure);
+                },
                 onEvent: (event) {
                   if (run.terminal) return;
                   switch (event.kind) {
@@ -357,6 +396,17 @@ class RawSolver implements ProtectionSolver {
               ),
             ),
           );
+          return ValueListenableBuilder<bool>(
+            valueListenable: run.revealed,
+            builder: (_, revealed, child) => Visibility(
+              visible: revealed,
+              maintainState: true,
+              maintainAnimation: true,
+              maintainSize: true,
+              child: child!,
+            ),
+            child: dialog,
+          );
         },
       );
       session.record(DialogClosed(result));
@@ -370,9 +420,7 @@ class RawSolver implements ProtectionSolver {
       );
       return false;
     } finally {
-      run.pollTimer?.cancel();
-      run.browserReady.dispose();
-      run.blocked.dispose();
+      run.dispose();
       if (identical(_run, run)) _run = null;
       _solving = false;
     }
@@ -462,19 +510,26 @@ class RawSolver implements ProtectionSolver {
         outcome = CheckOutcome.pageRejected;
         return false;
       }
+      String? source;
       final evaluation = await inspectChallengePage(
-        readSource: () => _getPageSource(browser),
+        readSource: () async => source = await _getPageSource(browser),
         evaluate: evaluator,
         diagnostics: check,
       );
       if (!_active(run) || run.generation != generation) return false;
       final blocked = evaluation.reason == PageDecisionReason.blockedMarker;
       run.blocked.value = blocked;
+      if (blocked) run.reveal(DialogRevealReason.blocked);
       if (!evaluation.accepted) {
         outcome = blocked
             ? CheckOutcome.pageBlocked
             : CheckOutcome.pageRejected;
         return false;
+      }
+      if (source case final page?
+          when current == uri && await _isHtmlDocument(browser)) {
+        if (!_active(run) || run.generation != generation) return false;
+        run.session.observeLoadedPage(uri, page);
       }
       final exported = await _exportCookies(run, uri, jar, cookies);
       if (!_active(run) || run.generation != generation) return false;
@@ -571,7 +626,7 @@ class RawSolver implements ProtectionSolver {
   void _finishSolver(_RawSolverRun run) {
     run.terminal = true;
     _solving = false;
-    run.browserReady.dispose();
+    run.dispose();
   }
 
   @override
@@ -704,6 +759,17 @@ Future<String> _getPageSource(EmbeddedBrowserSession session) async {
 })()
 ''');
   return _javaScriptResultAsString(result);
+}
+
+// A JSON or text response renders inside a generated HTML wrapper whose source
+// is not the response body.
+Future<bool> _isHtmlDocument(EmbeddedBrowserSession session) async {
+  try {
+    final result = await session.evaluateJavaScript('document.contentType');
+    return _javaScriptResultAsString(result) == 'text/html';
+  } catch (_) {
+    return false;
+  }
 }
 
 String _javaScriptResultAsString(Object? result) {
