@@ -40,6 +40,13 @@ final _turnstileCaptchaPage = _brandedCaptchaPage.replaceFirst(
       '<div class="cf-turnstile"></div>',
 );
 
+// The challenge as the browser runs it, before it has passed.
+const _browserChallengePage = '''
+<html>
+<head><title>Just a moment...</title></head>
+<body><div id="challenge-running"></div></body>
+</html>''';
+
 const _actionPath = '/action';
 const _openPath = '/open';
 
@@ -260,6 +267,43 @@ void main() {
     },
   );
 
+  group('browser loads a blocked page without being challenged', () {
+    testWidgets('the app receives the page the browser loaded', (
+      tester,
+    ) async {
+      final site = _Site(blockedBody: _turnstileCaptchaPage);
+      final harness = await _Harness.pump(tester, site: site);
+
+      final sent = await harness.send(tester, '/post');
+
+      expect(sent.result, allOf(startsWith('HTTP 200'), contains('home')));
+    });
+
+    testWidgets('no challenge is shown to the user', (tester) async {
+      final site = _Site(blockedBody: _turnstileCaptchaPage);
+      final harness = await _Harness.pump(tester, site: site);
+
+      final sent = await harness.send(tester, '/post');
+
+      expect(sent.challengeVisible, isFalse);
+    });
+  });
+
+  testWidgets('a challenge shown to the browser is revealed to the user', (
+    tester,
+  ) async {
+    final site = _Site(
+      blockedBody: _turnstileCaptchaPage,
+      browserBody: _browserChallengePage,
+    );
+    final harness = await _Harness.pump(tester, site: site);
+
+    final sent = await harness.send(tester, '/post');
+    await harness.cancelChallenge(tester);
+
+    expect(sent.challengeVisible, isTrue);
+  });
+
   testWidgets(
     'after a solve that leaves the app blocked, later requests fail without reopening the challenge',
     (tester) async {
@@ -325,7 +369,7 @@ List<ProtectionDetector> _detectors() => [
   CaptchaAccessDeniedDetector(),
 ];
 
-typedef _Sent = ({String? result, bool challengeShown});
+typedef _Sent = ({String? result, bool challengeShown, bool challengeVisible});
 
 class _Harness {
   _Harness._(this.dio);
@@ -416,6 +460,7 @@ class _Harness {
   }) async {
     String? result;
     var challengeShown = false;
+    var challengeVisible = false;
     unawaited(
       dio
           .get<String>(
@@ -437,9 +482,16 @@ class _Harness {
       if (find.byType(ProtectionOverlay).evaluate().isNotEmpty) {
         challengeShown = true;
       }
+      if (find.byType(ProtectionOverlay).hitTestable().evaluate().isNotEmpty) {
+        challengeVisible = true;
+      }
     }
     await tester.pump(const Duration(seconds: 2));
-    return (result: result, challengeShown: challengeShown);
+    return (
+      result: result,
+      challengeShown: challengeShown,
+      challengeVisible: challengeVisible,
+    );
   }
 
   Future<void> cancelChallenge(WidgetTester tester) async {
@@ -456,9 +508,12 @@ class _Harness {
 /// carries [unblockedBy]. A real browser, already logged in, is never
 /// challenged.
 class _Site implements HttpClientAdapter {
-  _Site({required this.blockedBody, this.unblockedBy});
+  _Site({required this.blockedBody, this.unblockedBy, this.browserBody});
 
   final String blockedBody;
+
+  /// What the browser sees instead of the requested page, if anything.
+  final String? browserBody;
   final String? unblockedBy;
   var appRequests = 0;
   var actionsPerformedByBrowser = 0;
@@ -470,7 +525,9 @@ class _Site implements HttpClientAdapter {
       actionsPerformedByBrowser++;
       return '<html><head></head><body>done</body></html>';
     }(),
-    _ => '<html><head><title>Example</title></head><body>home</body></html>',
+    _ =>
+      browserBody ??
+          '<html><head><title>Example</title></head><body>home</body></html>',
   };
 
   @override
@@ -570,7 +627,13 @@ class _Browser implements EmbeddedBrowserSession {
   Future<Uri?> currentUri() async => _current;
 
   @override
-  Future<Object?> evaluateJavaScript(String source) async => jsonEncode(_page);
+  Future<Object?> evaluateJavaScript(String source) async =>
+      jsonEncode(switch (source) {
+        'document.contentType' when _current?.path.endsWith('.json') ?? false =>
+          'application/json',
+        'document.contentType' => 'text/html',
+        _ => _page,
+      });
 
   @override
   Future<List<BrowserCookie>> getCookies(Uri uri) async =>

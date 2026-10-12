@@ -57,6 +57,8 @@ enum PageNavigationPhase { started, finished }
 
 enum DialogCloseTrigger { timer, pageFinished, manual, cancel }
 
+enum DialogRevealReason { delay, blocked, browserFailure, manualOnly }
+
 final class AttemptStarted extends ProtectionEvent {
   const AttemptStarted();
 }
@@ -229,6 +231,24 @@ final class DialogCloseRequested extends ProtectionEvent {
   final int navigatorId;
   final bool canPop;
   final bool alreadyCompleted;
+}
+
+/// The challenge dialog stays invisible while the browser may still pass on
+/// its own, and is shown once the user may need to act.
+final class DialogRevealed extends ProtectionEvent {
+  const DialogRevealed(this.reason);
+  final DialogRevealReason reason;
+}
+
+/// The browser loaded the requested page itself, so the request can be
+/// answered with it when the app's own client stays blocked.
+final class LoadedPageKept extends ProtectionEvent {
+  const LoadedPageKept(this.length);
+  final int length;
+}
+
+final class LoadedPageUsed extends ProtectionEvent {
+  const LoadedPageUsed();
 }
 
 final class DialogClosed extends ProtectionEvent {

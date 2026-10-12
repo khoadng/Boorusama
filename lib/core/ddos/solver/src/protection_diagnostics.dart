@@ -70,6 +70,17 @@ class ProtectionAttempt extends ProtectionTrace {
   Cookie? get clearanceCookie =>
       _clearanceCookie ?? session?._clearanceCookies.lastOrNull;
 
+  /// Whether the solver handed over anything a retry could use.
+  bool get receivedCredentials =>
+      clearanceCookie != null || (session?._cookies?.isNotEmpty ?? false);
+
+  /// The document the challenge browser loaded for [uri], if it loaded that
+  /// exact page without being challenged.
+  String? loadedPageFor(Uri uri) => switch (session?._loadedPage) {
+    (uri: final pageUri, :final html) when pageUri == uri => html,
+    _ => null,
+  };
+
   /// Each joined request selects independently from the browser's cookies.
   bool selectNextClearanceCookie() {
     final current = clearanceCookie;
@@ -146,6 +157,7 @@ class ProtectionSession extends ProtectionTrace {
   Map<String, String>? _cookies;
   List<Cookie> _clearanceCookies = const [];
   String? _userAgent;
+  ({Uri uri, String html})? _loadedPage;
   @override
   ProtectionScope get scope =>
       ProtectionScope(host: host, solverId: id, protectionType: type);
@@ -169,6 +181,11 @@ class ProtectionSession extends ProtectionTrace {
     _clearanceCookies = List.unmodifiable(clearanceCookies);
     _userAgent = userAgent;
     record(CredentialsObserved(cookies.length, userAgent != null));
+  }
+
+  void observeLoadedPage(Uri uri, String html) {
+    _loadedPage = (uri: uri, html: html);
+    record(LoadedPageKept(html.length));
   }
 }
 
