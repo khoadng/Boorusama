@@ -1,3 +1,10 @@
+# 4.6.1
+- [Rule34] Fix the captcha popup flashing on post details and tags failing to load
+- Fix the What's New popup appearing on every launch
+- Fix long press and right click not opening the post menu
+- Fix the tag context menu appearing too small
+- Fix the selection checkmark animation when deselecting
+
 # 4.6.0
 - Add PIN app lock and app-preview blur for privacy
 - Add an option to download only over Wi-Fi
