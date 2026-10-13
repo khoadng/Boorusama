@@ -26,19 +26,25 @@
       "show_less": "Свернуть",
       "search": "Поиск",
       "view_all": "Посмотреть все",
-      "verify": "Подтвердить"
+      "verify": "Подтвердить",
+      "copy_path": "Копировать путь"
     },
     "copied": "Скопировано",
-    "app_restart_request": "Перезагрузите приложение для того, чтобы изменения вступили в силу",
+    "app_restart_request": "Перезапустите приложение для того, чтобы изменения вступили в силу",
     "warning": "Предупреждение",
     "default": "По умолчанию",
     "no_content": "Нет контента",
-    "version": "Версия $version"
+    "version": "Версия $version",
+    "requirement": {
+      "android": {
+        "version_or_later": "Требуется Андроид $version или новее"
+      }
+    }
   },
   "profile": {
     "favorites": "Избранные",
     "profile": "Профиль",
-    "copy_user_id": "Копировать ID пользователя",
+    "copy_user_id": "Скопировать ID пользователя",
     "messages": {
       "title": "Сообщения",
       "empty": "У вас нет сообщений",
@@ -57,7 +63,7 @@
       "sender": "Отправитель",
       "recipient": "Получатель"
     },
-    "fail_to_load_profile": "Не удается загрузить профиль",
+    "fail_to_load_profile": "Не удаётся загрузить профиль",
     "tabs": {
       "changes": "Изменения",
       "info": "Инфо",
@@ -106,7 +112,8 @@
       "share": {
         "source": "Поделиться ссылкой на первоисточник",
         "booru": "Поделиться ссылкой на booru сайт",
-        "image": "Поделиться изображением"
+        "image": "Поделиться изображением",
+        "file": "Поделиться файлом"
       },
       "show_original": "Показать оригинал",
       "show_translated": "Показать перевод",
@@ -219,6 +226,10 @@
     "counter": {
       "one": "Комментарий",
       "other": "Коментарии"
+    },
+    "vote": {
+      "success": "Понравилось",
+      "already_voted": "Вы уже проголосовали за этот комментарий"
     }
   },
   "explore": {
@@ -453,7 +464,36 @@
       "enable_incognito_keyboard": "Включить клавиатуру в режиме инкогнито",
       "enable_incognito_keyboard_notice": "Влияет только на Android.",
       "enable_biometric_lock": "Включить биометрическую блокировку",
-      "enable_biometric_lock_notice": "Работает только на устройствах с настроенной поддержкой биометрии."
+      "enable_biometric_lock_notice": "Работает только на устройствах с настроенной поддержкой биометрии.",
+      "app_lock": {
+        "description": "Запрашивать аутентификацию перед открытием приложения.",
+        "off": "Выкл",
+        "pin": "ПИН",
+        "biometrics": "Биометрия",
+        "device_authentication": "Аутентификация устройства",
+        "change_pin": "Смена ПИН-кода",
+        "change_pin_description": "Измените ПИН-код для блокировки приложения.",
+        "lock_after": "Блокировать через",
+        "lock_after_description": "Блокировать при переходе приложения в фоновый режим.",
+        "timeout_immediately": "Сразу",
+        "timeout_seconds": "сек",
+        "timeout_one_minute": "1 минута",
+        "timeout_minutes": "мин",
+        "unlock_app": "Разблокировать Boorusama",
+        "incorrect_pin": "Неверный ПИН-код",
+        "try_again_in": "Повторите попытку через $second сек.",
+        "incorrect_pin_try_again_in": "Неверный ПИН-код. Повторите попытку через $seconds сек.",
+        "pin_updated": "ПИН-код обновлён.",
+        "biometric_unavailable": "Аутентификация устройства недоступна",
+        "biometric_unavailable_description": "Настройте или восстановите аутентификацию устройства в настройках системы.",
+        "biometric_failed": "Сбой аутентификации устройства",
+        "biometric_failed_description": "Повторите попытку после восстановления аутентификации устройства в настройках системы.",
+        "biometric_not_available": "Аутентификация устройства недоступна.",
+        "authenticate_to_use_app": "Пройдите аутентификацию для использования приложения",
+        "authenticate_reason": "Пройдите аутентификацию",
+        "locked_title": "Boorusama заблокирован",
+        "locked_description": "Пройдите аутентификацию, чтобы продолжить."
+      }
     },
     "performance": {
       "performance": "Производительность",
@@ -479,7 +519,21 @@
       },
       "title": "Скачать",
       "skip_existing_files": "Пропускать существующие файлы",
-      "skip_existing_files_explanation": "Это предотвратит загрузку файлов, которые уже существуют в папке. Это полезно, когда вы не хотите загружать один и тот же файл несколько раз."
+      "skip_existing_files_explanation": "Это предотвратит загрузку файлов, которые уже существуют в папке. Это полезно, когда вы не хотите загружать один и тот же файл несколько раз.",
+      "sidecar": {
+        "title": "Сохранять метаданные",
+        "description": "Сохранять теги или информацию о публикации рядом со скачанными файлами.",
+        "off": "Выкл",
+        "tags": "Теги (.txt)",
+        "json": "Метаданные (.json)"
+      },
+      "network": {
+        "title": "Тип сети для скачивания",
+        "description": "Разрешить скачивание через мобильную сеть.",
+        "any_network": "Любая сеть",
+        "wifi_only": "Только Wi-FI",
+        "ask_on_mobile_data": "Спрашивать при использовании мобильной сети"
+      }
     },
     "help_us_translate": "Помогите нам перевести",
     "other_settings": "Другие настройки",
@@ -508,7 +562,13 @@
         }
       },
       "error_loading_cache_info": "Ошибка при загрузке информации о кэше",
-      "bookmark_images": "Изображения для закладок"
+      "bookmark_images": "Изображения для закладок",
+      "cache_locations": {
+        "title": "Расположение кэша",
+        "private_storage": "Внутреннее хранилище приложения. Недоступно в файловых менеджерах.",
+        "open_folder": "Открыть папку"
+      },
+      "custom_cache_limit_option": "Пользовательский..."
     },
     "backup_and_restore": {
       "backup_and_restore": "Резервное копирование и восстановление",
@@ -556,7 +616,9 @@
           "running": "Запуск"
         },
         "name": "Имя",
-        "how_to_transfer": "Как перевести"
+        "how_to_transfer": "Как перевести",
+        "disclaimer": "Передача может не работать в публичных сетях Wi-Fi (в кафе, библиотеках) из-за ограничений безопасности. Используйте частную сеть, например домашний Wi-Fi.",
+        "no_networks_error": "Для передачи данных требуется подключение к Wi-Fi. Подключитесь к сети Wi-Fi и попробуйте снова."
       },
       "backward_import": {
         "title": "Обнаружен импорт из более старой версии",
@@ -577,7 +639,8 @@
       "import_results": "Импорт завершен: {results}",
       "imported_count": "{count} импортировано",
       "skipped_count": "{count} пропущено",
-      "export_partial_success": "Экспортировано {exported}/{total} элементов. {failed} не удалось."
+      "export_partial_success": "Экспортировано {exported}/{total} элементов. {failed} не удалось.",
+      "failed_count": "Ошибок {count}"
     },
     "image_details": {
       "ui_overlay": {
@@ -624,7 +687,20 @@
     "need_more_questions": "Нужно другое?",
     "auto_backup": {
       "enable_auto_backup": "Включить автоматическое резервное копирование",
-      "up_to_date": "Актуально"
+      "up_to_date": "Актуально",
+      "frequency": {
+        "daily": "Ежедневно",
+        "weekly": "Еженедельно"
+      },
+      "backup_count": {
+        "one": "$n резервная копия",
+        "other": "$n резервных копий"
+      },
+      "change": "Изменить",
+      "last_backup": "Последняя копия: $lastBackup",
+      "backup_needed": "Требуется резервное копирование",
+      "backing_up": "Создание резервной копии...",
+      "backup_now": "Создать резервную копию"
     }
   },
   "blacklisted_tags": {
@@ -657,7 +733,8 @@
       "completed": "Завершено",
       "failed": "Ошибка",
       "canceled": "Отменено",
-      "unknown": "Неизвестно"
+      "unknown": "Неизвестно",
+      "waiting_for_wifi": "Ожидание Wi-Fi"
     },
     "nothing_to_clear": "Нечего очищать",
     "no_active_sessions": "Нет активных сессий загрузки",
@@ -669,6 +746,13 @@
       "no_canceled_downloads": "Нет отмененных загрузок",
       "no_failed_downloads": "Нет неудачных загрузок",
       "no_downloads": "Нет загрузок"
+    },
+    "network_prompt": {
+      "title": "Скачать через мобильную сеть?",
+      "description": "Wi-Fi недоступен. Вы можете скачать файл сейчас через мобильную сеть или поставить загрузку в очередь до подключения к Wi-Fi.",
+      "remember_for_session": "Запомнить для этого сеанса",
+      "wait_for_wifi": "Подождать Wi-Fi",
+      "use_mobile_data": "Использовать мобильные данные"
     }
   },
   "saved_search": {
