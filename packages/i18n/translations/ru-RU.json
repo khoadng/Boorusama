@@ -745,7 +745,8 @@
       "no_downloads_in_progress": "Нет загрузок в процессе",
       "no_canceled_downloads": "Нет отмененных загрузок",
       "no_failed_downloads": "Нет неудачных загрузок",
-      "no_downloads": "Нет загрузок"
+      "no_downloads": "Нет загрузок",
+      "no_completed_downloads": "Нет завершённых загрузок"
     },
     "network_prompt": {
       "title": "Скачать через мобильную сеть?",
