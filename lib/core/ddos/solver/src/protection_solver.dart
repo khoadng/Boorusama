@@ -724,7 +724,7 @@ class AftSolver implements ProtectionSolver {
       final cookieName = cookie.name.toLowerCase();
       return cookieName.contains('challenge') ||
           cookieName.contains('verification') ||
-          cookieName.contains('aft');
+          cookieName.contains('atf');
     },
     pageEvaluator: evaluateAftPage,
   );

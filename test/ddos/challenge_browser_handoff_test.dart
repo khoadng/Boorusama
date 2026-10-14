@@ -47,6 +47,16 @@ const _browserChallengePage = '''
 <body><div id="challenge-running"></div></body>
 </html>''';
 
+// A checkbox challenge served with a success status in place of the resource.
+const _checkboxChallengePage = '''
+<html>
+<body>
+<p id="challenge-prompt">Wait for signal before clicking the checkbox...</p>
+<div class="challenge-container"><input id="challenge-checkbox" type="checkbox"></div>
+<script>const challenge_id = "a"; const challenge_generated = "1";</script>
+</body>
+</html>''';
+
 const _actionPath = '/action';
 const _openPath = '/open';
 
@@ -184,6 +194,39 @@ void main() {
       },
     );
   }
+
+  testWidgets(
+    'clearance the browser already holds replaces a stale copy in the app',
+    (tester) async {
+      final site = _Site(
+        blockedBody: _checkboxChallengePage,
+        blockedStatus: 200,
+        unblockedBy: 'atf-anti-bot=valid',
+      );
+      final harness = await _Harness.pump(
+        tester,
+        site: site,
+        browserCookies: const [
+          BrowserCookie(
+            name: 'atf-anti-bot',
+            value: 'valid',
+            domain: 'example.com',
+            path: '/',
+          ),
+        ],
+        requestCookies: [
+          Cookie('atf-anti-bot', 'stale')
+            ..domain = '.example.com'
+            ..path = '/',
+        ],
+      );
+
+      final sent = await harness.send(tester, '/data/image.jpg');
+
+      expect(sent.result, 'HTTP 200 "done"');
+      expect(site.cookieHeaders.last, isNot(contains('atf-anti-bot=stale')));
+    },
+  );
 
   for (final validFirst in [true, false]) {
     testWidgets(
@@ -508,9 +551,15 @@ class _Harness {
 /// carries [unblockedBy]. A real browser, already logged in, is never
 /// challenged.
 class _Site implements HttpClientAdapter {
-  _Site({required this.blockedBody, this.unblockedBy, this.browserBody});
+  _Site({
+    required this.blockedBody,
+    this.blockedStatus = 403,
+    this.unblockedBy,
+    this.browserBody,
+  });
 
   final String blockedBody;
+  final int blockedStatus;
 
   /// What the browser sees instead of the requested page, if anything.
   final String? browserBody;
@@ -552,7 +601,7 @@ class _Site implements HttpClientAdapter {
       true => ResponseBody.fromString('done', 200),
       false => ResponseBody.fromString(
         blockedBody,
-        403,
+        blockedStatus,
         headers: {
           Headers.contentTypeHeader: ['text/html'],
         },
@@ -631,6 +680,8 @@ class _Browser implements EmbeddedBrowserSession {
       jsonEncode(switch (source) {
         'document.contentType' when _current?.path.endsWith('.json') ?? false =>
           'application/json',
+        'document.contentType' when _current?.path.endsWith('.jpg') ?? false =>
+          'image/jpeg',
         'document.contentType' => 'text/html',
         _ => _page,
       });
