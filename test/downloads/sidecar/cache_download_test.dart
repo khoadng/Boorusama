@@ -20,10 +20,27 @@ import 'package:boorusama/foundation/filesystem.dart';
 class _Cache extends Mock implements VideoCacheManager {}
 
 class _FileSystem extends IoFileSystem {
-  const _FileSystem(this.storagePath);
+  const _FileSystem(this.storagePath, {this.mediaOnlyDirectory});
   final String storagePath;
+
+  /// Rejects non-media files like Android's shared Pictures folder.
+  final String? mediaOnlyDirectory;
+
   @override
   Future<String> getAppStoragePath() async => storagePath;
+
+  @override
+  Future<void> writeString(String path, String content, {bool flush = false}) {
+    if (mediaOnlyDirectory case final directory?
+        when p.isWithin(directory, path)) {
+      throw FileSystemException(
+        'Cannot create file',
+        path,
+        const OSError('Operation not permitted', 1),
+      );
+    }
+    return super.writeString(path, content, flush: flush);
+  }
 }
 
 void main() {
@@ -87,6 +104,62 @@ void main() {
       await sidecar.delete();
       expect(await downloader.download(options), isA<DownloadSkipped>());
       expect(sidecar.existsSync(), isFalse);
+    },
+  );
+
+  test(
+    'media is still saved when its folder rejects the metadata file',
+    () async {
+      debugDefaultTargetPlatformOverride = TargetPlatform.macOS;
+      addTearDown(() => debugDefaultTargetPlatformOverride = null);
+      final root = await Directory.systemTemp.createTemp('sidecar-cache-test-');
+      addTearDown(() => root.delete(recursive: true));
+      final cached = File(p.join(root.path, 'cached.mp4'));
+      await cached.writeAsBytes([1, 2, 3, 4]);
+      final cache = _Cache();
+      when(
+        () => cache.getCachedVideoPath(any()),
+      ).thenAnswer((_) async => cached.path);
+      final downloads = p.join(root.path, 'downloads');
+      final fs = _FileSystem(
+        p.join(root.path, 'app'),
+        mediaOnlyDirectory: downloads,
+      );
+      final downloader = BackgroundDownloader(
+        fs: fs,
+        sidecarStore: Future.value(
+          SidecarStore(
+            directory: p.join(root.path, 'app', 'download-sidecars'),
+            fs: fs,
+          ),
+        ),
+        videoCacheManager: cache,
+      );
+
+      final result = await downloader.download(
+        DownloadOptions(
+          url: 'https://example.org/video.mp4',
+          filename: 'video.mp4',
+          path: downloads,
+          metadata: const DownloaderMetadata(
+            thumbnailUrl: null,
+            fileSize: null,
+            siteUrl: null,
+            group: null,
+            isVideo: true,
+          ),
+          sidecar: SidecarSnapshot(
+            format: SidecarFormat.tags,
+            tags: const ['artist:one'],
+            quality: 'original',
+          ),
+        ),
+      );
+
+      final completed = result as DownloadCompleted;
+      expect(completed.info.metadataSkipped, isTrue);
+      expect(await File(completed.info.path).readAsBytes(), [1, 2, 3, 4]);
+      expect(File('${completed.info.path}.txt').existsSync(), isFalse);
     },
   );
 }

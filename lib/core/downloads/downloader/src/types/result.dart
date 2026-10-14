@@ -8,13 +8,21 @@ class DownloadTaskInfo extends Equatable {
   const DownloadTaskInfo({
     required this.path,
     required this.id,
+    this.metadataSkipped = false,
   });
 
   final String path;
   final String id;
 
+  /// The destination does not accept the metadata file, so only the media is
+  /// saved.
+  final bool metadataSkipped;
+
+  DownloadTaskInfo withMetadataSkipped() =>
+      DownloadTaskInfo(path: path, id: id, metadataSkipped: true);
+
   @override
-  List<Object?> get props => [path, id];
+  List<Object?> get props => [path, id, metadataSkipped];
 }
 
 sealed class DownloadResult {
@@ -37,6 +45,19 @@ final class DownloadCompleted extends DownloadResult {
 
   final DownloadTaskInfo info;
   final DownloadCompletionSource source;
+}
+
+extension DownloadResultMetadataSkipped on DownloadResult {
+  DownloadResult withMetadataSkipped() => switch (this) {
+    DownloadEnqueued(:final info) => DownloadEnqueued(
+      info.withMetadataSkipped(),
+    ),
+    DownloadCompleted(:final info, :final source) => DownloadCompleted(
+      info.withMetadataSkipped(),
+      source: source,
+    ),
+    final result => result,
+  };
 }
 
 final class DownloadSkipped extends DownloadResult {

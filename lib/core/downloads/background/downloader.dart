@@ -14,6 +14,7 @@ import '../../ddos/solver/types.dart';
 import '../downloader/types.dart';
 import '../path/types.dart';
 import '../sidecar/data.dart';
+import '../sidecar/types.dart';
 import 'file_downloader_ex.dart';
 
 class BackgroundDownloader implements DownloadService {
@@ -132,20 +133,24 @@ class BackgroundDownloader implements DownloadService {
       );
 
       SidecarStore? sidecars;
+      var metadataSkipped = false;
       if (options.sidecar case final snapshot?) {
         final path = await task.filePath();
         if ((options.skipIfExists ?? false) && fs.fileExistsSync(path)) {
           return DownloadSkipped(DownloadTaskInfo(path: path, id: task.taskId));
         }
-        sidecars = await sidecarStore;
-        await sidecars.prepare(task.taskId, path, snapshot);
-        task = task.copyWith(
-          metaData: DownloaderMetadata.fromJson({
-            ...?options.metadata?.toJson(),
-            'sidecarId': task.taskId,
-          }).toJsonString(),
-          options: TaskOptions(onTaskFinished: onBackgroundSidecarFinished),
-        );
+        sidecars = await _prepareSidecar(task.taskId, path, snapshot);
+        if (sidecars == null) {
+          metadataSkipped = true;
+        } else {
+          task = task.copyWith(
+            metaData: DownloaderMetadata.fromJson({
+              ...?options.metadata?.toJson(),
+              'sidecarId': task.taskId,
+            }).toJsonString(),
+            options: TaskOptions(onTaskFinished: onBackgroundSidecarFinished),
+          );
+        }
       }
 
       final cacheResult = await _tryDownloadFromCache(
@@ -168,7 +173,7 @@ class BackgroundDownloader implements DownloadService {
             await sidecars.discard(task.taskId);
           }
         }
-        return result;
+        return metadataSkipped ? result.withMetadataSkipped() : result;
       }
 
       _log(
@@ -183,7 +188,7 @@ class BackgroundDownloader implements DownloadService {
       if (sidecars != null && result is! DownloadEnqueued) {
         await sidecars.discard(task.taskId);
       }
-      return result;
+      return metadataSkipped ? result.withMetadataSkipped() : result;
     } on FileSystemException catch (e) {
       return DownloadFailure(
         FileSystemDownloadError(
@@ -310,6 +315,27 @@ class BackgroundDownloader implements DownloadService {
       ),
       source: DownloadCompletionSource.cache,
     );
+  }
+
+  /// Shared media folders such as Android's Pictures only accept media files,
+  /// so a destination that rejects the metadata file still gets the media.
+  Future<SidecarStore?> _prepareSidecar(
+    String taskId,
+    String path,
+    SidecarSnapshot snapshot,
+  ) async {
+    final sidecars = await sidecarStore;
+    try {
+      await sidecars.prepare(taskId, path, snapshot);
+      return sidecars;
+    } on FileSystemException catch (error) {
+      logger?.warn(
+        'BackgroundDownloader',
+        'Metadata file not allowed at destination: ${error.osError?.errorCode}',
+        sensitiveMessage: error.toString(),
+      );
+      return null;
+    }
   }
 
   void _log(String message) {

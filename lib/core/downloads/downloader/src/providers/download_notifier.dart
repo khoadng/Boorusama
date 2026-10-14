@@ -265,13 +265,9 @@ Future<DownloadTaskInfo?> _download(
         );
 
     return switch (result) {
-      DownloadEnqueued(:final info) => () {
+      DownloadEnqueued(:final info) || DownloadCompleted(:final info) => () {
         onStarted?.call();
-
-        return info;
-      }(),
-      DownloadCompleted(:final info) => () {
-        onStarted?.call();
+        if (info.metadataSkipped) _showMetadataSkippedToast(ref);
         return info;
       }(),
       DownloadSkipped(:final info) => () {
@@ -316,6 +312,25 @@ Future<DownloadTaskInfo?> _download(
 
     return info;
   }
+}
+
+var _metadataSkippedToastShown = false;
+
+void _showMetadataSkippedToast(Ref ref) {
+  if (_metadataSkippedToastShown) return;
+  final context = ref
+      .read(appNavigationProvider)
+      .navigatorKey
+      .currentState
+      ?.context;
+  if (context == null || !context.mounted) return;
+  _metadataSkippedToastShown = true;
+
+  Kurumi.showErrorToast(
+    context,
+    duration: const Duration(seconds: 6),
+    context.t.settings.download.sidecar.skipped_for_folder,
+  );
 }
 
 void showDownloadErrorToast(

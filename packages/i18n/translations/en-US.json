@@ -544,7 +544,8 @@
         "description": "Save tags or post information beside downloaded files.",
         "off": "Off",
         "tags": "Tags (.txt)",
-        "json": "Metadata (.json)"
+        "json": "Metadata (.json)",
+        "skipped_for_folder": "This folder only accepts images and videos, so metadata wasn't saved. Choose a folder like Download or Documents to keep metadata."
       },
       "path": "Download path",
       "select_a_folder": "Select a folder",
