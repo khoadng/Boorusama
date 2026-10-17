@@ -63,6 +63,9 @@ class FakeProtectionSolver implements ProtectionSolver {
   bool get isSolving => false;
 
   @override
+  bool isClearanceCookie(Cookie cookie) => false;
+
+  @override
   Future<bool> solve({
     required Uri uri,
     String? userAgent,
@@ -439,6 +442,8 @@ class _SlowSolver implements ProtectionSolver {
   String get protectionType => 'cloudflare';
   @override
   bool get isSolving => false;
+  @override
+  bool isClearanceCookie(Cookie cookie) => false;
 
   @override
   Future<bool> solve({
@@ -459,6 +464,8 @@ class _ThrowingSolver implements ProtectionSolver {
   String get protectionType => 'cloudflare';
   @override
   bool get isSolving => false;
+  @override
+  bool isClearanceCookie(Cookie cookie) => false;
 
   @override
   Future<bool> solve({

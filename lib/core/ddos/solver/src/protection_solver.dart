@@ -18,6 +18,7 @@ import 'protection_overlay.dart';
 abstract class ProtectionSolver {
   String get protectionType;
   bool get isSolving;
+  bool isClearanceCookie(Cookie cookie);
 
   Future<bool> solve({
     required Uri uri,
@@ -106,6 +107,9 @@ class RawSolver implements ProtectionSolver {
   final String protectionType;
   final String protectionTitle;
   final bool Function(Cookie) autoCookieValidator;
+
+  @override
+  bool isClearanceCookie(Cookie cookie) => autoCookieValidator(cookie);
   final ContextProvider contextProvider;
   final LazyAsync<CookieJar> cookieJar;
   final PageEvaluator? pageEvaluator;
@@ -689,6 +693,9 @@ class CloudflareSolver implements ProtectionSolver {
   @override
   bool get isSolving => _solver?.isSolving ?? false;
   @override
+  bool isClearanceCookie(Cookie cookie) =>
+      _solverInstance.isClearanceCookie(cookie);
+  @override
   Future<bool> solve({
     required Uri uri,
     String? userAgent,
@@ -733,6 +740,9 @@ class AftSolver implements ProtectionSolver {
   String get protectionType => 'aft';
   @override
   bool get isSolving => _solver?.isSolving ?? false;
+  @override
+  bool isClearanceCookie(Cookie cookie) =>
+      _solverInstance.isClearanceCookie(cookie);
   @override
   Future<bool> solve({
     required Uri uri,
@@ -835,6 +845,9 @@ class CaptchaAccessDeniedSolver implements ProtectionSolver {
   String get protectionType => 'captcha_access_denied';
   @override
   bool get isSolving => _solver?.isSolving ?? false;
+  @override
+  bool isClearanceCookie(Cookie cookie) =>
+      _solverInstance.isClearanceCookie(cookie);
   @override
   Future<bool> solve({
     required Uri uri,

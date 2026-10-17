@@ -58,6 +58,7 @@ const _checkboxChallengePage = '''
 </html>''';
 
 const _actionPath = '/action';
+const _appUserAgent = 'App/1.0';
 const _openPath = '/open';
 
 void main() {
@@ -303,8 +304,11 @@ void main() {
       final sent = await harness.send(tester, '/post.json');
 
       expect(sent.result, 'HTTP 403');
-      expect(site.appRequests, 4);
-      expect(site.cookieHeaders.skip(1).toSet(), hasLength(3));
+      expect(site.appRequests, 5);
+      expect(
+        site.cookieHeaders.where((h) => h.contains('cf_clearance')).toSet(),
+        hasLength(3),
+      );
       expect(site.browserPaths, hasLength(1));
       expect(find.byType(ProtectionOverlay), findsNothing);
     },
@@ -401,9 +405,58 @@ void main() {
       expect(immediate.challengeShown, isFalse);
       expect(later.challengeShown, isTrue);
       expect(site.browserPaths, hasLength(2));
-      expect(site.appRequests, 5);
+      expect(site.appRequests, 7);
     },
   );
+
+  group('a site that refuses the browser identity after a solve', () {
+    Future<(_Site, _Harness)> pump(WidgetTester tester) async {
+      final site = _Site(
+        blockedBody: _turnstileCaptchaPage,
+        refusedUserAgent: 'TestAgent/1.0',
+      );
+      final harness = await _Harness.pump(
+        tester,
+        site: site,
+        requestCookies: [Cookie('session', 'signed-in')],
+        browserCookies: [
+          const BrowserCookie(
+            name: 'cf_clearance',
+            value: 'valid',
+            domain: '.example.com',
+            path: '/',
+          ),
+        ],
+      );
+      return (site, harness);
+    }
+
+    testWidgets('the request succeeds as the app itself', (tester) async {
+      final (site, harness) = await pump(tester);
+
+      final sent = await harness.send(tester, '/post');
+
+      expect(sent.result, 'HTTP 200 "done"');
+      expect(site.userAgents.last, _appUserAgent);
+      expect(site.cookieHeaders.last, contains('session=signed-in'));
+      expect(site.cookieHeaders.last, isNot(contains('cf_clearance')));
+    });
+
+    testWidgets('later requests go out as the app without a challenge', (
+      tester,
+    ) async {
+      final (site, harness) = await pump(tester);
+
+      await harness.send(tester, '/post');
+      final requestsBefore = site.appRequests;
+      final later = await harness.send(tester, '/post/2');
+
+      expect(later.result, 'HTTP 200 "done"');
+      expect(later.challengeShown, isFalse);
+      expect(site.appRequests - requestsBefore, 1);
+      expect(site.browserPaths, hasLength(1));
+    });
+  });
 
   for (final c in [
     (protocolOverridden: true, hints: ['example.com']),
@@ -510,8 +563,12 @@ class _Harness {
       contextProvider: contextProvider,
       cookieJar: cookieJar,
     );
-    final dio = Dio(BaseOptions(baseUrl: 'https://example.com'))
-      ..httpClientAdapter = site;
+    final dio = Dio(
+      BaseOptions(
+        baseUrl: 'https://example.com',
+        headers: {'user-agent': _appUserAgent},
+      ),
+    )..httpClientAdapter = site;
     dio.interceptors.add(
       DioProtectionInterceptor(
         protectionHandler: handler,
@@ -590,7 +647,12 @@ class _Site implements HttpClientAdapter {
     this.blockedStatus = 403,
     this.unblockedBy,
     this.browserBody,
+    this.refusedUserAgent,
   });
+
+  /// A user agent the app is blocked with even after a solve, as when a site
+  /// tells a borrowed browser identity from the app's own connection.
+  final String? refusedUserAgent;
 
   final String blockedBody;
   final int blockedStatus;
@@ -602,6 +664,7 @@ class _Site implements HttpClientAdapter {
   var actionsPerformedByBrowser = 0;
   final browserPaths = <String>[];
   final cookieHeaders = <String>[];
+  final userAgents = <String>[];
 
   String browserPage(Uri uri) => switch ((browserPaths..add(uri.path)).last) {
     _actionPath => () {
@@ -625,12 +688,20 @@ class _Site implements HttpClientAdapter {
         .map((e) => '${e.value}')
         .firstOrNull;
     cookieHeaders.add(cookie ?? '');
-    final unblocked =
+    final userAgent = options.headers.entries
+        .where((e) => e.key.toLowerCase() == 'user-agent')
+        .map((e) => '${e.value}')
+        .firstOrNull;
+    userAgents.add(userAgent ?? '');
+    final unblocked = switch (refusedUserAgent) {
+      final refused? => userAgent != refused,
+      null =>
         options.uri.path == _openPath ||
-        switch ((unblockedBy, cookie)) {
-          (final key?, final cookie?) => cookie.contains(key),
-          _ => false,
-        };
+            switch ((unblockedBy, cookie)) {
+              (final key?, final cookie?) => cookie.contains(key),
+              _ => false,
+            },
+    };
     return switch (unblocked) {
       true => ResponseBody.fromString('done', 200),
       false => ResponseBody.fromString(

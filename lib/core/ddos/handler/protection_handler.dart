@@ -37,6 +37,11 @@ class HttpProtectionHandler {
   // later request to recover without requiring a successful request first.
   final Map<String, DateTime> _blockedAfterSolve = {};
   static const _blockedAfterSolveCooldown = Duration(seconds: 30);
+
+  // Origins that refused the browser's identity after a solve. Sites can tell
+  // a borrowed browser user agent from the app's own connection, so requests
+  // there go out as the app itself until another solve.
+  final Set<String> _ownIdentityOrigins = {};
   final int maxRetries;
   final ProtectionEventSink? onEvent;
 
@@ -57,16 +62,28 @@ class HttpProtectionHandler {
   void enable() => _disabled = false;
 
   /// Prepares request headers with cookie and user agent information
+  ///
+  /// [ownHeaders] are the request's headers before any protection changes,
+  /// used where the browser's identity was refused.
   Future<Map<String, String>> prepareRequestHeaders(
     Uri uri,
     Map<String, String> existingHeaders, {
     ProtectionAttempt? attempt,
+    Map<String, String>? ownHeaders,
   }) async {
     if (_disabled) {
       attempt?.record(
         const HeaderPreparationSkipped(HeaderPreparationSkipReason.disabled),
       );
       return existingHeaders;
+    }
+
+    if (_ownIdentityOrigins.contains(uri.origin)) {
+      return _prepareOwnIdentityHeaders(
+        uri,
+        ownHeaders ?? existingHeaders,
+        attempt,
+      );
     }
 
     try {
@@ -122,6 +139,41 @@ class HttpProtectionHandler {
     }
   }
 
+  Future<Map<String, String>> _prepareOwnIdentityHeaders(
+    Uri uri,
+    Map<String, String> ownHeaders,
+    ProtectionAttempt? attempt,
+  ) async {
+    try {
+      final cookies = (await (await _cookieJar()).loadForRequest(
+        uri,
+      )).where((cookie) => !_orchestrator.isClearanceCookie(cookie)).toList();
+      final headers = Map<String, String>.from(ownHeaders);
+      attempt?.record(
+        CookieLookupCompleted(CookieStore.requestJar, cookies.length),
+      );
+      if (cookies.isNotEmpty) {
+        _setHeader(
+          headers,
+          'cookie',
+          CookieUtils.mergeCookieHeaders(
+            _headerValue(headers, 'cookie') ?? '',
+            cookies.cookieString,
+          ),
+        );
+      }
+      return headers;
+    } catch (e) {
+      attempt?.record(
+        ProtectionOperationFailed(
+          ProtectionOperation.prepareHeaders,
+          e.runtimeType.toString(),
+        ),
+      );
+      return ownHeaders;
+    }
+  }
+
   static String? _headerValue(Map<String, String> headers, String name) {
     for (final entry in headers.entries) {
       if (entry.key.toLowerCase() == name) return entry.value;
@@ -155,7 +207,10 @@ class HttpProtectionHandler {
         attempt: attempt,
         challengeUri: challengeUri,
       );
-      if (solved) _onSolved?.call();
+      if (solved) {
+        _ownIdentityOrigins.remove(response.requestUri.origin);
+        _onSolved?.call();
+      }
 
       return solved;
     } catch (e) {
@@ -215,6 +270,7 @@ class HttpProtectionHandler {
       );
 
       if (solved) {
+        _ownIdentityOrigins.remove(error.requestUri.origin);
         _onSolved?.call();
         _retryAttempts[uriString] = retryCount + 1;
         return true;
@@ -256,6 +312,19 @@ class HttpProtectionHandler {
   }
 
   void observeSuccess(Uri uri) => _blockedAfterSolve.remove(uri.origin);
+
+  /// Switches the origin to the app's own identity when the browser's was
+  /// still blocked. Returns false when it already uses it.
+  bool selectOwnIdentity(HttpError error, ProtectionAttempt attempt) {
+    if (_disabled || !_orchestrator.detectsErrorProtection(error)) {
+      return false;
+    }
+    if (!_ownIdentityOrigins.add(error.requestUri.origin)) return false;
+    attempt.record(const OwnIdentitySelected());
+    return true;
+  }
+
+  void forgetOwnIdentity(Uri uri) => _ownIdentityOrigins.remove(uri.origin);
 
   bool selectAlternativeClearance(
     HttpError error,
