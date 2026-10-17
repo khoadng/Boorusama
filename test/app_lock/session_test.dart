@@ -191,6 +191,76 @@ void main() {
       expect(session.locked, isTrue);
     });
 
+    group('biometric prompt', () {
+      final startCases = [
+        (type: AppLockType.biometrics, prompts: true),
+        (type: AppLockType.pin, prompts: false),
+        (type: AppLockType.none, prompts: false),
+      ];
+      for (final c in startCases) {
+        test('${c.type.name} lock prompts on launch: ${c.prompts}', () {
+          final session = newSession(type: c.type);
+
+          expect(session.takeBiometricPrompt(), c.prompts);
+          expect(session.takeBiometricPrompt(), isFalse);
+        });
+      }
+
+      test('prompts again when returning to a locked app', () {
+        final session = newSession(type: AppLockType.biometrics)
+          ..takeBiometricPrompt()
+          ..unlock();
+
+        session
+          ..didChangeAppLifecycleState(AppLifecycleState.paused)
+          ..didChangeAppLifecycleState(AppLifecycleState.resumed);
+
+        expect(session.takeBiometricPrompt(), isTrue);
+      });
+
+      test('does not prompt when returning before the lock timeout', () {
+        final session =
+            newSession(
+                type: AppLockType.biometrics,
+                timeout: const Duration(minutes: 5),
+              )
+              ..takeBiometricPrompt()
+              ..unlock();
+
+        session
+          ..didChangeAppLifecycleState(AppLifecycleState.paused)
+          ..didChangeAppLifecycleState(AppLifecycleState.resumed);
+
+        expect(session.takeBiometricPrompt(), isFalse);
+      });
+
+      test('dismissing the system prompt does not open it again', () {
+        final session = newSession(type: AppLockType.biometrics)
+          ..takeBiometricPrompt()
+          ..startAuthentication()
+          ..didChangeAppLifecycleState(AppLifecycleState.inactive)
+          ..finishAuthentication()
+          ..didChangeAppLifecycleState(AppLifecycleState.resumed);
+
+        expect(session.locked, isTrue);
+        expect(session.takeBiometricPrompt(), isFalse);
+      });
+
+      test('switching to biometric lock prompts', () {
+        final session = newSession()..unlock();
+
+        session.updateConfig(
+          const AppLockSessionConfig(
+            type: AppLockType.biometrics,
+            timeout: Duration.zero,
+            hideAppPreviewWhenBackgrounded: true,
+          ),
+        );
+
+        expect(session.takeBiometricPrompt(), isTrue);
+      });
+    });
+
     test(
       'disabling lock clears current lock without disabling preview cover',
       () {
