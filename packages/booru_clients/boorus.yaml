@@ -109,6 +109,8 @@
 
     sites:
       - url: https://rule34.xxx/
+        # Its post pages block Dart's HTTP/2 client
+        protocol: https_1
         auth:
           required: true
           instructions-key: "booru.api_key_instructions.variants_1"
