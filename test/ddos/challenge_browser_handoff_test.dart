@@ -442,6 +442,20 @@ void main() {
       expect(site.cookieHeaders.last, isNot(contains('cf_clearance')));
     });
 
+    testWidgets('requests waiting on the same challenge all succeed', (
+      tester,
+    ) async {
+      final (_, harness) = await pump(tester);
+
+      final results = await harness.sendTogether(tester, [
+        '/post/1',
+        '/post/2',
+        '/post/3',
+      ]);
+
+      expect(results, everyElement('HTTP 200 "done"'));
+    });
+
     testWidgets('later requests go out as the app without a challenge', (
       tester,
     ) async {
@@ -626,6 +640,32 @@ class _Harness {
       challengeShown: challengeShown,
       challengeVisible: challengeVisible,
     );
+  }
+
+  /// Sends requests at the same time, as a page loading several resources.
+  Future<List<String?>> sendTogether(
+    WidgetTester tester,
+    List<String> paths,
+  ) async {
+    final results = List<String?>.filled(paths.length, null);
+    for (final (i, path) in paths.indexed) {
+      unawaited(
+        dio
+            .get<String>(path)
+            .then(
+              (r) => results[i] = 'HTTP ${r.statusCode} "${r.data}"',
+              onError: (Object e) => results[i] = switch (e) {
+                DioException(:final response?) => 'HTTP ${response.statusCode}',
+                _ => e.toString(),
+              },
+            ),
+      );
+    }
+    for (var frame = 0; frame < 200 && results.contains(null); frame++) {
+      await tester.pump(const Duration(milliseconds: 16));
+    }
+    await tester.pump(const Duration(seconds: 2));
+    return results;
   }
 
   Future<void> cancelChallenge(WidgetTester tester) async {
