@@ -1088,7 +1088,8 @@
       },
       "http": {
         "protocol": "HTTP Protocol",
-        "protocol_description": "Changing the HTTP protocol may help with compatibility or performance on certain sites or platforms.",
+        "protocol_description": "Auto is recommended. Forcing a protocol can get requests blocked by sites with bot protection.",
+        "blocked_with_protocol_override": "This site still blocked the app after verification. This profile forces an HTTP protocol, set it to Auto in the profile's network settings and try again.",
         "skip_cert_verification": "Skip certificate verification",
         "skip_cert_verification_description": "Enable for self-signed certificates (e.g., local servers)",
         "skip_cert_verification_warning_title": "Security Warning",

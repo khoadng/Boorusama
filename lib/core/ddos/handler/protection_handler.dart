@@ -14,17 +14,21 @@ class HttpProtectionHandler {
     this.onEvent,
     Clock clock = const Clock(),
     void Function()? onSolved,
+    void Function(Uri uri)? onBlockedWithProtocolOverride,
   }) : _orchestrator = orchestrator,
        _cookieJar = cookieJar,
        _clock = clock,
        _contextProvider = contextProvider,
-       _onSolved = onSolved;
+       _onSolved = onSolved,
+       _onBlockedWithProtocolOverride = onBlockedWithProtocolOverride;
 
   final ProtectionOrchestrator _orchestrator;
   final LazyAsync<CookieJar> _cookieJar;
   final ContextProvider _contextProvider;
   final Clock _clock;
   final void Function()? _onSolved;
+  final void Function(Uri uri)? _onBlockedWithProtocolOverride;
+  final Set<String> _protocolOverrideReported = {};
 
   // Track retry attempts
   final Map<String, int> _retryAttempts = {};
@@ -230,9 +234,21 @@ class HttpProtectionHandler {
 
   /// Records the outcome of the retry sent after a reported solve. A retry
   /// that is still blocked briefly stops further solving for its origin.
-  void observeRetryError(HttpError error, {ProtectionAttempt? attempt}) {
+  ///
+  /// Sites can block a forced HTTP protocol even with valid clearance, since
+  /// it no longer matches the browser's, so that case is reported once per
+  /// origin.
+  void observeRetryError(
+    HttpError error, {
+    ProtectionAttempt? attempt,
+    bool protocolOverridden = false,
+  }) {
     if (!_orchestrator.detectsErrorProtection(error)) return;
     attempt?.record(const RetryStillBlocked());
+    if (protocolOverridden &&
+        _protocolOverrideReported.add(error.requestUri.origin)) {
+      _onBlockedWithProtocolOverride?.call(error.requestUri);
+    }
     _blockedAfterSolve[error.requestUri.origin] = _clock.now().add(
       _blockedAfterSolveCooldown,
     );
