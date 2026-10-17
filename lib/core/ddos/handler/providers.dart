@@ -3,6 +3,8 @@ import 'package:flutter/widgets.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:i18n/i18n.dart';
+import 'package:kurumi/kurumi.dart';
 
 // Project imports:
 import '../../../foundation/browser/providers.dart';
@@ -80,6 +82,15 @@ final httpDdosProtectionBypassProvider = Provider<HttpProtectionHandler>(
       onSolved: () {
         ref.invalidate(bypassDdosHeadersProvider);
         ref.invalidate(cachedBypassDdosHeadersProvider);
+      },
+      onBlockedWithProtocolOverride: (_) {
+        final context = contextProvider();
+        if (context == null || !context.mounted) return;
+        Kurumi.showErrorToast(
+          context,
+          duration: const Duration(seconds: 8),
+          context.t.booru.network.http.blocked_with_protocol_override,
+        );
       },
     );
   },

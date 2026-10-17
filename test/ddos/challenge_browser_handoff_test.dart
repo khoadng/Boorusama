@@ -404,6 +404,32 @@ void main() {
       expect(site.appRequests, 5);
     },
   );
+
+  for (final c in [
+    (protocolOverridden: true, hints: ['example.com']),
+    (protocolOverridden: false, hints: <String>[]),
+  ]) {
+    testWidgets(
+      'a solve that leaves the app blocked ${c.protocolOverridden ? 'suggests the automatic protocol once' : 'does not mention the protocol'} when the profile ${c.protocolOverridden ? 'forces' : 'does not force'} one',
+      (tester) async {
+        var now = DateTime.utc(2026, 10, 4);
+        final site = _Site(blockedBody: _turnstileCaptchaPage);
+        final harness = await _Harness.pump(
+          tester,
+          site: site,
+          clock: Clock(() => now),
+          protocolOverridden: c.protocolOverridden,
+        );
+
+        await harness.sendAction(tester);
+        now = now.add(const Duration(seconds: 30));
+        final again = await harness.sendAction(tester);
+
+        expect(again.challengeShown, isTrue);
+        expect(harness.protocolHints, c.hints);
+      },
+    );
+  }
 }
 
 List<ProtectionDetector> _detectors() => [
@@ -415,7 +441,7 @@ List<ProtectionDetector> _detectors() => [
 typedef _Sent = ({String? result, bool challengeShown, bool challengeVisible});
 
 class _Harness {
-  _Harness._(this.dio);
+  _Harness._(this.dio, this.protocolHints);
 
   static Future<_Harness> pump(
     WidgetTester tester, {
@@ -424,7 +450,9 @@ class _Harness {
     List<BrowserCookie>? initialBrowserCookies,
     List<Cookie> requestCookies = const [],
     Clock clock = const Clock(),
+    bool protocolOverridden = false,
   }) async {
+    final protocolHints = <String>[];
     late BuildContext pageContext;
     await tester.pumpWidget(
       BooruLocalization(
@@ -457,6 +485,7 @@ class _Harness {
     BuildContext? contextProvider() => pageContext;
     final handler = HttpProtectionHandler(
       clock: clock,
+      onBlockedWithProtocolOverride: (uri) => protocolHints.add(uri.host),
       orchestrator: ProtectionOrchestrator(
         detectors: _detectors(),
         solvers: [
@@ -484,12 +513,17 @@ class _Harness {
     final dio = Dio(BaseOptions(baseUrl: 'https://example.com'))
       ..httpClientAdapter = site;
     dio.interceptors.add(
-      DioProtectionInterceptor(protectionHandler: handler, dio: dio),
+      DioProtectionInterceptor(
+        protectionHandler: handler,
+        dio: dio,
+        protocolOverridden: protocolOverridden,
+      ),
     );
-    return _Harness._(dio);
+    return _Harness._(dio, protocolHints);
   }
 
   final Dio dio;
+  final List<String> protocolHints;
 
   Future<_Sent> sendAction(WidgetTester tester) =>
       send(tester, _actionPath, stateChanging: true);

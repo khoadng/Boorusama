@@ -80,6 +80,7 @@ Dio newDio({
     DioProtectionInterceptor(
       protectionHandler: options.ddosProtectionHandler,
       dio: dio,
+      protocolOverridden: options.networkProtocolInfo.customProtocol != null,
     ),
   );
 
