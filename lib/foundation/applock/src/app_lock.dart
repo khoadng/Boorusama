@@ -42,7 +42,6 @@ class _AppLockState extends ConsumerState<AppLock> with WidgetsBindingObserver {
     config: _config,
     now: DateTime.now,
   );
-  var _authenticating = false;
   late var _buildProtectedContent = !_session.locked;
 
   AppLockSessionConfig get _config => AppLockSessionConfig(
@@ -59,6 +58,7 @@ class _AppLockState extends ConsumerState<AppLock> with WidgetsBindingObserver {
         .nativePrivacyCover;
     WidgetsBinding.instance.addObserver(this);
     unawaited(_syncNativePrivacyCover());
+    _schedulePendingBiometricPrompt();
   }
 
   @override
@@ -76,6 +76,7 @@ class _AppLockState extends ConsumerState<AppLock> with WidgetsBindingObserver {
         _buildProtectedContent = true;
       }
     });
+    _schedulePendingBiometricPrompt();
   }
 
   @override
@@ -90,6 +91,20 @@ class _AppLockState extends ConsumerState<AppLock> with WidgetsBindingObserver {
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     setState(() => _session.didChangeAppLifecycleState(state));
+    _schedulePendingBiometricPrompt();
+  }
+
+  void _schedulePendingBiometricPrompt() {
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      if (!mounted || !_session.takeBiometricPrompt()) return;
+
+      final canUse = await ref
+          .read(canUseBiometricLockProvider.future)
+          .catchError((_) => false);
+      if (!canUse || !mounted || !_session.locked) return;
+
+      await _authenticate(ref.read(deviceAuthenticatorProvider));
+    });
   }
 
   Future<void> _syncNativePrivacyCover() async {
@@ -101,12 +116,12 @@ class _AppLockState extends ConsumerState<AppLock> with WidgetsBindingObserver {
   }
 
   Future<void> _authenticate(DeviceAuthenticator deviceAuthenticator) async {
-    if (_authenticating) return;
+    if (_session.authenticating) return;
 
     final logger = ref.read(loggerProvider)
       ..info('Local Auth', 'Authenticating...');
 
-    setState(() => _authenticating = true);
+    setState(_session.startAuthentication);
 
     try {
       final didAuthenticate = await startAuthenticate(
@@ -126,7 +141,7 @@ class _AppLockState extends ConsumerState<AppLock> with WidgetsBindingObserver {
       logger.error('Local Auth', 'Failed to authenticate: $e');
     } finally {
       if (mounted) {
-        setState(() => _authenticating = false);
+        setState(_session.finishAuthentication);
       }
     }
   }
@@ -154,7 +169,7 @@ class _AppLockState extends ConsumerState<AppLock> with WidgetsBindingObserver {
           Positioned.fill(
             child: _LockSurface(
               type: widget.type,
-              authenticating: _authenticating,
+              authenticating: _session.authenticating,
               onBiometricUnlock: () =>
                   _authenticate(ref.read(deviceAuthenticatorProvider)),
               onPinUnlocked: _unlock,
@@ -314,10 +329,14 @@ class _BiometricLockSurface extends ConsumerWidget {
                     color: Theme.of(context).colorScheme.primary,
                   ),
                 ),
-                if (authenticating) ...[
-                  const SizedBox(height: 16),
-                  const CircularProgressIndicator(),
-                ],
+                const SizedBox(height: 16),
+                // Reserved so the prompt opening doesn't shift the layout.
+                SizedBox.square(
+                  dimension: 36,
+                  child: authenticating
+                      ? const CircularProgressIndicator()
+                      : null,
+                ),
               ],
             );
           },
