@@ -4,6 +4,9 @@ import 'dart:async';
 // Flutter imports:
 import 'package:flutter/widgets.dart';
 
+// Package imports:
+import 'package:coreutils/coreutils.dart';
+
 // Project imports:
 import 'protection_detector.dart';
 import 'protection_diagnostics.dart';
@@ -147,6 +150,9 @@ class ProtectionOrchestrator {
       attempt,
     );
   }
+
+  bool isClearanceCookie(Cookie cookie) =>
+      _solvers.values.any((solver) => solver.isClearanceCookie(cookie));
 
   bool detectsErrorProtection(HttpError error) =>
       _detectError(error, null) != null;

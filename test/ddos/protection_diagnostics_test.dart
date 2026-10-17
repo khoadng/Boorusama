@@ -157,7 +157,8 @@ void main() {
             throwsA(isA<DioException>()),
           );
         }
-        expect(adapter.requests, 2);
+        // A blocked retry is tried once more as the app itself.
+        expect(adapter.requests, retryStatus == 200 ? 2 : 3);
         expect(solver.calls, 1);
         final events = records.map((record) => record.event).toList();
         expect(events.whereType<SolverReportedResult>().single.success, isTrue);
@@ -187,6 +188,8 @@ class _Solver implements ProtectionSolver {
   String get protectionType => 'cloudflare';
   @override
   bool get isSolving => false;
+  @override
+  bool isClearanceCookie(Cookie cookie) => false;
   @override
   Future<bool> solve({
     required Uri uri,

@@ -307,6 +307,10 @@ final class AlternativeClearanceSelected extends ProtectionEvent {
   const AlternativeClearanceSelected();
 }
 
+final class OwnIdentitySelected extends ProtectionEvent {
+  const OwnIdentitySelected();
+}
+
 final class RetryDispatched extends ProtectionEvent {
   const RetryDispatched(this.number);
   final int number;
