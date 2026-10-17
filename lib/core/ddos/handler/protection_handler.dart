@@ -314,12 +314,12 @@ class HttpProtectionHandler {
   void observeSuccess(Uri uri) => _blockedAfterSolve.remove(uri.origin);
 
   /// Switches the origin to the app's own identity when the browser's was
-  /// still blocked. Returns false when it already uses it.
+  /// still blocked.
   bool selectOwnIdentity(HttpError error, ProtectionAttempt attempt) {
     if (_disabled || !_orchestrator.detectsErrorProtection(error)) {
       return false;
     }
-    if (!_ownIdentityOrigins.add(error.requestUri.origin)) return false;
+    _ownIdentityOrigins.add(error.requestUri.origin);
     attempt.record(const OwnIdentitySelected());
     return true;
   }
