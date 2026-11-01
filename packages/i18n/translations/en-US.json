@@ -266,7 +266,7 @@
     "errors": {
       "cannot_reach_server": "Cannot reach server, please check your connection",
       "failed_to_load_data": "Failed to load data from server, please try again later",
-      "handshake_failed": "Connection failed, server compatibility issue",
+      "handshake_failed": "Couldn't establish a secure connection. The site may be blocked on your network, or a VPN or proxy may be interfering.",
       "certificate_error": "Certificate error. The server may be using a self-signed certificate. Try using HTTP instead of HTTPS, or install the certificate on your device.",
       "tag_limit": "Maximum tag limit reached. Upgrade your account to search for more tags at once.",
       "database_timeout": "Your search took too long to execute and was cancelled.",
