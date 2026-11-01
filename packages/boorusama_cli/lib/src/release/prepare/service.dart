@@ -12,6 +12,7 @@ import '../play/status.dart';
 import '../version/prepare_plan.dart';
 import '../version/version_name.dart';
 import 'plan.dart';
+import 'release_branch.dart';
 
 final class ReleasePrepareService {
   const ReleasePrepareService({
@@ -34,6 +35,7 @@ final class ReleasePrepareService {
     final currentBuildNumber = int.tryParse(project.pubspec.buildNumber ?? '');
     final googlePlay = await _googlePlayPlan();
     final tag = 'v$versionName';
+    final branch = releaseBranchFor(versionName);
     final changelogFile = File('${root.path}/CHANGELOG.md');
     final changelogStatus = _changelogStatus(changelogFile, versionName);
     final versionPlan = const ReleasePrepareVersionPlanner().plan(
@@ -53,11 +55,11 @@ final class ReleasePrepareService {
       currentVersion: project.pubspec.version,
       versionName: versionName,
       nextFullVersion: versionPlan.nextFullVersion,
-      branch: versionName,
+      branch: branch,
       tag: tag,
       workingTreeClean: await git.isWorkingTreeClean(),
-      localBranchExists: await git.localBranchExists(versionName),
-      remoteBranchExists: await git.remoteBranchExists(versionName),
+      localBranchExists: await git.localBranchExists(branch),
+      remoteBranchExists: await git.remoteBranchExists(branch),
       localTagExists: await git.localTagExists(tag),
       remoteTagExists: await git.remoteTagExists(tag),
       alreadyPrepared: versionPlan.alreadyPrepared,
