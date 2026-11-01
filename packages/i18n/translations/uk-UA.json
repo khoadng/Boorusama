@@ -34,7 +34,12 @@
     "no_content": "Без контенту",
     "app_restart_request": "Перезагрузіть додаток, щоб зміни вступили в силу",
     "version": "Версія $version",
-    "warning": "Попередження"
+    "warning": "Попередження",
+    "requirement": {
+      "android": {
+        "version_or_later": "Вимагає Android версії $version або новішої"
+      }
+    }
   },
   "profile": {
     "favorites": "Улюблені",
@@ -107,7 +112,8 @@
       "share": {
         "source": "Ділитись посиланням на джерело",
         "booru": "Ділитись посиланням на Booru",
-        "image": "Ділитись зображенням"
+        "image": "Ділитись зображенням",
+        "file": "Поділитися файлом"
       },
       "show_original": "Показати оригінал",
       "show_translated": "Показати переклад",
@@ -222,6 +228,10 @@
     "counter": {
       "one": "Коментар",
       "other": "Коментарі"
+    },
+    "vote": {
+      "success": "Коментар вподобано",
+      "already_voted": "Ви вже голосували за цей коментар"
     }
   },
   "explore": {
@@ -456,7 +466,42 @@
       "enable_incognito_keyboard": "Активувати режим інкогніто в клавіатурі",
       "enable_incognito_keyboard_notice": "Впливає тільки на Android.",
       "enable_biometric_lock": "Увімкнути біометричні блокування",
-      "enable_biometric_lock_notice": "Працює лише на пристроях з підтримкою біометрії, яку було налаштовано."
+      "enable_biometric_lock_notice": "Працює лише на пристроях з підтримкою біометрії, яку було налаштовано.",
+      "app_lock": {
+        "title": "Блокування додатку",
+        "description": "Вимагати автентифікацію перед відкриттям додатку.",
+        "off": "Викл",
+        "pin": "ПІН-код",
+        "biometrics": "Біометрія",
+        "device_authentication": "Аутентифікація пристрою",
+        "change_pin": "Змінити ПІН-код",
+        "lock_after_description": "Блокувати у разі переходу додатка в фоновий режим.",
+        "timeout_immediately": "Одразу",
+        "timeout_seconds": "$seconds сек.",
+        "timeout_one_minute": "1 хвилина",
+        "hide_app_preview": "Приховувати вміст у меню \"Нещодавні\"",
+        "change_pin_description": "Змініть ПІН-код блокування додатку.",
+        "lock_after": "Блокувати через",
+        "timeout_minutes": "$minutes хв.",
+        "set_pin": "Встановити ПІН-код",
+        "create_pin_title": "Створити ПІН-код",
+        "confirm_pin_title": "Підтвердити ПІН-код",
+        "choose_four_digit_pin": "Виберіть 4-значний ПІН-код для захисту застосунку.",
+        "enter_pin_again": "Повторіть ПІН-код.",
+        "enter_your_pin": "Введіть ПІН-код",
+        "enter_current_pin": "Введіть поточний ПІН-код",
+        "pin_label": "ПІН-код",
+        "confirm_pin_label": "Підтвердьте ПІН-код",
+        "pin_too_short": "ПІН-код повинен складатися щонайменше з $length цифр.",
+        "try_again_in": "Спробуйте знову через $seconds секунд.",
+        "locked_description": "Пройдіть автентифікацію, щоб продовжити.",
+        "biometric_not_available": "Автентифікація пристрою недоступна.",
+        "biometric_failed": "Помилка автентифікації пристрою",
+        "unlock_app": "Розблокувати Boorusama",
+        "locked_title": "Boorusama заблоковано",
+        "unlock": "Розблокувати",
+        "use_device_unlock": "Використовувати розблокування пристрою"
+      }
     },
     "performance": {
       "performance": "Продуктивність",
@@ -482,7 +527,16 @@
       },
       "title": "Завантажити",
       "skip_existing_files": "Пропустити існуючі файли",
-      "skip_existing_files_explanation": "Це запобіжить завантаженню файлів, які вже існують у папці. Це корисно, коли ви не хочете завантажувати один і той самий файл кілька разів."
+      "skip_existing_files_explanation": "Це запобіжить завантаженню файлів, які вже існують у папці. Це корисно, коли ви не хочете завантажувати один і той самий файл кілька разів.",
+      "sidecar": {
+        "description": "Зберігати теги або інформацію про пост поруч із завантаженими файлами.",
+        "off": "Вимк",
+        "tags": "Теги (.txt)",
+        "json": "Метадані (.json)"
+      },
+      "network": {
+        "title": "Мережа для завантаження"
+      }
     },
     "help_us_translate": "Допоможіть нам з перекладом",
     "other_settings": "Інші налаштування",
@@ -511,7 +565,10 @@
       "video_cache": "Кеш відео",
       "video_cache_limit": "Обмеження кешу відео",
       "video_cache_limit_description": "Максимальний розмір для сховища відеокешу",
-      "no_limit": "Без обмежень"
+      "no_limit": "Без обмежень",
+      "cache_locations": {
+        "private_storage": "Внутрішнє сховище додатку. Недоступно у файлових менеджерах."
+      }
     },
     "backup_and_restore": {
       "backup_and_restore": "Резервне копіювання та відновлення",
@@ -677,7 +734,8 @@
       "completed": "Завершено",
       "failed": "Не вдалося",
       "canceled": "Скасовано",
-      "unknown": "Невідомо"
+      "unknown": "Невідомо",
+      "waiting_for_wifi": "Очікування Wi-Fi"
     },
     "downloads": "Завантаженням",
     "retry_all": "Повторити всі спроби",
@@ -695,6 +753,9 @@
     },
     "notification": {
       "started": "Завантаження розпочато"
+    },
+    "network_prompt": {
+      "title": "Завантажувати через мобільну мережу?"
     }
   },
   "saved_search": {
@@ -766,7 +827,30 @@
     "favorites": "Улюблені",
     "import_hint": "Введіть теги. Розділяйте пробілом.",
     "export_notification": "Теги скопійовано в буфер обміну",
-    "title": "Улюблені теги"
+    "title": "Улюблені теги",
+    "filtered_empty": "Немає збережених тегів, що відповідають цим фільтрам",
+    "editor": {
+      "edit_title": "Редагувати вибране",
+      "add_label": "Додати мітку",
+      "advanced_options": "Показати додаткові параметри"
+    },
+    "manage_labels": "Керування мітками",
+    "duplicate_error": "Цей тег уже додано до вибраного",
+    "labels": {
+      "title": "Мітки",
+      "merge_source_into": "Об'єднати \"$label\" з...",
+      "rename": "Перейменувати",
+      "all": "Усі мітки",
+      "remove_description": {
+        "other": "Це видалить мітку \"$label\" з $n обраних елементів. Самі елементи не будуть видалені."
+      },
+      "favorite_count": {
+        "other": "$n обраних елементів"
+      }
+    },
+    "filter": {
+      "all_types": "Усі типи"
+    }
   },
   "rating": {
     "rate_request": "Оцініть додаток",
@@ -886,6 +970,11 @@
         "skip_cert_verification_description": "Увімкнути для самопідписаних сертифікатів (наприклад, локальних серверів)",
         "skip_cert_verification_warning_title": "Попередження безпеки",
         "skip_cert_verification_warning": "Перевірку сертифіката вимкнено. Ваше з’єднання може бути небезпечним. Використовуйте це лише для надійних локальних серверів."
+      },
+      "media_hosts": {
+        "duplicate_host": "Для цього хоста вже задано заміну.",
+        "title": "Заміна медіахостів",
+        "invalid_host": "Введіть назву хоста без схеми, порту чи шляху."
       }
     },
     "gestures": {
@@ -1314,6 +1403,11 @@
     "profile": {
       "joined": "Приєднався",
       "last_active": "Останнє входження"
+    }
+  },
+  "sankaku": {
+    "errors": {
+      "exclusion_search_restricted": "Sankaku обмежує пошук з виключенням для вашого облікового запису. Спробуйте додати хоча б один невимкнений тег."
     }
   }
 }
