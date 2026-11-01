@@ -11,15 +11,14 @@ typedef DataFetcher<T> = Future<T> Function();
 bool _isHandshakeException(Object? error) {
   final errorStr = error.toString().toLowerCase();
   return errorStr.contains('handshake') ||
-      errorStr.contains('tlsv1_alert_no_application_protocol');
+      errorStr.contains('ssl_error') ||
+      errorStr.contains('err_ssl_') ||
+      errorStr.contains('tlsv1_alert');
 }
 
 bool _isCertificateException(Object? error) {
   final errorStr = error.toString().toLowerCase();
-  return errorStr.contains('certificate') ||
-      errorStr.contains('cert_') ||
-      errorStr.contains('ssl_error') ||
-      errorStr.contains('tlsv1_alert');
+  return errorStr.contains('certificate') || errorStr.contains('cert_');
 }
 
 TaskEither<BooruError, T> tryFetchRemoteData<T>({
