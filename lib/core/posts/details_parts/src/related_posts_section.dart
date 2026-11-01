@@ -90,6 +90,9 @@ class SliverRelatedPostsSection<T extends Post> extends ConsumerWidget {
                       placeholderUrl: post.thumbnailImageUrl,
                       placeholderAspectRatio: 0.6,
                       fit: BoxFit.cover,
+                      imageWidth: post.width,
+                      imageHeight: post.height,
+                      decodeAtLayoutSize: true,
                     ),
                     Align(
                       alignment: Alignment.bottomLeft,

@@ -150,6 +150,9 @@ class SliverPreviewPostGrid<T extends Post> extends ConsumerWidget {
         imageUrl: imageUrl(post),
         placeholderUrl: post.thumbnailImageUrl,
         fit: BoxFit.cover,
+        imageWidth: post.width,
+        imageHeight: post.height,
+        decodeAtLayoutSize: true,
       ),
     );
   }
