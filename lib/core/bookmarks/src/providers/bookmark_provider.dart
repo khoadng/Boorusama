@@ -16,6 +16,7 @@ import 'package:kurumi/kurumi.dart';
 // Project imports:
 import '../../../boorus/booru/types.dart';
 import '../../../boorus/engine/providers.dart';
+import '../../../configs/config/providers.dart';
 import '../../../configs/config/types.dart';
 import '../../../configs/network/providers.dart';
 import '../../../ddos/handler/providers.dart';
@@ -253,6 +254,9 @@ class BookmarkNotifier extends AsyncNotifier<BookmarkState> {
     }
   }
 
+  /// Each bookmark downloads with the profile of the site it came from, so it
+  /// lands in that profile's folder. [auth] and [download] cover bookmarks
+  /// whose site has no profile.
   Future<void> downloadBookmarks(
     BooruConfigAuth auth,
     BooruConfigDownload download,
@@ -266,21 +270,31 @@ class BookmarkNotifier extends AsyncNotifier<BookmarkState> {
     if (networkConstraint == null) return;
 
     final downloader = ref.read(downloadServiceProvider);
-    final headers = ref.read(httpHeadersProvider(auth));
 
     final fileNameBuilder = fallbackFileNameBuilder;
 
     final tasks = bookmarks.map(
       (bookmark) async {
+        final (auth: bookmarkAuth, download: bookmarkDownload) = switch (ref
+            .read(
+              firstMatchingConfigBySourceUrlProvider((
+                bookmark.booruId,
+                bookmark.sourceUrl,
+              )),
+            )) {
+          final config? => (auth: config.auth, download: config.download),
+          null => (auth: auth, download: download),
+        };
+        final headers = ref.read(httpHeadersProvider(bookmarkAuth));
         final fileName = await fileNameBuilder.generate(
           settings,
-          download,
+          bookmarkDownload,
           bookmark.toPost(),
           downloadUrl: bookmark.originalUrl,
         );
 
         final request = ref
-            .read(networkSettingsProvider(auth))
+            .read(networkSettingsProvider(bookmarkAuth))
             .resolveMedia(bookmark.originalUrl, headers: headers);
         final bypassHeaders = request.overridden
             ? await ref.read(bypassDdosHeadersProvider(request.url).future)
@@ -288,7 +302,7 @@ class BookmarkNotifier extends AsyncNotifier<BookmarkState> {
         final result = await downloader.download(
           DownloadOptions.fromSettings(
             settings,
-            config: download,
+            config: bookmarkDownload,
             sidecar: settings.downloadSidecarFormat == SidecarFormat.off
                 ? null
                 : SidecarSnapshot(

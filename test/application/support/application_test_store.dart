@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:boorusama/core/configs/config/types.dart';
+import 'package:boorusama/core/downloads/downloader/types.dart';
 import 'package:boorusama/core/settings/types.dart';
 import 'package:boorusama/foundation/platform.dart';
 
@@ -66,6 +67,7 @@ final class ApplicationTestStore {
     AppPlatform platform = AppPlatform.android,
     Size? viewportSize,
     List<Override> additionalOverrides = const [],
+    DownloadService? downloadService,
   }) async {
     _lastMount = (
       backend: backend,
@@ -95,6 +97,7 @@ final class ApplicationTestStore {
         globalBlacklistedTagRepository: globalBlacklistedTagRepository,
         favoriteTagRepository: favoriteTagRepository,
         searchHistoryRepository: searchHistoryRepository,
+        downloadService: downloadService,
       ),
     );
     addTearDown(() => harness.teardown(tester));
