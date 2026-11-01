@@ -13,35 +13,35 @@ import 'package:test/test.dart';
 void main() {
   group('githubReleaseArtifactName', () {
     const app = 'boorusama';
-    const version = '4.5.0+184';
+    const version = '4.5.0';
 
     test('uses readable Android architecture names', () {
       expect(
         githubReleaseArtifactName(
           target: 'apk',
           app: app,
-          fullVersion: version,
+          version: version,
           sourceName: 'boorusama-4.5.0+184-prod-foss-arm64-v8a.apk',
         ),
-        'boorusama-4.5.0+184-android-arm64.apk',
+        'boorusama-4.5.0-android-arm64.apk',
       );
       expect(
         githubReleaseArtifactName(
           target: 'apk',
           app: app,
-          fullVersion: version,
+          version: version,
           sourceName: 'boorusama-4.5.0+184-prod-foss-armeabi-v7a.apk',
         ),
-        'boorusama-4.5.0+184-android-armv7.apk',
+        'boorusama-4.5.0-android-armv7.apk',
       );
       expect(
         githubReleaseArtifactName(
           target: 'apk',
           app: app,
-          fullVersion: version,
+          version: version,
           sourceName: 'boorusama-4.5.0+184-prod-foss-x86_64.apk',
         ),
-        'boorusama-4.5.0+184-android-x64.apk',
+        'boorusama-4.5.0-android-x64.apk',
       );
     });
 
@@ -50,28 +50,28 @@ void main() {
         githubReleaseArtifactName(
           target: 'dmg',
           app: app,
-          fullVersion: version,
+          version: version,
           sourceName: 'boorusama-4.5.0+184.dmg',
         ),
-        'boorusama-4.5.0+184-macos.dmg',
+        'boorusama-4.5.0-macos.dmg',
       );
       expect(
         githubReleaseArtifactName(
           target: 'windows-zip',
           app: app,
-          fullVersion: version,
+          version: version,
           sourceName: 'boorusama-4.5.0+184.zip',
         ),
-        'boorusama-4.5.0+184-windows-x64.zip',
+        'boorusama-4.5.0-windows-x64.zip',
       );
       expect(
         githubReleaseArtifactName(
           target: 'ipa',
           app: app,
-          fullVersion: version,
+          version: version,
           sourceName: 'boorusama_4.5.0+184.ipa',
         ),
-        'boorusama-4.5.0+184-ios.ipa',
+        'boorusama-4.5.0-ios.ipa',
       );
     });
 
@@ -80,19 +80,19 @@ void main() {
         githubReleaseArtifactName(
           target: 'linux-tar.gz',
           app: app,
-          fullVersion: version,
+          version: version,
           sourceName: 'boorusama-4.5.0+184-foss-linux-x64.tar.gz',
         ),
-        'boorusama-4.5.0+184-linux-x64.tar.gz',
+        'boorusama-4.5.0-linux-x64.tar.gz',
       );
       expect(
         githubReleaseArtifactName(
           target: 'appimage',
           app: app,
-          fullVersion: version,
+          version: version,
           sourceName: 'boorusama-4.5.0+184-foss-linux-x64.AppImage',
         ),
-        'boorusama-4.5.0+184-linux-x64.AppImage',
+        'boorusama-4.5.0-linux-x64.AppImage',
       );
     });
   });
@@ -115,7 +115,7 @@ void main() {
     );
 
     final releaseFile = File(
-      '${temp.path}/boorusama-4.5.0+184-windows-x64.zip',
+      '${temp.path}/boorusama-4.5.0-windows-x64.zip',
     );
     expect(releaseFile.existsSync(), isTrue);
     expect(releaseFile.readAsStringSync(), 'windows zip');
@@ -132,7 +132,7 @@ void main() {
     };
     expect(
       artifact['fileName'],
-      'boorusama-4.5.0+184-windows-x64.zip',
+      'boorusama-4.5.0-windows-x64.zip',
     );
   });
 }
