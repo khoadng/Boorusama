@@ -1,14 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:kurumi/kurumi.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 import 'package:boorusama/core/bookmarks/src/data/bookmark_convert.dart';
 import 'package:boorusama/core/bookmarks/src/pages/bookmark_page.dart';
+import 'package:boorusama/core/bookmarks/src/widgets/bookmark_appbar.dart';
 import 'package:boorusama/core/configs/config/types.dart';
 import 'package:boorusama/core/posts/details_parts/widgets.dart';
 import 'package:boorusama/core/posts/listing/widgets.dart';
 import 'package:boorusama/core/posts/post/types.dart';
 import 'package:boorusama/core/posts/sources/types.dart';
+
+import '../support/boorusama_test_runtime.dart';
 
 import 'support/app_flow_driver.dart';
 import 'support/app_flow_finders.dart';
@@ -87,6 +91,96 @@ void main() {
       await harness.pumpUntilFound(tester, find.byType(PostGrid<Post>));
       await driver.openPost(101);
       expect(_bookmarkIcon(tester).fill, isNot(1));
+    },
+  );
+
+  testWidgets(
+    'downloading all bookmarks saves each into its own profile folder',
+    (tester) async {
+      final backend = FakeBooruBackend(strictPostScripts: true);
+      final profileA = _withDownloadFolder(backend.config, '/folders/a');
+      final profileB = _withDownloadFolder(
+        backend.configB.copyWith(name: 'Second site'),
+        '/folders/b',
+      );
+      final postA = _post(
+        101,
+        tags: const {'site_a_marker'},
+        sourceUrl: 'https://source.test/site-a/101',
+        imageUrl: 'https://images.test/site-a-101.png',
+      );
+      final postB = _post(
+        202,
+        tags: const {'site_b_marker'},
+        sourceUrl: 'https://source.test/site-b/202',
+        imageUrl: 'https://images.test/site-b-202.png',
+      );
+      _queueHome(backend, profileA.url, postA);
+      _queueHome(backend, profileB.url, postB);
+      final store = ApplicationTestStore.withProfiles(
+        profileA,
+        additional: [profileB],
+      );
+      final downloads = MemoryDownloadService();
+      final harness = await store.mount(
+        tester,
+        backend: backend,
+        viewportSize: const Size(720, 1000),
+        additionalOverrides: [deterministicImageDioOverride()],
+        downloadService: downloads,
+      );
+
+      final driver = AppFlowDriver(tester: tester, harness: harness);
+      await _waitForSourcePost(harness, tester, 101);
+      await driver.openPost(101);
+      await _tapBookmark(tester);
+      await driver.goBack();
+      await harness.pumpUntilFound(tester, find.byType(PostGrid<Post>));
+      await driver.selectProfile(profileB);
+      await harness.pumpUntilFound(tester, listingPostWithTag('site_b_marker'));
+      await driver.openPost(202);
+      await _tapBookmark(tester);
+      await harness.pumpUntil(
+        tester,
+        () => store.bookmarkRepository.bookmarks.length == 2,
+        description: 'bookmarks from both sites to persist',
+      );
+      await driver.goBack();
+      await harness.pumpUntilFound(tester, find.byType(PostGrid<Post>));
+      await driver.openBookmarks();
+      for (final bookmark in store.bookmarkRepository.bookmarks) {
+        await harness.pumpUntilFound(
+          tester,
+          bookmarkTile(
+            postId: bookmark.postId!,
+            booruId: bookmark.booruId,
+            sourceUrl: bookmark.sourceUrl,
+          ),
+        );
+      }
+      await harness.settle(tester);
+      await tester.tap(
+        find.descendant(
+          of: find.byType(BookmarkAppBar),
+          matching: find.byType(KurumiPopupMenuButton),
+        ),
+      );
+      final downloadAll = find.text('Download 2 bookmarks');
+      await harness.pumpUntilFound(tester, downloadAll);
+      await tester.tap(downloadAll);
+      await harness.pumpUntil(
+        tester,
+        () => downloads.requests.length == 2,
+        description: 'both bookmark downloads to start',
+      );
+
+      final folders = {
+        for (final request in downloads.requests) request.url: request.path,
+      };
+      expect(folders, {
+        'https://images.test/site-a-101.png': '/folders/a',
+        'https://images.test/site-b-202.png': '/folders/b',
+      });
     },
   );
 
@@ -316,6 +410,12 @@ Future<HeadlessAppHarness> _mount(
   viewportSize: const Size(720, 1000),
   additionalOverrides: [deterministicImageDioOverride()],
 );
+
+BooruConfig _withDownloadFolder(BooruConfig config, String folder) =>
+    BooruConfig.fromJson({
+      ...config.toJson(),
+      'customDownloadLocation': folder,
+    });
 
 TestPost _post(
   int id, {
