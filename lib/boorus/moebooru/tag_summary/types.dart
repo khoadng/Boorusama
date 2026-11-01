@@ -13,6 +13,7 @@ class TagSummary {
 }
 
 abstract class TagSummaryRepository {
+  Future<TagSummaryDto> getTagSummaryData();
   Future<List<TagSummary>> getTagSummaries();
 }
 

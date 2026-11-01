@@ -31,13 +31,15 @@ class MoebooruTagSummaryRepository
   final TagSummaryStore store;
 
   @override
-  Future<List<TagSummary>> getTagSummaries() async {
+  Future<List<TagSummary>> getTagSummaries() async =>
+      convertTagSummaryDtoToTagSummaryList(await getTagSummaryData());
+
+  @override
+  Future<TagSummaryDto> getTagSummaryData() async {
     try {
       final cached = await store.get();
 
-      if (cached != null) {
-        return convertTagSummaryDtoToTagSummaryList(cached);
-      }
+      if (cached != null) return cached;
 
       final tagSummaryDto = await deduplicate(
         'key',
@@ -46,9 +48,7 @@ class MoebooruTagSummaryRepository
 
       await store.save(tagSummaryDto);
 
-      final data = convertTagSummaryDtoToTagSummaryList(tagSummaryDto);
-
-      return data;
+      return tagSummaryDto;
     } on DioException catch (e) {
       if (e.type == DioExceptionType.cancel) {
         rethrow;
