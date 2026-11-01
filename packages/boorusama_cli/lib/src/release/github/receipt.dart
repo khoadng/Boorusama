@@ -37,7 +37,7 @@ final class GithubReceipt {
         fileName: githubReleaseArtifactName(
           target: target,
           app: project.pubspec.name,
-          fullVersion: version.full,
+          version: version.name,
           sourceName: p.basename(file.path),
         ),
       );
@@ -97,10 +97,10 @@ final class GithubReceipt {
 String githubReleaseArtifactName({
   required String target,
   required String app,
-  required String fullVersion,
+  required String version,
   required String sourceName,
 }) {
-  final prefix = '$app-$fullVersion';
+  final prefix = '$app-$version';
   return switch (target) {
     'apk' => '$prefix-android-${_androidArchitecture(sourceName)}.apk',
     'ipa' => '$prefix-ios.ipa',
