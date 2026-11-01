@@ -1,7 +1,5 @@
-// Dart imports:
-import 'dart:math';
-
 // Package imports:
+import 'package:collection/collection.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -30,16 +28,13 @@ class BookmarkShuffleState extends Equatable {
     return const BookmarkShuffleState();
   }
 
-  List<T> applyShuffleToList<T>(List<T> items) {
-    if (seed == null || items.isEmpty) {
-      return items;
-    }
-
-    final shuffled = [...items];
-    final random = Random(seed);
-    shuffled.shuffle(random);
-    return shuffled;
-  }
+  List<T> applyShuffleToList<T>(
+    List<T> items, {
+    required Object Function(T item) key,
+  }) => switch (seed) {
+    null => items,
+    final seed => items.sortedBy<num>((item) => Object.hash(seed, key(item))),
+  };
 
   bool get shouldShowAsActive => seed != null;
 

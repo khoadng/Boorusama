@@ -59,7 +59,10 @@ List<Bookmark> filterBookmarks({
     final activeShuffleState = shuffleState?.seed != null
         ? shuffleState!
         : const BookmarkShuffleState().withNewShuffle();
-    return activeShuffleState.applyShuffleToList(sorted);
+    return activeShuffleState.applyShuffleToList(
+      sorted,
+      key: (bookmark) => bookmark.id,
+    );
   }
 
   return sorted;
