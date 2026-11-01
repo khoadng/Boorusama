@@ -26,6 +26,7 @@ import '../types/download_network_policy.dart';
 import '../types/metadata.dart';
 import '../types/observer.dart';
 import 'download_network_policy_provider.dart';
+import 'pending_downloads_provider.dart';
 
 final downloadNotifierProvider =
     NotifierProvider.family<DownloadNotifier, void, DownloadNotifierParams>(
@@ -215,46 +216,54 @@ Future<DownloadTaskInfo?> _download(
           AppHttpHeaders.cookieHeader: urlData.cookie!,
       },
     );
-    final bypassHeaders = await ref.read(
-      bypassDdosHeadersProvider(request.url).future,
-    );
+    final pendingDownloads = ref.read(pendingDownloadsProvider);
+    if (!pendingDownloads.claim(request.url)) return null;
 
-    final result = await service.download(
-      DownloadOptions.fromSettings(
-        params.settings,
-        config: downloadConfig,
-        sidecar: params.settings.downloadSidecarFormat == SidecarFormat.off
-            ? null
-            : SidecarSnapshot.fromPost(
-                downloadable,
-                format: params.settings.downloadSidecarFormat,
-                quality: effectiveQuality,
-                site: params.auth.url,
-                postUrl: ref
-                    .read(postLinkGeneratorProvider(params.auth))
-                    .getLink(downloadable),
-              ),
-        metadata: DownloaderMetadata(
-          mediaHostOverridden: request.overridden,
-          thumbnailUrl: downloadable.thumbnailImageUrl,
-          fileSize: downloadable.fileSize,
-          siteUrl: params.auth.url,
-          profileIconUrl: params.profileIconUrl,
-          group: group,
-          isVideo: downloadable.isVideo,
+    final DownloadResult result;
+    try {
+      final bypassHeaders = await ref.read(
+        bypassDdosHeadersProvider(request.url).future,
+      );
+
+      result = await service.download(
+        DownloadOptions.fromSettings(
+          params.settings,
+          config: downloadConfig,
+          sidecar: params.settings.downloadSidecarFormat == SidecarFormat.off
+              ? null
+              : SidecarSnapshot.fromPost(
+                  downloadable,
+                  format: params.settings.downloadSidecarFormat,
+                  quality: effectiveQuality,
+                  site: params.auth.url,
+                  postUrl: ref
+                      .read(postLinkGeneratorProvider(params.auth))
+                      .getLink(downloadable),
+                ),
+          metadata: DownloaderMetadata(
+            mediaHostOverridden: request.overridden,
+            thumbnailUrl: downloadable.thumbnailImageUrl,
+            fileSize: downloadable.fileSize,
+            siteUrl: params.auth.url,
+            profileIconUrl: params.profileIconUrl,
+            group: group,
+            isVideo: downloadable.isVideo,
+          ),
+          url: request.url,
+          filename: fileName,
+          headers: {
+            ...request.headers,
+            ...bypassHeaders,
+            if (!request.overridden && urlData.cookie != null)
+              AppHttpHeaders.cookieHeader: urlData.cookie!,
+          },
+          customPath: downloadPath,
+          networkConstraint: resolvedNetworkConstraint,
         ),
-        url: request.url,
-        filename: fileName,
-        headers: {
-          ...request.headers,
-          ...bypassHeaders,
-          if (!request.overridden && urlData.cookie != null)
-            AppHttpHeaders.cookieHeader: urlData.cookie!,
-        },
-        customPath: downloadPath,
-        networkConstraint: resolvedNetworkConstraint,
-      ),
-    );
+      );
+    } finally {
+      pendingDownloads.release(request.url);
+    }
 
     ref
         .read(immediateDownloadActivitiesProvider.notifier)

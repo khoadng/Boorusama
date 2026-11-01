@@ -762,7 +762,8 @@
     "no_active_sessions": "No active download sessions",
     "nothing_to_show": "Nothing to show, download updates are empty",
     "notification": {
-      "started": "Download started"
+      "started": "Download started",
+      "queued": "Download queued"
     },
     "status": {
       "in_progress": "In Progress",
