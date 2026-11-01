@@ -19,6 +19,8 @@ import '../settings/providers.dart';
 import 'providers.dart';
 import 'types.dart';
 
+const _queuedToastDelay = Duration(seconds: 1);
+
 class DownloadActivityScope extends ConsumerStatefulWidget {
   const DownloadActivityScope({
     required this.child,
@@ -38,6 +40,15 @@ class _DownloadActivityScopeState extends ConsumerState<DownloadActivityScope> {
   bool? _configuredNotifications;
   Future<void>? _permissionRequest;
   final _notificationUpdates = <String, Future<void>>{};
+  final _queuedToastTimers = <String, Timer>{};
+
+  @override
+  void dispose() {
+    for (final timer in _queuedToastTimers.values) {
+      timer.cancel();
+    }
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -73,6 +84,12 @@ class _DownloadActivityScopeState extends ConsumerState<DownloadActivityScope> {
                   ? context.t.download.status.waiting_for_wifi
                   : null,
             );
+          }
+
+          if (activity.kind == DownloadActivityKind.single &&
+              activity.phase == DownloadActivityPhase.queued &&
+              old == null) {
+            _scheduleQueuedToast(activity.id);
           }
 
           if (activity.kind == DownloadActivityKind.single &&
@@ -130,6 +147,28 @@ class _DownloadActivityScopeState extends ConsumerState<DownloadActivityScope> {
       );
 
     return widget.child;
+  }
+
+  void _scheduleQueuedToast(String id) {
+    _queuedToastTimers[id]?.cancel();
+    _queuedToastTimers[id] = Timer(_queuedToastDelay, () {
+      _queuedToastTimers.remove(id);
+      if (!mounted) return;
+
+      final stillQueued = ref
+          .read(downloadActivitiesProvider)
+          .any(
+            (activity) =>
+                activity.id == id &&
+                activity.phase == DownloadActivityPhase.queued,
+          );
+      if (stillQueued) {
+        showDownloadStartToast(
+          context,
+          message: context.t.download.notification.queued,
+        );
+      }
+    });
   }
 
   bool _startsSingleDownload(
