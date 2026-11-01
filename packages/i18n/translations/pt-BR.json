@@ -1374,7 +1374,8 @@
   },
   "captcha": {
     "title": "Resolva o captcha",
-    "i_have_solved_it": "Eu resolvi isso"
+    "i_have_solved_it": "Eu resolvi isso",
+    "blocked_by_site": "Este site bloqueou o acesso a partir da sua rede. Tente desativar sua VPN ou proxy, ou trocar de rede."
   },
   "select": {
     "selected_items": "Selecionar itens",
