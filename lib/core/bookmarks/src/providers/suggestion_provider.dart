@@ -43,10 +43,16 @@ class TagSuggestionsNotifier
     );
 
     try {
-      final tags = tagString.trim().split(' ');
-      final tag = tags.lastOrNull?.trim();
+      final segments = tagString.trim().split(' ');
+      final rawTag = segments.lastOrNull?.trim() ?? '';
 
-      if (tag == null || tag.isEmpty) {
+      // Strip leading - for exclusion tag suggestions
+      final tag = switch (rawTag) {
+        String t when t.startsWith('-') => t.substring(1),
+        _ => rawTag,
+      };
+
+      if (tag.isEmpty) {
         state = AsyncValue.data(
           currentState.copyWith(
             suggestions: const [],
