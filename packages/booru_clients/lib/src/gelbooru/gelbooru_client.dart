@@ -14,7 +14,7 @@ import 'types/types.dart';
 
 const _kGelbooruUrl = 'https://gelbooru.com/';
 
-typedef GelbooruPosts = ({List<PostDto> posts, int? count});
+typedef GelbooruPosts = ({List<PostDto> posts, int? count, int? lastId});
 
 class GelbooruClient
     with GelbooruClientFavorites, RequestDeduplicator<GelbooruPosts> {
@@ -90,7 +90,7 @@ class GelbooruClient
     List<String>? tags,
   }) async {
     final baseUrl = _dio.options.baseUrl;
-    final key = '${baseUrl}_getPosts_${tags?.join(' ')}_${page ?? 1}';
+    final key = '${baseUrl}_getPosts_${tags?.join(' ')}_${page ?? 1}_$limit';
 
     return deduplicate(
       key,
@@ -133,6 +133,7 @@ class GelbooruClient
         return (
           posts: filterNulls,
           count: result.count,
+          lastId: result.posts.lastOrNull?.id,
         );
       },
     );

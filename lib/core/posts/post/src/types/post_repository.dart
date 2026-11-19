@@ -11,9 +11,14 @@ import 'post.dart';
 class PostFetchOptions {
   const PostFetchOptions({
     this.cascadeRequest = true,
+    this.useCursor = false,
+    this.cursor,
   });
 
   final bool cascadeRequest;
+
+  final bool useCursor;
+  final int? cursor;
 
   static const defaults = PostFetchOptions();
   static const raw = PostFetchOptions(
@@ -49,36 +54,46 @@ class PostResult<T extends Post> extends Equatable {
     required this.posts,
     required this.total,
     this.maxPage,
+    this.nextCursor,
   });
 
-  PostResult.empty() : posts = <T>[], total = 0, maxPage = null;
+  PostResult.empty()
+    : posts = <T>[],
+      total = 0,
+      maxPage = null,
+      nextCursor = null;
 
   PostResult<T> copyWith({
     List<T>? posts,
     int? Function()? total,
     int? Function()? maxPage,
+    int? Function()? nextCursor,
   }) => PostResult(
     posts: posts ?? this.posts,
     total: total != null ? total() : this.total,
     maxPage: maxPage != null ? maxPage() : this.maxPage,
+    nextCursor: nextCursor != null ? nextCursor() : this.nextCursor,
   );
 
   final List<T> posts;
   final int? total;
   final int? maxPage;
+  final int? nextCursor;
 
   @override
-  List<Object?> get props => [posts, total, maxPage];
+  List<Object?> get props => [posts, total, maxPage, nextCursor];
 }
 
 extension PostResultX<T extends Post> on List<T> {
   PostResult<T> toResult({
     int? total,
     int? maxPage,
+    int? nextCursor,
   }) => PostResult(
     posts: this,
     total: total,
     maxPage: maxPage,
+    nextCursor: nextCursor,
   );
 }
 
