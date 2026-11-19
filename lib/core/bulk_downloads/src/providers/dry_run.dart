@@ -117,6 +117,7 @@ class DryRunNotifier extends FamilyAsyncNotifier<DryRunState, String> {
       }
 
       var rawPosts = firstResult.posts;
+      var cursor = firstResult.nextCursor;
       var preloadResult = await _preload(
         fileNameBuilder,
         rawPosts,
@@ -270,19 +271,29 @@ class DryRunNotifier extends FamilyAsyncNotifier<DryRunState, String> {
 
         l._log('Fetching page $page for session $sessionId');
 
-        final nextResult = await fetcher.getPosts(
-          tags: tags,
-          page: page,
-          task: task,
-        );
+        final nextResult = await fetcher
+            .getPosts(
+              tags: tags,
+              page: page,
+              task: task,
+              cursor: cursor,
+            )
+            .then(
+              (result) => result.isEmpty ? null : result,
+              onError: (Object e) {
+                l._log('Stopped collecting at page $page: $e');
+                return null;
+              },
+            );
 
-        if (nextResult.isEmpty) {
+        if (nextResult == null) {
           page--;
           l._log('No more items found, ending dry run for session $sessionId');
           break;
         }
 
         rawPosts = nextResult.posts;
+        cursor = nextResult.nextCursor;
       }
 
       l._log('Dry run ended for session $sessionId');
