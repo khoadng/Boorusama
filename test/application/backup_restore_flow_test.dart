@@ -26,6 +26,7 @@ import 'package:boorusama/core/search/selected_tags/types.dart';
 import 'package:boorusama/core/settings/src/pages/backup_and_restore_page.dart';
 import 'package:boorusama/core/settings/types.dart';
 import 'package:boorusama/core/tags/favorites/types.dart';
+import 'package:boorusama/foundation/applock/types.dart';
 import 'package:boorusama/foundation/filesystem.dart';
 import 'package:boorusama/foundation/platform.dart';
 
@@ -75,7 +76,7 @@ void main() {
     }
   });
 
-  testWidgets('reaches backup restore through the real settings flow', (
+  testWidgets('restores settings but keeps the device app lock', (
     tester,
   ) async {
     final backend = FakeBooruBackend();
@@ -85,7 +86,11 @@ void main() {
       '/memory/settings.json',
       jsonEncode(
         Settings.defaultSettings
-            .copyWith(currentBooruConfigId: backend.config.id)
+            .copyWith(
+              currentBooruConfigId: backend.config.id,
+              appLockType: AppLockType.biometrics,
+              appLockTimeoutSeconds: 0,
+            )
             .toJson(),
       ),
     );
@@ -128,11 +133,12 @@ void main() {
     await harness.settle(tester);
 
     expect(picker.pickedFiles, ['/memory/settings.json']);
-    expect(
-      (runtime.dependencies.settingsRepository as MemorySettingsRepository)
-          .savedSettings,
-      isNotEmpty,
-    );
+    final saved =
+        (runtime.dependencies.settingsRepository as MemorySettingsRepository)
+            .savedSettings
+            .last;
+    expect(saved.appLockType, AppLockType.none);
+    expect(saved.appLockTimeoutSeconds, 30);
   });
 
   testWidgets(
