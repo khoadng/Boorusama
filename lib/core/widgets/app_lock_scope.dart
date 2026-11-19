@@ -24,6 +24,9 @@ class AppLockScope extends ConsumerWidget {
       type: settings.appLockType,
       timeout: Duration(seconds: settings.appLockTimeoutSeconds),
       hideAppPreviewWhenBackgrounded: settings.hideAppPreviewWhenBackgrounded,
+      onDisable: () => ref
+          .read(settingsNotifierProvider.notifier)
+          .updateSettings(settings.copyWith(appLockType: AppLockType.none)),
       child: child,
     );
   }

@@ -23,6 +23,7 @@ class AppLock extends ConsumerStatefulWidget {
     required this.child,
     required this.type,
     required this.timeout,
+    required this.onDisable,
     super.key,
     this.hideAppPreviewWhenBackgrounded = true,
   });
@@ -30,6 +31,7 @@ class AppLock extends ConsumerStatefulWidget {
   final AppLockType type;
   final Duration timeout;
   final bool hideAppPreviewWhenBackgrounded;
+  final VoidCallback onDisable;
   final Widget child;
 
   @override
@@ -43,6 +45,7 @@ class _AppLockState extends ConsumerState<AppLock> with WidgetsBindingObserver {
     now: DateTime.now,
   );
   late var _buildProtectedContent = !_session.locked;
+  var _authenticationFailed = false;
 
   AppLockSessionConfig get _config => AppLockSessionConfig(
     type: widget.type,
@@ -124,7 +127,10 @@ class _AppLockState extends ConsumerState<AppLock> with WidgetsBindingObserver {
     final logger = ref.read(loggerProvider)
       ..info('Local Auth', 'Authenticating...');
 
-    setState(_session.startAuthentication);
+    setState(() {
+      _session.startAuthentication();
+      _authenticationFailed = false;
+    });
 
     try {
       final didAuthenticate = await startAuthenticate(
@@ -142,6 +148,8 @@ class _AppLockState extends ConsumerState<AppLock> with WidgetsBindingObserver {
       }
     } catch (e) {
       logger.error('Local Auth', 'Failed to authenticate: $e');
+      ref.invalidate(biometricDeviceSupportProvider);
+      if (mounted) setState(() => _authenticationFailed = true);
     } finally {
       if (mounted) {
         setState(_session.finishAuthentication);
@@ -173,9 +181,11 @@ class _AppLockState extends ConsumerState<AppLock> with WidgetsBindingObserver {
             child: _LockSurface(
               type: widget.type,
               authenticating: _session.authenticating,
+              authenticationFailed: _authenticationFailed,
               onBiometricUnlock: () =>
                   _authenticate(ref.read(deviceAuthenticatorProvider)),
               onPinUnlocked: _unlock,
+              onDisable: widget.onDisable,
             ),
           ),
       ],
@@ -187,14 +197,18 @@ class _LockSurface extends ConsumerWidget {
   const _LockSurface({
     required this.type,
     required this.authenticating,
+    required this.authenticationFailed,
     required this.onBiometricUnlock,
     required this.onPinUnlocked,
+    required this.onDisable,
   });
 
   final AppLockType type;
   final bool authenticating;
+  final bool authenticationFailed;
   final VoidCallback onBiometricUnlock;
   final VoidCallback onPinUnlocked;
+  final VoidCallback onDisable;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -219,14 +233,19 @@ class _LockSurface extends ConsumerWidget {
                     constraints: const BoxConstraints(maxWidth: 760),
                     child: switch (type) {
                       AppLockType.pin => _PinLockSurface(
+                        authenticating: authenticating,
+                        authenticationFailed: authenticationFailed,
                         onUnlocked: onPinUnlocked,
                         onDeviceUnlock: onBiometricUnlock,
+                        onDisable: onDisable,
                       ),
                       AppLockType.biometrics => ConstrainedBox(
                         constraints: const BoxConstraints(maxWidth: 380),
                         child: _BiometricLockSurface(
                           authenticating: authenticating,
+                          authenticationFailed: authenticationFailed,
                           onUnlock: onBiometricUnlock,
+                          onDisable: onDisable,
                         ),
                       ),
                       AppLockType.none => const SizedBox.shrink(),
@@ -244,12 +263,18 @@ class _LockSurface extends ConsumerWidget {
 
 class _PinLockSurface extends ConsumerStatefulWidget {
   const _PinLockSurface({
+    required this.authenticating,
+    required this.authenticationFailed,
     required this.onUnlocked,
     required this.onDeviceUnlock,
+    required this.onDisable,
   });
 
+  final bool authenticating;
+  final bool authenticationFailed;
   final VoidCallback onUnlocked;
   final VoidCallback onDeviceUnlock;
+  final VoidCallback onDisable;
 
   @override
   ConsumerState<_PinLockSurface> createState() => _PinLockSurfaceState();
@@ -269,11 +294,14 @@ class _PinLockSurfaceState extends ConsumerState<_PinLockSurface> {
         }
 
         if (snapshot.hasError || snapshot.data != true) {
-          return const _LockMessage(
-            icon: Symbols.lock,
-            title: null,
-            message: null,
-            messageType: _LockMessageType.locked,
+          return ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 380),
+            child: _BiometricLockSurface(
+              authenticating: widget.authenticating,
+              authenticationFailed: widget.authenticationFailed,
+              onUnlock: widget.onDeviceUnlock,
+              onDisable: widget.onDisable,
+            ),
           );
         }
 
@@ -294,11 +322,15 @@ class _PinLockSurfaceState extends ConsumerState<_PinLockSurface> {
 class _BiometricLockSurface extends ConsumerWidget {
   const _BiometricLockSurface({
     required this.authenticating,
+    required this.authenticationFailed,
     required this.onUnlock,
+    required this.onDisable,
   });
 
   final bool authenticating;
+  final bool authenticationFailed;
   final VoidCallback onUnlock;
+  final VoidCallback onDisable;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -307,12 +339,7 @@ class _BiometricLockSurface extends ConsumerWidget {
         .when(
           data: (canUse) {
             if (!canUse) {
-              return const _LockMessage(
-                icon: Symbols.lock,
-                title: null,
-                message: null,
-                messageType: _LockMessageType.biometricUnavailable,
-              );
+              return _UnverifiableLock(onDisable: onDisable);
             }
 
             return Column(
@@ -340,6 +367,19 @@ class _BiometricLockSurface extends ConsumerWidget {
                       ? const CircularProgressIndicator()
                       : null,
                 ),
+                if (authenticationFailed && !authenticating)
+                  Text(
+                    context
+                        .t
+                        .settings
+                        .privacy
+                        .app_lock
+                        .biometric_failed_description,
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      color: Theme.of(context).colorScheme.error,
+                    ),
+                  ),
               ],
             );
           },
@@ -347,13 +387,42 @@ class _BiometricLockSurface extends ConsumerWidget {
             delay: Duration(milliseconds: 500),
             child: Center(child: CircularProgressIndicator()),
           ),
-          error: (error, stack) => const _LockMessage(
-            icon: Symbols.lock,
-            title: null,
-            message: null,
-            messageType: _LockMessageType.biometricFailed,
-          ),
+          error: (error, stack) => _UnverifiableLock(onDisable: onDisable),
         );
+  }
+}
+
+class _UnverifiableLock extends ConsumerWidget {
+  const _UnverifiableLock({
+    required this.onDisable,
+  });
+
+  final VoidCallback onDisable;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final appLock = context.t.settings.privacy.app_lock;
+
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        _LockMessage(
+          icon: Symbols.lock,
+          title: appLock.biometric_unavailable,
+          message: appLock.unverifiable_description,
+        ),
+        const SizedBox(height: 24),
+        FilledButton(
+          onPressed: () => ref.invalidate(biometricDeviceSupportProvider),
+          child: Text(context.t.generic.action.retry),
+        ),
+        const SizedBox(height: 8),
+        TextButton(
+          onPressed: onDisable,
+          child: Text(appLock.turn_off),
+        ),
+      ],
+    );
   }
 }
 
@@ -379,49 +448,20 @@ class AppPrivacyCover extends StatelessWidget {
   }
 }
 
-enum _LockMessageType {
-  custom,
-  biometricUnavailable,
-  biometricFailed,
-  locked,
-}
-
 class _LockMessage extends StatelessWidget {
   const _LockMessage({
     required this.icon,
     required this.title,
     required this.message,
-    this.messageType = _LockMessageType.custom,
   });
 
   final IconData icon;
-  final String? title;
-  final String? message;
-  final _LockMessageType messageType;
+  final String title;
+  final String message;
 
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
-    final appLock = context.t.settings.privacy.app_lock;
-    final resolvedTitle =
-        title ??
-        switch (messageType) {
-          _LockMessageType.biometricUnavailable =>
-            appLock.biometric_unavailable,
-          _LockMessageType.biometricFailed => appLock.biometric_failed,
-          _LockMessageType.locked => appLock.locked_title,
-          _LockMessageType.custom => '',
-        };
-    final resolvedMessage =
-        message ??
-        switch (messageType) {
-          _LockMessageType.biometricUnavailable =>
-            appLock.biometric_unavailable_description,
-          _LockMessageType.biometricFailed =>
-            appLock.biometric_failed_description,
-          _LockMessageType.locked => appLock.locked_description,
-          _LockMessageType.custom => '',
-        };
 
     return Column(
       mainAxisSize: MainAxisSize.min,
@@ -433,13 +473,13 @@ class _LockMessage extends StatelessWidget {
         ),
         const SizedBox(height: 16),
         Text(
-          resolvedTitle,
+          title,
           textAlign: TextAlign.center,
           style: Theme.of(context).textTheme.titleLarge,
         ),
         const SizedBox(height: 8),
         Text(
-          resolvedMessage,
+          message,
           textAlign: TextAlign.center,
           style: TextStyle(color: colorScheme.outline),
         ),
