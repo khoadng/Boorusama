@@ -90,6 +90,9 @@ class _AppLockState extends ConsumerState<AppLock> with WidgetsBindingObserver {
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed && _session.locked) {
+      ref.invalidate(biometricDeviceSupportProvider);
+    }
     setState(() => _session.didChangeAppLifecycleState(state));
     _schedulePendingBiometricPrompt();
   }
