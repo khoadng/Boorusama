@@ -12,10 +12,6 @@ final class LocalAuthDeviceAuthenticator implements DeviceAuthenticator {
   final LocalAuthentication _localAuthentication;
 
   @override
-  Future<bool> get canCheckBiometrics =>
-      _localAuthentication.canCheckBiometrics;
-
-  @override
   Future<bool> isDeviceSupported() => _localAuthentication.isDeviceSupported();
 
   @override

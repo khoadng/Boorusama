@@ -10,13 +10,8 @@ final deviceAuthenticatorProvider = Provider<DeviceAuthenticator>(
   name: 'deviceAuthenticatorProvider',
 );
 
-final biometricDeviceSupportProvider = FutureProvider<bool>((ref) async {
-  final auth = ref.watch(deviceAuthenticatorProvider);
-  final canAuthenticateWithBiometrics = await auth.canCheckBiometrics;
-  final canAuthenticate =
-      canAuthenticateWithBiometrics || await auth.isDeviceSupported();
-
-  return canAuthenticate;
+final biometricDeviceSupportProvider = FutureProvider<bool>((ref) {
+  return ref.watch(deviceAuthenticatorProvider).isDeviceSupported();
 });
 
 final canUseBiometricLockProvider = FutureProvider<bool>((ref) async {

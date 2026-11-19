@@ -28,9 +28,6 @@ final class TestDeviceAuthenticator implements DeviceAuthenticator {
   const TestDeviceAuthenticator();
 
   @override
-  Future<bool> get canCheckBiometrics async => false;
-
-  @override
   Future<bool> isDeviceSupported() async => false;
 
   @override
