@@ -56,6 +56,41 @@ void main() {
     expect(await pinStore.get('pin_credential'), isNotNull);
   });
 
+  for (final type in [AppLockType.biometrics, AppLockType.pin]) {
+    testWidgets(
+      'turns off a ${type.name} lock that nothing on the device can verify',
+      (tester) async {
+        final backend = FakeBooruBackend();
+        final runtime = backend.createRuntime(
+          settings: Settings.defaultSettings.copyWith(
+            appLockType: type,
+            appLockTimeoutSeconds: 0,
+          ),
+          pinCredentialRepositoryFactory: _FastPinCredentialRepositoryFactory(
+            MemoryPinCredentialStore(),
+          ),
+        );
+        final harness = HeadlessAppHarness(runtime: runtime);
+        addTearDown(() => harness.teardown(tester));
+
+        await harness.pump(tester);
+        await harness.pumpUntilFound(tester, find.text('Turn off app lock'));
+        expect(find.text('Retry'), findsOneWidget);
+
+        await tester.tap(find.text('Turn off app lock'));
+        await harness.settle(tester);
+
+        expect(find.text('Turn off app lock'), findsNothing);
+        expect(
+          (runtime.dependencies.settingsRepository as MemorySettingsRepository)
+              .settings
+              .appLockType,
+          AppLockType.none,
+        );
+      },
+    );
+  }
+
   testWidgets('configures, uses, and disables PIN locking through the UI', (
     tester,
   ) async {

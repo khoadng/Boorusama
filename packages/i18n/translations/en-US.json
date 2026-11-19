@@ -517,6 +517,8 @@
         "pin_updated": "PIN updated.",
         "biometric_unavailable": "Device authentication is unavailable",
         "biometric_unavailable_description": "Set up or restore device authentication in system settings.",
+        "unverifiable_description": "This device has no screen lock or fingerprint to verify you with. Set one up in system settings and retry, or turn off the app lock.",
+        "turn_off": "Turn off app lock",
         "biometric_failed": "Device authentication failed",
         "biometric_failed_description": "Try again after restoring device authentication in system settings.",
         "biometric_not_available": "Device authentication is not available.",
