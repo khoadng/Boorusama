@@ -83,7 +83,14 @@ final httpDdosProtectionBypassProvider = Provider<HttpProtectionHandler>(
         ref.invalidate(bypassDdosHeadersProvider);
         ref.invalidate(cachedBypassDdosHeadersProvider);
       },
-      onBlockedWithProtocolOverride: (_) {
+      onBlockedWithProtocolOverride: (uri) {
+        ref
+            .read(appLoggerProvider)
+            .warn(
+              'Verification',
+              'host=${uri.host} still blocked with a forced protocol, '
+                  'suggested Auto',
+            );
         final context = contextProvider();
         if (context == null || !context.mounted) return;
         Kurumi.showErrorToast(

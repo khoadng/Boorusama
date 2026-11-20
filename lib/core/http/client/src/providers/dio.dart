@@ -102,6 +102,13 @@ HttpClientAdapter _createHttpClientAdapter({
     skipCertificateVerification: skipCertificateVerification,
   );
 
+  logger?.info(
+    'Network',
+    'Adapter inputs protocol=${protocolInfo?.customProtocol?.name ?? 'auto'} '
+        'detected=${protocolInfo?.detectedProtocol?.name ?? 'unknown'} '
+        'cronetAvailable=${protocolInfo?.platform.cronetAvailable ?? false}',
+  );
+
   return switch (config) {
     DefaultAdapterConfig(
       :final logger,

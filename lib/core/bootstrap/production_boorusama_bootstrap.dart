@@ -215,6 +215,7 @@ final class ProductionBoorusamaBootstrap implements BoorusamaBootstrap {
 
       logger.debugBoot('Initialize Cronet availability');
       final isCronetAvailable = await _loadCronetAvailability();
+      appLogger.updateReportContext({'cronetAvailable': '$isCronetAvailable'});
 
       logger.debugBoot('Initialization done');
       appLogger
