@@ -69,8 +69,21 @@ class ZerochanClient {
         },
         options: Options(
           responseType: ResponseType.plain,
+          validateStatus: (status) =>
+              status != null && (status < 400 || status == 500),
         ),
       );
+
+      if (response.statusCode == 500) {
+        return switch (_salvageItems(response.data)) {
+          final items? => _logRecovered(items, response.statusCode),
+          null => throw DioException.badResponse(
+            statusCode: 500,
+            requestOptions: response.requestOptions,
+            response: response,
+          ),
+        };
+      }
 
       // return empty if response is HTML
       if (response.data.toString().startsWith('<!DOCTYPE html>') && !strict) {
@@ -93,6 +106,14 @@ class ZerochanClient {
       logger?.call('Zerochan Error: $e');
       Error.throwWithStackTrace(e, stackTrace);
     }
+  }
+
+  List<PostDto> _logRecovered(List<PostDto> items, int? statusCode) {
+    logger?.call(
+      'Recovered ${items.length} posts from a malformed response '
+      '(status $statusCode)',
+    );
+    return items;
   }
 
   Future<PostDto?> getPost({
@@ -276,13 +297,31 @@ class ZerochanClient {
 }
 
 dynamic _parsePostResponse(dynamic data) {
-  // parse json first if there is a FormatException then clean the html and parse again
   try {
     return jsonDecode(data);
   } on FormatException {
-    final cleanned = _removeUnwantedHtmlElementFromJson(data);
+    final object = _extractItemsObject(data);
+    if (object == null) rethrow;
 
-    return jsonDecode(cleanned);
+    return jsonDecode(object);
+  }
+}
+
+List<PostDto>? _salvageItems(Object? data) {
+  final object = switch (data) {
+    final String body => _extractItemsObject(body),
+    _ => null,
+  };
+  if (object == null) return null;
+
+  try {
+    return switch (jsonDecode(object)) {
+      {'items': final List items} =>
+        items.whereType<Map<String, dynamic>>().map(PostDto.fromJson).toList(),
+      _ => null,
+    };
+  } on FormatException {
+    return null;
   }
 }
 
@@ -304,27 +343,38 @@ bool _looksLikePostFullImage(String url, int postId) {
 }
 
 // This is a workaround for the fact that the Zerochan API returns HTML
-String _removeUnwantedHtmlElementFromJson(String jsonString) {
-  // Split the JSON string into lines
-  final lines = jsonString.split('\n');
+String? _extractItemsObject(String body) {
+  final start = body.indexOf('"items"');
+  if (start < 0) return null;
 
-  var markerFound = false;
-
-  // Initialize a result string with the first line
-  final result = StringBuffer(lines.first);
-
-  // Iterate through the lines, starting from the second line
-  for (var i = 1; i < lines.length; i++) {
-    final line = lines[i];
-
-    // Check if the line contains the marker
-    if (line.contains('"items": [')) markerFound = true;
-
-    // If the marker is found, add the line to the result
-    if (markerFound) result.write('$line\n');
+  final candidate = '{${body.substring(start)}';
+  var depth = 0;
+  var inString = false;
+  var escaped = false;
+  for (var i = 0; i < candidate.length; i++) {
+    final char = candidate[i];
+    if (inString) {
+      if (escaped) {
+        escaped = false;
+      } else if (char == '\\') {
+        escaped = true;
+      } else if (char == '"') {
+        inString = false;
+      }
+      continue;
+    }
+    switch (char) {
+      case '"':
+        inString = true;
+      case '{' || '[':
+        depth++;
+      case '}' || ']':
+        depth--;
+        if (depth == 0) return candidate.substring(0, i + 1);
+    }
   }
 
-  return result.toString();
+  return null;
 }
 
 int? _clampPageLimit(int? limit) {
