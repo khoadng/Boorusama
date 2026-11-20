@@ -177,9 +177,6 @@ class _BackgroundDownloadRuntimeState
 
     FileDownloader().addTaskQueue(tq);
 
-    ref
-        .read(loggerProvider)
-        .info('Download', 'backend configured androidCronet=true');
     FileDownloader().configure(
       globalConfig: (
         Config.holdingQueue,
