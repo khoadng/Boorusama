@@ -49,6 +49,7 @@ class E621Client {
         if (tags != null && tags.isNotEmpty) 'tags': tags.join(' '),
         'page': ?page,
         'limit': ?limit,
+        ..._kPostFormat,
       },
     );
 
@@ -62,7 +63,10 @@ class E621Client {
   }
 
   Future<PostDto?> getPost(int id) async {
-    final response = await _dio.get('/posts/$id.json');
+    final response = await _dio.get(
+      '/posts/$id.json',
+      queryParameters: _kPostFormat,
+    );
 
     if (response.data == null) return null;
 
@@ -163,6 +167,7 @@ class E621Client {
       queryParameters: {
         'date': _dateToE621Date(date),
         'scale': scale.name,
+        ..._kPostFormat,
       },
     );
 
@@ -279,3 +284,8 @@ class E621Client {
         .toList();
   }
 }
+
+const _kPostFormat = {
+  'v2': 'true',
+  'mode': 'extended',
+};

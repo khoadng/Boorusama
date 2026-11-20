@@ -9,6 +9,7 @@ import '../../../core/posts/post/providers.dart';
 import '../../../core/posts/post/types.dart';
 import '../../../core/search/queries/providers.dart';
 import '../../../core/settings/providers.dart';
+import '../../../foundation/loggers.dart';
 import '../client_provider.dart';
 import 'parser.dart';
 import 'types.dart';
@@ -30,27 +31,34 @@ final e621PostRepoProvider =
           return post != null ? postDtoToPost(post, null) : null;
         },
         fetch: (tags, page, {limit, options}) async {
-          final data = await client
-              .getPosts(
-                page: page,
-                tags: tags,
-                limit: limit,
+          final dtos = await client.getPosts(
+            page: page,
+            tags: tags,
+            limit: limit,
+          );
+          final data = dtos
+              .map(
+                (e) => postDtoToPost(
+                  e,
+                  PostMetadata(
+                    page: page,
+                    search: tags.join(' '),
+                    limit: limit,
+                  ),
+                ),
               )
-              .then(
-                (value) => value
-                    .map(
-                      (e) => postDtoToPost(
-                        e,
-                        PostMetadata(
-                          page: page,
-                          search: tags.join(' '),
-                          limit: limit,
-                        ),
-                      ),
-                    )
-                    .nonNulls
-                    .toList(),
-              );
+              .nonNulls
+              .toList();
+
+          if (data.isEmpty &&
+              dtos.any((dto) => !(dto.flags?.deleted ?? false))) {
+            ref
+                .read(loggerProvider)
+                .warn(
+                  'E621',
+                  'Could not read any of ${dtos.length} posts on page $page',
+                );
+          }
 
           if (options?.cascadeRequest ?? true) {
             ref.read(favoritesProvider(config.auth).notifier).preload(data);
