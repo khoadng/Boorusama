@@ -26,7 +26,95 @@ class PostDto {
     this.duration,
   });
 
-  factory PostDto.fromJson(Map<String, dynamic> json) {
+  factory PostDto.fromJson(Map<String, dynamic> json) => switch (json) {
+    {'files': final Map<String, dynamic> files} => PostDto._fromFiles(
+      json,
+      files,
+    ),
+    _ => PostDto._fromLegacy(json),
+  };
+
+  factory PostDto._fromFiles(
+    Map<String, dynamic> json,
+    Map<String, dynamic> files,
+  ) {
+    final meta = _object(files['meta']);
+    final original = _object(files['original']);
+    final stats = _object(json['stats']);
+    final has = _object(json['has']);
+    final relationships = _object(json['relationships']);
+
+    return PostDto(
+      id: json['id'],
+      createdAt: json['created_at'],
+      updatedAt: json['updated_at'],
+      file: E621FileDto(
+        width: original?['width'],
+        height: original?['height'],
+        ext: meta?['ext'],
+        size: meta?['size'],
+        md5: meta?['md5'],
+        url: original?['url'],
+      ),
+      preview: switch (_object(files['preview'])) {
+        final preview? => E621PreviewDto(
+          width: preview['width'],
+          height: preview['height'],
+          url: preview['jpg'],
+          alt: preview['webp'],
+        ),
+        null => null,
+      },
+      sample: switch (_object(files['sample'])) {
+        final sample? => E621SampleDto(
+          has: meta?['has_sample'] ?? has?['sample'],
+          width: sample['width'],
+          height: sample['height'],
+          url: sample['jpg'],
+          alt: sample['webp'],
+          alternates: switch (_object(files['video'])) {
+            final video? => E621AlternatesDto.fromJson(video),
+            null => null,
+          },
+        ),
+        null => null,
+      },
+      score: switch (_object(stats?['score'])) {
+        final score? => E621ScoreDto.fromJson(score),
+        null => null,
+      },
+      tags: _parseTags(json['tags']),
+      lockedTags: _parseLockedTags(json['locked_tags']),
+      changeSeq: json['change_seq'],
+      flags: switch (_object(json['flags'])) {
+        final flags? => E621FlagsDto.fromJson(flags),
+        null => null,
+      },
+      rating: json['rating'],
+      favCount: stats?['fav_count'],
+      sources: _parseSources(json['sources']),
+      pools: _parseIds(json['pools']),
+      relationships: E621RelationshipsDto(
+        parentId: relationships?['parent_id'],
+        hasChildren: has?['children'],
+        hasActiveChildren: has?['active_children'],
+        children: switch (relationships?['children']) {
+          final List children => children,
+          _ => null,
+        },
+      ),
+      approverId: json['approver_id'],
+      uploaderId: json['uploader_id'],
+      uploaderName: json['uploader_name'],
+      description: json['description'],
+      commentCount: stats?['comment_count'],
+      isFavorited: stats?['is_favorited'],
+      hasNotes: has?['notes'],
+      duration: _parseDuration(meta?['duration']),
+    );
+  }
+
+  factory PostDto._fromLegacy(Map<String, dynamic> json) {
     return PostDto(
       id: json['id'],
       createdAt: json['created_at'],
@@ -70,15 +158,8 @@ class PostDto {
           total: json['score'],
         ),
       },
-      tags: switch (json['tags']) {
-        final Map<String, dynamic> m => Map<String, List<dynamic>>.from(m),
-        _ => _parseTagString(json['tag_string']),
-      },
-      lockedTags: switch (json['locked_tags']) {
-        final List l => List<String>.from(l),
-        final String s when s.isNotEmpty => s.split(' '),
-        _ => null,
-      },
+      tags: _parseTags(json['tags']) ?? _parseTagString(json['tag_string']),
+      lockedTags: _parseLockedTags(json['locked_tags']),
       changeSeq: json['change_seq'],
       flags: switch (json['flags']) {
         final Map<String, dynamic> m => E621FlagsDto.fromJson(m),
@@ -93,18 +174,8 @@ class PostDto {
       },
       rating: json['rating'],
       favCount: json['fav_count'],
-      sources: switch (json['sources']) {
-        final List l => List<String>.from(l),
-        final String s when s.isNotEmpty => s.split('\n'),
-        _ => null,
-      },
-      pools: switch (json['pools']) {
-        final List l => List<int>.from(l),
-        _ => switch (json['pool_ids']) {
-          final List p => List<int>.from(p),
-          _ => null,
-        },
-      },
+      sources: _parseSources(json['sources']),
+      pools: _parseIds(json['pools']) ?? _parseIds(json['pool_ids']),
       relationships: switch (json['relationships']) {
         final Map<String, dynamic> m => E621RelationshipsDto.fromJson(m),
         _ => E621RelationshipsDto(
@@ -130,13 +201,46 @@ class PostDto {
       commentCount: json['comment_count'],
       isFavorited: json['is_favorited'],
       hasNotes: json['has_notes'],
-      duration: switch (json['duration']) {
-        final num n => n.toDouble(),
-        final String s => double.tryParse(s),
-        _ => null,
-      },
+      duration: _parseDuration(json['duration']),
     );
   }
+
+  static Map<String, dynamic>? _object(Object? value) => switch (value) {
+    final Map<String, dynamic> map => map,
+    _ => null,
+  };
+
+  static Map<String, List<dynamic>>? _parseTags(Object? tags) => switch (tags) {
+    final Map<String, dynamic> categories => {
+      for (final MapEntry(:key, :value) in categories.entries)
+        if (value case final List names) key: names,
+    },
+    final List names => {'general': names},
+    _ => null,
+  };
+
+  static List<String>? _parseLockedTags(Object? tags) => switch (tags) {
+    final List l => l.whereType<String>().toList(),
+    final String s when s.isNotEmpty => s.split(' '),
+    _ => null,
+  };
+
+  static List<String>? _parseSources(Object? sources) => switch (sources) {
+    final List l => l.whereType<String>().toList(),
+    final String s when s.isNotEmpty => s.split('\n'),
+    _ => null,
+  };
+
+  static List<int>? _parseIds(Object? ids) => switch (ids) {
+    final List l => l.whereType<int>().toList(),
+    _ => null,
+  };
+
+  static double? _parseDuration(Object? duration) => switch (duration) {
+    final num n => n.toDouble(),
+    final String s => double.tryParse(s),
+    _ => null,
+  };
 
   static Map<String, List<dynamic>>? _parseTagString(dynamic tagString) {
     return switch (tagString) {
